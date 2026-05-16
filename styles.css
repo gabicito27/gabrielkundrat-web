@@ -806,6 +806,97 @@ a { color: inherit; text-decoration: none; }
 
 .reviews__cta { text-align: center; }
 
+/* ============= PZP A CESTOVNÉ ONLINE ============= */
+.online {
+  padding: 100px 0;
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+}
+
+.online .section-title {
+  font-size: clamp(1.7rem, 3.8vw, 2.6rem);
+}
+
+.online__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  max-width: 880px;
+  margin: 0 auto 32px;
+}
+
+.online__card {
+  background: var(--paper);
+  padding: 36px 32px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  position: relative;
+}
+.online__card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card);
+  border-color: var(--accent);
+}
+
+.online__icon {
+  width: 52px;
+  height: 52px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-soft);
+  border-radius: 14px;
+  color: var(--green);
+}
+.online__icon svg { width: 26px; height: 26px; }
+
+.online__card h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 22px;
+  color: var(--green);
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+
+.online__card p {
+  color: var(--ink-soft);
+  font-size: 15.5px;
+  margin-bottom: 24px;
+  flex-grow: 1;
+}
+
+.online__card .btn {
+  align-self: flex-start;
+}
+.online__card .btn svg {
+  transition: transform 0.3s;
+}
+.online__card .btn:hover svg {
+  transform: translate(2px, -2px);
+}
+
+.online__note {
+  text-align: center;
+  font-size: 14px;
+  color: var(--ink-mute);
+  max-width: 620px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+.online__note a {
+  color: var(--green);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 3px;
+}
+.online__note a:hover { color: var(--accent); }
+
 /* ============= KONTAKT ============= */
 .contact {
   padding: 120px 0;
@@ -934,6 +1025,7 @@ a { color: inherit; text-decoration: none; }
   .services__grid, .reviews__grid, .process__steps {
     grid-template-columns: repeat(2, 1fr);
   }
+  .online__grid { grid-template-columns: 1fr; max-width: 480px; }
   .contact__grid { grid-template-columns: 1fr; gap: 40px; }
 }
 
@@ -949,12 +1041,13 @@ a { color: inherit; text-decoration: none; }
   .hero__badge--top { right: 4px; }
   .hero__badge--bottom { left: 4px; }
 
-  .about, .services, .process, .reviews, .contact { padding: 80px 0; }
+  .about, .services, .process, .reviews, .online, .contact { padding: 80px 0; }
   .section-head { margin-bottom: 48px; }
 
   .services__grid, .reviews__grid, .process__steps {
     grid-template-columns: 1fr;
   }
+  .online__grid { grid-template-columns: 1fr; }
   .process__step { padding-top: 0; }
   .process__num { font-size: 48px; margin-bottom: 12px; }
 
