@@ -57,7 +57,7 @@
 
   // Scroll-reveal: sekcie pri vstupe do viewportu
   const revealTargets = document.querySelectorAll(
-    '.section-head, .service, .review, .process__step, ' +
+    '.section-head, .service, .review, .process__step, .online__card, ' +
     '.about__visual, .about__content, .contact__intro, .contact__cards, .contact__note'
   );
   revealTargets.forEach((el) => el.classList.add('reveal'));
