@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stránka nenájdená | Gabriel Kundrát</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,400&family=Inter+Tight:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+<style>
+  .err {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .err__num {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(120px, 20vw, 240px);
+    line-height: 1;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+  .err h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: var(--green);
+    margin-bottom: 16px;
+  }
+  .err p {
+    color: var(--ink-soft);
+    font-size: 18px;
+    margin-bottom: 32px;
+    max-width: 480px;
+    margin-inline: auto;
+  }
+</style>
+</head>
+<body>
+<div class="err">
+  <div>
+    <div class="err__num">404</div>
+    <h1>Túto stránku som nenašiel</h1>
+    <p>Vyzerá to, že tu nič nie je. Vráťme sa na úvod, kde nájdete všetko dôležité.</p>
+    <a href="/" class="btn btn--primary">Späť na úvod</a>
+  </div>
+</div>
+</body>
+</html>

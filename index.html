@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gabriel Kundrát – Finančný poradca | Prešov</title>
+<meta name="description" content="Gabriel Kundrát – finančný poradca pre Prešov a okolie. Hypotéky, poistenie, investície. Bezplatná konzultácia.">
+<meta name="keywords" content="finančný poradca Prešov, hypotéka, poistenie, investície, Gabriel Kundrát">
+<meta name="author" content="Gabriel Kundrát">
+
+<!-- Open Graph / sociálne siete -->
+<meta property="og:title" content="Gabriel Kundrát – Finančný poradca | Prešov">
+<meta property="og:description" content="Váš finančný pokoj začína tu. Hypotéky, poistenie, investície – ľudskou rečou.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="sk_SK">
+<meta property="og:url" content="https://gabrielkundrat.sk/">
+
+<!-- Fonty: Fraunces (display, serif s charakterom) + Inter Tight (telo, čistý) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- Schema.org pre SEO -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FinancialService",
+  "name": "Gabriel Kundrát – Finančný poradca",
+  "description": "Nezávislý finančný poradca pre Prešov a okolie. Hypotéky, poistenie, investície.",
+  "url": "https://gabrielkundrat.sk",
+  "telephone": "+421915315950",
+  "email": "gabriel.kundrat@gmail.com",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Levočská 36",
+    "addressLocality": "Prešov",
+    "addressCountry": "SK"
+  },
+  "areaServed": "Prešov a okolie",
+  "priceRange": "Bezplatná konzultácia"
+}
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============= NAVIGÁCIA ============= -->
+<header class="nav">
+  <div class="container nav__inner">
+    <a href="#" class="nav__brand">
+      <span class="nav__brand-mark">GK</span>
+      <span class="nav__brand-text">Gabriel Kundrát</span>
+    </a>
+    <nav class="nav__links" id="navLinks">
+      <a href="#o-mne">O mne</a>
+      <a href="#sluzby">Služby</a>
+      <a href="#proces">Ako to funguje</a>
+      <a href="#recenzie">Recenzie</a>
+      <a href="#kontakt">Kontakt</a>
+    </nav>
+    <div class="nav__cta">
+      <a href="tel:+421915315950" class="nav__phone">0915 315 950</a>
+      <a href="#kontakt" class="btn btn--primary btn--sm">Stretnutie</a>
+    </div>
+    <button class="nav__burger" id="navBurger" aria-label="Otvoriť menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ============= HERO ============= -->
+<section class="hero">
+  <div class="container hero__inner">
+    <div class="hero__content">
+      <span class="eyebrow">Finančný poradca · Prešov</span>
+      <h1 class="hero__title">
+        Váš <em>finančný pokoj</em><br>
+        začína tu.
+      </h1>
+      <p class="hero__lead">
+        Zložité financie vám vysvetlím ľudskou rečou. Papierovanie a behanie po
+        bankách vybavím za vás – vy sa len rozhodnete.
+      </p>
+      <div class="hero__cta">
+        <a href="#kontakt" class="btn btn--primary">Dohodnúť stretnutie</a>
+        <a href="tel:+421915315950" class="btn btn--ghost">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          0915 315 950
+        </a>
+      </div>
+      <div class="hero__trust">
+        <div class="hero__trust-item">
+          <strong>5,0 ★</strong>
+          <span>Google recenzie</span>
+        </div>
+        <div class="hero__trust-divider"></div>
+        <div class="hero__trust-item">
+          <strong>Zdarma</strong>
+          <span>prvá konzultácia</span>
+        </div>
+        <div class="hero__trust-divider"></div>
+        <div class="hero__trust-item">
+          <strong>Prešov</strong>
+          <span>a celé okolie</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero__visual">
+      <div class="hero__card">
+        <div class="hero__photo" id="heroPhoto">
+          <!-- Sem si vložíš svoju fotku: <img src="gabriel.jpg" alt="Gabriel Kundrát"> -->
+          <div class="hero__photo-placeholder">
+            <span>GK</span>
+          </div>
+        </div>
+        <div class="hero__badge hero__badge--top">
+          <span class="hero__badge-icon">📍</span>
+          <div>
+            <div class="hero__badge-label">Pôsobisko</div>
+            <div class="hero__badge-value">Prešov a okolie</div>
+          </div>
+        </div>
+        <div class="hero__badge hero__badge--bottom">
+          <div class="hero__badge-tags">
+            <span>Hypotéky</span>
+            <span>Poistenie</span>
+            <span>Investície</span>
+          </div>
+          <div class="hero__badge-note">Konzultácia <strong>zadarmo</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= O MNE ============= -->
+<section id="o-mne" class="about">
+  <div class="container about__inner">
+    <div class="about__visual">
+      <div class="about__image">
+        <div class="hero__photo-placeholder">
+          <span>GK</span>
+        </div>
+      </div>
+      <div class="about__stamp">
+        <strong>100%</strong>
+        <span>bezplatná<br>prvá konzultácia</span>
+      </div>
+    </div>
+    <div class="about__content">
+      <span class="eyebrow">O mne</span>
+      <h2 class="section-title">
+        Financie bez stresu.<br>
+        <em>To je môj prísľub.</em>
+      </h2>
+      <p class="about__lead">
+        Som <strong>Gabriel Kundrát</strong> a pomáham vám zorientovať sa vo svete
+        financií tak, aby ste mu skutočne rozumeli. Zabudnite na zložitý bankový
+        žargón a nekonečné papierovanie.
+      </p>
+      <p>
+        Mojím cieľom je uľahčiť vám život a ušetriť váš čas. Obiehanie inštitúcií,
+        porovnávanie ponúk a administratívu beriem na seba – vy dostanete jasné
+        možnosti a v pokoji sa rozhodnete.
+      </p>
+      <p>
+        Zakladám si na férovej komunikácii a riešeniach, ktoré chránia vašu
+        rodinu a budujú váš majetok.
+      </p>
+      <a href="#kontakt" class="btn btn--primary">Spoznajme sa</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============= SLUŽBY ============= -->
+<section id="sluzby" class="services">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Moje 3 piliere</span>
+      <h2 class="section-title">S čím vám môžem <em>pomôcť</em></h2>
+      <p class="section-lead">
+        Bez ohľadu na to, kde sa práve nachádzate na svojej finančnej ceste –
+        mám pre vás riešenie.
+      </p>
+    </div>
+
+    <div class="services__grid">
+
+      <article class="service">
+        <div class="service__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/></svg>
+        </div>
+        <h3>Hypotéky</h3>
+        <p>
+          Pomáham rodinám hladko získať a financovať ich vysnívaný domov.
+          Porovnám ponuky všetkých bánk, vyjednám najlepšie podmienky a vyplním
+          všetku dokumentáciu za vás.
+        </p>
+        <ul>
+          <li>Porovnanie bánk a sadzieb</li>
+          <li>Príprava celej dokumentácie</li>
+          <li>Sprevádzanie počas celého procesu</li>
+        </ul>
+      </article>
+
+      <article class="service">
+        <div class="service__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-12V5l-8-3-8 3v5c0 8 8 12 8 12z"/></svg>
+        </div>
+        <h3>Poistenie</h3>
+        <p>
+          Zabezpečte svoju rodinu a chráňte príjem pred nečakanými udalosťami.
+          Poistenie nastavíme presne na mieru vašim potrebám – nie viac, nie menej.
+        </p>
+        <ul>
+          <li>Životné poistenie</li>
+          <li>Poistenie príjmu a schopnosti splácať</li>
+          <li>Poistenie nehnuteľnosti</li>
+        </ul>
+      </article>
+
+      <article class="service">
+        <div class="service__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>
+        </div>
+        <h3>Investície</h3>
+        <p>
+          Nechajte peniaze pracovať pre vás. Zostavíme investičný plán, ktorý
+          zodpovedá vašim cieľom – či chcete sporiť na dôchodok alebo zhodnocovať
+          voľné prostriedky.
+        </p>
+        <ul>
+          <li>Sporiace a investičné produkty</li>
+          <li>Dlhodobé budovanie majetku</li>
+          <li>Pravidelné prehodnocovanie plánu</li>
+        </ul>
+      </article>
+
+    </div>
+
+    <div class="services__cta">
+      <a href="#kontakt" class="btn btn--primary">Mám záujem – dohodnem si stretnutie</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============= AKO TO FUNGUJE ============= -->
+<section id="proces" class="process">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Jednoduchý proces</span>
+      <h2 class="section-title">Ako to <em>funguje</em>?</h2>
+      <p class="section-lead">
+        Tri kroky k finančnému pokoju. Žiadna byrokracia z vašej strany.
+      </p>
+    </div>
+
+    <ol class="process__steps">
+      <li class="process__step">
+        <div class="process__num">01</div>
+        <h3>Káva a zoznámenie</h3>
+        <p>
+          Stretneme sa na nezáväznej konzultácii. Porozprávame sa o vašej
+          situácii, cieľoch a obavách – bez záväzkov a úplne zadarmo.
+        </p>
+      </li>
+      <li class="process__step">
+        <div class="process__num">02</div>
+        <h3>Príprava riešenia</h3>
+        <p>
+          Na základe vašich potrieb porovnám ponuky na trhu a pripravím pre
+          vás konkrétne, personalizované riešenie na mieru.
+        </p>
+      </li>
+      <li class="process__step">
+        <div class="process__num">03</div>
+        <h3>Všetko vybavím za vás</h3>
+        <p>
+          Vy sa rozhodujete, ja riešim byrokraciu. Zariadim všetko potrebné a
+          budem tu pre vás pri každom ďalšom finančnom kroku.
+        </p>
+      </li>
+    </ol>
+
+    <div class="process__cta">
+      <a href="#kontakt" class="btn btn--ghost">Dajme si kávu ☕</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============= RECENZIE ============= -->
+<section id="recenzie" class="reviews">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Reálne skúsenosti</span>
+      <h2 class="section-title">Čo hovoria <em>klienti</em></h2>
+      <p class="section-lead">
+        <span class="reviews__rating">★★★★★</span> Hodnotenia z Google · 5,0
+      </p>
+    </div>
+
+    <div class="reviews__grid">
+      <figure class="review">
+        <blockquote>Pán Kundrát mi pomohol s financovaním domu. Zároveň dal do poriadku rodinné poistenia a mesačne nám pomohol ušetriť nemálo €.</blockquote>
+        <figcaption><span class="review__avatar">M</span><div><strong>Martin</strong><span>Google recenzia</span></div></figcaption>
+      </figure>
+
+      <figure class="review">
+        <blockquote>So službami pána Kundráta sme boli spolu s manželom maximálne spokojní. Riešili sme kúpu bytu cez hypotéku – všetko išlo veľmi rýchlo a hladko. Hypotéku sme mali na účte do dvoch týždňov. Bol k dispozícii kedykoľvek sme potrebovali. Odporúčame všetkými desiatimi!</blockquote>
+        <figcaption><span class="review__avatar">S</span><div><strong>Slavomíra</strong><span>Google recenzia</span></div></figcaption>
+      </figure>
+
+      <figure class="review">
+        <blockquote>Služby pána Kundráta odporúčam každému, kto chce mať poriadok vo svojich financiách. Pri osobnom stretnutí mi jasne vysvetlil podrobnosti rôznych finančných produktov a po dohode sme vybrali produkty, ktoré mi sedeli.</blockquote>
+        <figcaption><span class="review__avatar">V</span><div><strong>Veronika</strong><span>Google recenzia</span></div></figcaption>
+      </figure>
+
+      <figure class="review">
+        <blockquote>Som veľmi rada, že som natrafila na pána Mgr. Gabriela Kundráta. Jeho prístup je odborný, profesionálny, ľudský a priateľský. Pomohol mi nastaviť sporenie na dôchodok, vybaviť životnú poistku aj DSS. Určite odporúčam!</blockquote>
+        <figcaption><span class="review__avatar">S</span><div><strong>Soňa</strong><span>Google recenzia</span></div></figcaption>
+      </figure>
+
+      <figure class="review">
+        <blockquote>Na základe odporúčaní som oslovil p. Kundráta s vybavením hypotéky. Zrozumiteľne mi vysvetlil moje možnosti, všetko rýchlo vybavil a o každom kroku ma informoval. Veľmi rád ho odporúčam ďalej!</blockquote>
+        <figcaption><span class="review__avatar">D</span><div><strong>Dávid</strong><span>Google recenzia</span></div></figcaption>
+      </figure>
+
+      <figure class="review">
+        <blockquote>Gabriel robí servis pre celú moju rodinu – hypotéka, PZP, životné poistenie a hlavne riešenie dôchodku. Vrelo odporúčam, je veľmi šikovný a ochotný.</blockquote>
+        <figcaption><span class="review__avatar">G</span><div><strong>Gabriel</strong><span>Google recenzia</span></div></figcaption>
+      </figure>
+    </div>
+
+    <div class="reviews__cta">
+      <a href="https://maps.app.goo.gl/og6gCfzKTDbBh2H36" target="_blank" rel="noopener" class="btn btn--ghost">
+        Zobraziť všetky recenzie na Google →
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============= KONTAKT ============= -->
+<section id="kontakt" class="contact">
+  <div class="container">
+    <div class="contact__grid">
+      <div class="contact__intro">
+        <span class="eyebrow">Spojte sa so mnou</span>
+        <h2 class="section-title">Dohodnite si <em>stretnutie</em></h2>
+        <p>
+          Prvá konzultácia je <strong>bezplatná</strong>. Vyberte si čas, ktorý
+          vám vyhovuje, alebo mi jednoducho zavolajte.
+        </p>
+      </div>
+
+      <div class="contact__cards">
+        <a href="tel:+421915315950" class="contact__card">
+          <div class="contact__card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          <div>
+            <span class="contact__card-label">Telefón</span>
+            <strong>0915 315 950</strong>
+          </div>
+        </a>
+
+        <a href="mailto:gabriel.kundrat@gmail.com" class="contact__card">
+          <div class="contact__card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div>
+            <span class="contact__card-label">E-mail</span>
+            <strong>gabriel.kundrat@gmail.com</strong>
+          </div>
+        </a>
+
+        <div class="contact__card contact__card--static">
+          <div class="contact__card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <div>
+            <span class="contact__card-label">Kancelária</span>
+            <strong>Levočská 36, Prešov</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact__note">
+        📍 Hlavné pôsobisko: <strong>Prešov a okolie</strong>. Ste z iného kúta
+        Slovenska? Radi sa dohodneme aj na <strong>online konzultácii</strong> z
+        pohodlia vášho domova.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= FOOTER ============= -->
+<footer class="footer">
+  <div class="container footer__inner">
+    <div class="footer__brand">
+      <span class="nav__brand-mark">GK</span>
+      <span>Gabriel Kundrát</span>
+    </div>
+    <div class="footer__copy">
+      © 2026 Gabriel Kundrát – Finančný poradca, Prešov
+    </div>
+    <div class="footer__links">
+      <a href="tel:+421915315950">0915 315 950</a>
+      <a href="mailto:gabriel.kundrat@gmail.com">E-mail</a>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
