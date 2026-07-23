@@ -7,6 +7,12 @@
 <meta name="description" content="Gabriel Kundrát – finančný sprostredkovateľ pre Prešov a okolie. Hypotéky, poistenie a investície pre rodiny, živnostníkov a podnikateľov. Prvá konzultácia zadarmo.">
 <meta name="keywords" content="finančný sprostredkovateľ Prešov, hypotéka, poistenie, investície, dôchodok pre živnostníkov, Gabriel Kundrát">
 <meta name="author" content="Gabriel Kundrát">
+<link rel="canonical" href="https://gabrielkundrat.sk/">
+
+<!-- Favicony -->
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
 <!-- Open Graph / sociálne siete -->
 <meta property="og:title" content="Gabriel Kundrát – Finančný sprostredkovateľ | Prešov">
@@ -14,11 +20,21 @@
 <meta property="og:type" content="website">
 <meta property="og:locale" content="sk_SK">
 <meta property="og:url" content="https://gabrielkundrat.sk/">
+<meta property="og:image" content="https://gabrielkundrat.sk/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Gabriel Kundrát – finančný sprostredkovateľ, Prešov">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Gabriel Kundrát – Finančný sprostredkovateľ | Prešov">
+<meta name="twitter:description" content="Finančný lekár pre vašu rodinu a podnikanie. Hypotéky, poistenie a investície – vybavím ich za vás.">
+<meta name="twitter:image" content="https://gabrielkundrat.sk/og-image.jpg">
 
-<!-- Fonty: Fraunces (display, serif s charakterom) + Inter Tight (telo, čistý) -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- Fonty: Fraunces (display, serif s charakterom) + Inter Tight (telo, čistý) – lokálne, bez Google -->
+<link rel="preload" href="/fonts/fraunces-latin-standard-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fraunces-latin-ext-standard-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/inter-tight-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/inter-tight-latin-ext-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="fonts.css">
 
 <!-- Schema.org pre SEO -->
 <script type="application/ld+json">
@@ -64,11 +80,13 @@
       <a href="tel:+421915315950" class="nav__phone">0915 315 950</a>
       <a href="#kontakt" class="btn btn--primary btn--sm">Stretnutie</a>
     </div>
-    <button class="nav__burger" id="navBurger" aria-label="Otvoriť menu">
+    <button class="nav__burger" id="navBurger" aria-label="Otvoriť menu" aria-expanded="false" aria-controls="navLinks">
       <span></span><span></span><span></span>
     </button>
   </div>
 </header>
+
+<main>
 
 <!-- ============= HERO ============= -->
 <section class="hero">
@@ -457,6 +475,8 @@
     </div>
   </div>
 </section>
+
+</main>
 
 <!-- ============= FOOTER ============= -->
 <footer class="footer">
