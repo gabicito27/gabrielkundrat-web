@@ -11,3 +11,7 @@
 
 /og-image.jpg
   Cache-Control: public, max-age=86400
+
+/poradca-9f9fc8d5/*
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Cache-Control: no-store
