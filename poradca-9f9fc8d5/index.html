@@ -141,6 +141,44 @@ table.kt tbody tr:hover{background:var(--surface-1)}
 .scen .tag.bad{background:#fbeded;color:#7d1f1f}
 .scen .tag.ok{background:#edf8ed;color:#0a4f0a}
 
+
+/* ---------- ROZKLIKÁVACIE FAKTY ---------- */
+.fakty{border-top:1px solid var(--grid)}
+details.fakt{border-bottom:1px solid var(--grid)}
+details.fakt summary{
+  list-style:none;cursor:pointer;padding:14px 2px;display:flex;align-items:baseline;gap:12px;
+  outline:none;transition:.12s
+}
+details.fakt summary::-webkit-details-marker{display:none}
+details.fakt summary:hover .fn{color:var(--s1)}
+details.fakt summary:focus-visible{outline:2px solid var(--s1);outline-offset:2px;border-radius:6px}
+.fakt .fn{font-weight:600;font-size:14.5px;flex:0 0 auto}
+.fakt .fz{font-size:12.5px;color:var(--muted);flex:1 1 auto}
+.fakt .fs{width:15px;height:15px;color:var(--muted);flex:0 0 auto;transition:transform .18s;align-self:center}
+details.fakt[open] .fs{transform:rotate(180deg)}
+details.fakt[open] .fn{color:var(--s1)}
+.fbody{padding:2px 2px 20px}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px 20px}
+.fi{display:flex;gap:11px;align-items:baseline}
+.fi b{
+  font-size:17px;font-weight:660;letter-spacing:-.02em;color:var(--s1);
+  flex:0 0 auto;min-width:62px;font-variant-numeric:tabular-nums
+}
+.fi span{font-size:12.5px;color:var(--ink-2);line-height:1.45}
+.fpozn{
+  margin:16px 0 0;font-size:13px;line-height:1.55;color:var(--ink-2);
+  background:var(--surface-1);border-left:2px solid var(--axis);border-radius:0 8px 8px 0;padding:11px 14px
+}
+table.ft{width:100%;border-collapse:collapse;font-size:13px;margin-top:16px;max-width:420px}
+table.ft th{
+  text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);
+  font-weight:600;padding:7px 10px;border-bottom:1px solid var(--border)
+}
+table.ft td{padding:6px 10px;border-bottom:1px solid var(--grid);font-variant-numeric:tabular-nums}
+table.ft td:last-child,table.ft th:last-child{text-align:right}
+.ftp{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.45;max-width:420px}
+@media print{ details.fakt:not([open]) .fbody{display:none} .fakt .fs{display:none} }
+
 /* ---------- MAPA PORTFÓLIA ---------- */
 .mapa>svg{display:block;width:100%;height:auto}
 .mapa .nic svg,.mapa .hubic svg{pointer-events:none}
@@ -628,6 +666,10 @@ figcaption{font-size:14px;font-weight:600;margin-bottom:2px}
 
     <h3 style="margin-top:26px">Čo by sa stalo</h3>
     <div class="scenare" id="scenare"></div>
+
+    <h3 style="margin-top:28px">Prečo práve tieto riziká</h3>
+    <p class="sub" style="margin-bottom:6px">Rozkliknite si, čo o jednotlivých rizikách hovoria čísla za Slovensko.</p>
+    <div class="fakty" id="fakty"></div>
   </div>
 </section>
 

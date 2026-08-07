@@ -45,7 +45,10 @@ const CONFIG = {
     rezervaNaDieta: 15000,      // pri balíčku Maxi sa pripočíta k poistnej sume za smrť
     nemocenskePodiel: 0.70,     // nemocenské ≈ 70 % čistého príjmu (55 % hrubého DVZ, nedaní sa)
                                 // → dorovnanie 30 % dáva presne denné dávky z prezentéra (10 € pri 1 000 €)
-    invalidnyPodiel: 0.45,      // orientačný invalidný dôchodok pri invalidite nad 70 %
+    // priemerné invalidné dôchodky (brožúrka ŽP FVP) — absolútne sumy, nie percentá z príjmu
+    invalidnyDochodok: { do70: 300, nad70: 550, plnaPriemer: 523, ciastocnaPriemer: 289 },
+    // maximálna denná dávka PN, ktorú poisťovňa pripustí podľa čistého príjmu (brožúrka ŽP FVP)
+    limitPN: [[835,10],[947,11],[1058,12],[1170,13],[1393,14],[1429,15],[1548,20],[1849,30],[2149,40],[2449,50]],
     pnSkorsiZaciatokFaktor: 1.35 // pripoistenie PN od 15. dňa namiesto 29.
   }
 };
@@ -61,8 +64,8 @@ const BALICKY = [
     tnu:3.5, kch:1.5, pn:true, pnOd:29, rezervaDeti:false, prijemNasobok:0,
     deti:{ tnu:30000, kch:20000, denne:10 } },
   { id:"maxi", nazov:"Maxi", podnadpis:"Plná ochrana príjmu",
-    popis:"Horná hranica odporúčaných pásiem, rezerva pre deti navyše a PN už od 15. dňa.",
-    tnu:5, kch:3, pn:true, pnOd:15, rezervaDeti:true, prijemNasobok:2,
+    popis:"Horná hranica odporúčaných pásiem, rezerva pre deti navyše, PN už od 15. dňa a v maximálnej dennej dávke.",
+    tnu:5, kch:3, pn:true, pnOd:15, pnMax:true, rezervaDeti:true, prijemNasobok:2,
     deti:{ tnu:40000, kch:30000, denne:15 } }
 ];
 
@@ -284,6 +287,96 @@ function renderAreas(){
 }
 
 
+
+/* ============================================================
+   FAKTY K RIZIKÁM — zbalené, rozkliknú sa až na požiadanie.
+   Zdroj: brožúrka „Ako správne nastaviť životné poistenie" (FVP)
+   a prezentér RHR. Čísla sú štatistiky za Slovensko.
+   ============================================================ */
+const FAKTY = [
+  { id:"f-smrt", nazov:"Ako často sa to naozaj stane",
+    zhrn:"Pravdepodobnosti v aktívnom veku do 69 rokov",
+    body:[
+      {c:"1 z 13", t:"mužov zomrie v aktívnom veku do 69 rokov"},
+      {c:"1 z 31", t:"žien zomrie v aktívnom veku do 69 rokov"},
+      {c:"1 z 23", t:"mužov sa stane invalidom"},
+      {c:"1 z 25", t:"žien sa stane invalidom"},
+      {c:"1 z 15", t:"mužov dostane diagnózu rakoviny"},
+      {c:"1 z 19", t:"žien dostane diagnózu rakoviny"}
+    ],
+    pozn:"Invalidita nevzniká najmä z úrazov, ako sa väčšina ľudí domnieva — <b>97 % invalidít spôsobí choroba</b> a len 3 % úraz." },
+
+  { id:"f-inv", nazov:"Čo dostanete od štátu pri invalidite",
+    zhrn:"Priemerný invalidný dôchodok a ako sa priznáva",
+    body:[
+      {c:"≈ 300 €", t:"mesačne pri invalidite nad 40 do 70 %"},
+      {c:"≈ 550 €", t:"mesačne pri invalidite nad 70 %"},
+      {c:"80 %", t:"poberateľov plnej invalidity má menej ako 530 € mesačne"},
+      {c:"3 z 10", t:"invalidných dôchodcov popri dôchodku pracuje"},
+      {c:"14 069", t:"nových invalidných dôchodkov ročne (spolu 221 815 poberateľov)"},
+      {c:"10 %", t:"nových invalidít pripadá na ľudí do 29 rokov"}
+    ],
+    pozn:"Invalidný dôchodok <b>môže Sociálna poisťovňa znížiť alebo odobrať</b> pri prehodnotení zdravotného stavu. Najčastejšie príčiny plnej invalidity: choroby pohybového systému 28 %, duševné poruchy 18 %, obehová sústava 12 %. Pri čiastočnej vedú nádorové ochorenia s 52 %." },
+
+  { id:"f-tnu", nazov:"Trvalé následky úrazu a čo robí progresia",
+    zhrn:"Prečo je poistná suma s progresiou niekoľkonásobne účinnejšia",
+    body:[
+      {c:"3 + 15", t:"ťažkých a ľahších zranení pripadá na jedno úmrtie pri dopravnej nehode"},
+      {c:"3 ľudia", t:"sa každý deň na Slovensku vážne zrania pri dopravnej nehode"},
+      {c:"4.", t:"najčastejšia príčina hospitalizácie sú úrazy"},
+      {c:"1/3", t:"obetí dopravných nehôd tvoria chodci a cyklisti"}
+    ],
+    pozn:"Progresia znamená, že pri vážnom poškodení poisťovňa vyplatí násobok poistnej sumy. Pri <b>1 000 % progresii a poistnej sume 10 000 €</b> je plnenie pri 100 % telesnom poškodení až <b>100 000 €</b> — preto sa progresia oplatí viac ako vyššia základná suma bez nej." },
+
+  { id:"f-kch", nazov:"Kritické choroby v číslach",
+    zhrn:"Koľko prípadov ročne a na čo si dať pozor pri výbere",
+    body:[
+      {c:"39 500", t:"zhubných nádorov ročne, z toho 15 000 u ľudí do 64 rokov"},
+      {c:"11 400", t:"cievnych mozgových príhod ročne, 3 100 do 64 rokov"},
+      {c:"3 500", t:"infarktov myokardu ročne, 1 500 do 64 rokov"},
+      {c:"4,5", t:"nových pacientov so zhubným nádorom pribudne každú hodinu"},
+      {c:"2×", t:"častejšie diagnostikujú nádor ženám vo veku 25–49 rokov ako mužom"}
+    ],
+    pozn:"Pri porovnávaní poisťovní <b>nerozhoduje počet krytých diagnóz, ale ktoré to sú</b>. Dlhé zoznamy často obsahujú ochorenia s nulovým alebo jednotkovým výskytom na Slovensku — brušný týfus 0 prípadov, tetanus 0, malária 2, Creutzfeldt-Jakobova choroba 17. To je marketing, nie ochrana. Podstatné je krytie nádorov, infarktu a mozgovej príhody." },
+
+  { id:"f-pn", nazov:"Dlhodobá práceneschopnosť",
+    zhrn:"Ako dlho trvá a aký je strop dennej dávky",
+    body:[
+      {c:"36 %", t:"práceneschopností trvá viac ako 29 dní"},
+      {c:"44,5", t:"dňa je priemerná dĺžka práceneschopnosti"}
+    ],
+    pozn:"Najčastejšie príčiny: choroby dýchacej sústavy, svalového a kostrového aparátu, úrazy, tráviaca a obehová sústava.",
+    tabulka:true },
+
+  { id:"f-met", nazov:"Ako určujeme poistné sumy",
+    zhrn:"Metodika, podľa ktorej sú balíčky nastavené",
+    body:[
+      {c:"Smrť a invalidita", t:"zostatok hypotéky, rezerva pre nezaopatrené deti, mínus existujúci majetok vrátane úspor v II. a III. pilieri"},
+      {c:"Trvalé následky", t:"3–5× ročný čistý príjem, vždy s progresiou"},
+      {c:"Kritické choroby", t:"1,5–3× ročný čistý príjem"},
+      {c:"Práceneschopnosť", t:"dorovnanie do 100 % mzdy, obmedzené stropom poisťovne"}
+    ],
+    pozn:"Päť rizík, na ktorých to stojí: <b>smrť, invalidita, trvalé následky úrazu, kritické choroby a dlhodobá PN</b>. Ostatné pripoistenia sú doplnok — ak sa nezmestia do rozpočtu, obetujeme ich ako prvé." }
+];
+
+function renderFakty(){
+  const T = CONFIG.zivot.limitPN;
+  const tab = `<table class="ft"><thead><tr><th>Čistý mesačný príjem</th><th>Maximálna denná dávka</th></tr></thead>
+    <tbody>${T.map(([p,d]) => `<tr><td>od ${eur(p)}</td><td>${eur(d)} / deň</td></tr>`).join("")}</tbody></table>
+    <div class="ftp">Limity sa medzi poisťovňami mierne líšia. Appka o ne automaticky zastropuje vypočítanú dennú dávku.</div>`;
+  $("fakty").innerHTML = FAKTY.map(f => `
+    <details class="fakt" id="${f.id}">
+      <summary><span class="fn">${f.nazov}</span><span class="fz">${f.zhrn}</span>
+        <svg class="fs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+             stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></summary>
+      <div class="fbody">
+        <div class="fgrid">${f.body.map(b => `<div class="fi"><b>${b.c}</b><span>${b.t}</span></div>`).join("")}</div>
+        ${f.tabulka ? tab : ""}
+        ${f.pozn ? `<p class="fpozn">${f.pozn}</p>` : ""}
+      </div>
+    </details>`).join("");
+}
+
 /* ============================================================
    ŽIVOTNÉ POISTENIE — poistné sumy a odhad ceny
    ============================================================ */
@@ -295,6 +388,15 @@ function osobaVstup(i){
     skupina:  +$("iSkup"+i).value || 1,
     fajciar:  $("iFajc"+i).value === "a"
   };
+}
+
+/* maximálna denná dávka PN, ktorú poisťovňa pripustí pri danom čistom príjme */
+function maxPnDenne(prijem){
+  const t = CONFIG.zivot.limitPN;
+  if (prijem < t[0][0]) return Math.max(0, Math.round(prijem / (t[0][0]/t[0][1])));  // pod tabuľkou dopočet
+  let v = t[0][1];
+  for (const [p, d] of t) if (prijem >= p) v = d;
+  return v;
 }
 
 /* poistné sumy pre jednu osobu podľa vybraného balíčka */
@@ -309,7 +411,9 @@ function kryteSumy(o, bal, hypoZostatok, pocetDeti){
     invalidita: smrt,
     tnu: Math.round(bal.tnu * rocny / 1000) * 1000,
     kch: Math.round(bal.kch * rocny / 1000) * 1000,
-    pnDenne: bal.pn ? Math.round((1 - Z.nemocenskePodiel) * o.prijem / 30) : 0
+    pnDenne: bal.pn ? (bal.pnMax ? maxPnDenne(o.prijem)
+                     : Math.min(Math.round((1 - Z.nemocenskePodiel) * o.prijem / 30), maxPnDenne(o.prijem))) : 0,
+    pnStrop: maxPnDenne(o.prijem)
   };
 }
 
@@ -389,7 +493,8 @@ function renderZivot(v){
         ${riadok("Invalidita nad 40 %", ps => eur(ps.invalidita), "poistná suma")}
         ${riadok("Trvalé následky úrazu", ps => eur(ps.tnu), `s progresiou · ${num(vyb.bal.tnu)}× ročný príjem`)}
         ${riadok("Kritické choroby", ps => eur(ps.kch), `${num(vyb.bal.kch)}× ročný príjem`)}
-        ${riadok(`Práceneschopnosť od ${vyb.bal.pnOd}. dňa`, ps => ps.pnDenne ? eur(ps.pnDenne)+" / deň" : "—", "dorovnanie mzdy")}
+        ${riadok(`Práceneschopnosť od ${vyb.bal.pnOd}. dňa`, ps => ps.pnDenne ? eur(ps.pnDenne)+" / deň" : "—",
+                  vyb.bal.pnMax ? "maximum, ktoré poisťovňa pripustí" : "dorovnanie mzdy")}
       </tbody>
       ${d && v.deti>0 ? `<thead><tr><th>Deti (${v.deti})</th><th colspan="${dvaja?2:1}">na každé dieťa</th></tr></thead>
       <tbody>
@@ -407,9 +512,11 @@ function renderZivot(v){
     bez:`Rodine zostane hypotéka <b>${eur(v.suma)}</b> a príjem klesne o <b>${eur(vyb.o1.prijem)}</b> mesačne.`,
     s:`Poisťovňa vyplatí <b>${eur(vyb.ps1.smrt)}</b> — hypotéka je splatená${vyb.bal.rezervaDeti && v.deti>0 ? " a zostáva rezerva pre deti" : ""}.`
   });
+  const ID = CONFIG.zivot.invalidnyDochodok;
   scen.push({
     t:"Pri invalidite nad 40 %",
-    bez:`Invalidný dôchodok je približne <b>${eur(vyb.o1.prijem*CONFIG.zivot.invalidnyPodiel)}</b> mesačne, splátka ${eur(splatkaGlob)} beží ďalej.`,
+    bez:`Priemerný invalidný dôchodok je <b>${eur(ID.do70)}</b> mesačne (pri invalidite nad 70 % ${eur(ID.nad70)}) —
+         teda menej ako splátka ${eur(splatkaGlob)}, ktorá beží ďalej.`,
     s:`Poisťovňa vyplatí <b>${eur(vyb.ps1.invalidita)}</b> jednorazovo.`
   });
   if (vyb.ps1.pnDenne) scen.push({
@@ -783,6 +890,7 @@ function renderAll(){
     $("iSkup1").value = skupHodnota[1]; $("iSkup2").value = skupHodnota[2];
     document.querySelectorAll(".w2").forEach(el => el.classList.toggle("skryt", !v.dvaja));
     vybZivot = renderZivot(v);
+    renderFakty();
     $("cenaPozn").innerHTML = `<span><b>Cena je odhad, nie ponuka poisťovne.</b> Vychádza z metodiky poistných súm,
       ktorú používame, a je nastavená tak, aby modelová rodina z nášho prezentéra vyšla na 130–150 € mesačne.
       Skutočnú cenu určuje konkrétna poisťovňa podľa veku, zdravotného stavu, povolania a svojho sadzobníka —
