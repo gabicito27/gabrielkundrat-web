@@ -142,6 +142,103 @@ table.kt tbody tr:hover{background:var(--surface-1)}
 .scen .tag.ok{background:#edf8ed;color:#0a4f0a}
 
 
+
+
+
+
+/* ---------- PRIEBEŽNÝ PRUH S KĽÚČOVÝMI ČÍSLAMI ---------- */
+.pruh-wrap{
+  max-height:0;overflow:hidden;transition:max-height .22s ease;
+  border-top:1px solid transparent
+}
+.pruh-wrap.on{max-height:52px;border-top-color:var(--grid)}
+.pruh{
+  max-width:1080px;margin:0 auto;padding:8px 20px;display:flex;gap:26px;align-items:baseline;
+  overflow-x:auto;scrollbar-width:none;white-space:nowrap
+}
+.pruh::-webkit-scrollbar{display:none}
+.pruh .pi{display:flex;gap:7px;align-items:baseline;flex:0 0 auto}
+.pruh .pk{font-size:11.5px;color:var(--muted);font-weight:550}
+.pruh .pv{font-size:14.5px;font-weight:660;letter-spacing:-.015em;font-variant-numeric:tabular-nums}
+.pruh .pv.a{color:var(--s1)}
+.pruh .pv.b{color:var(--s2)}
+.pruh .pv.c{color:var(--good-ink)}
+.pruh .sep{width:1px;height:15px;background:var(--grid);flex:0 0 auto;align-self:center}
+@media print{ .pruh-wrap{display:none} }
+
+/* ---------- DVOJSTĹPEC: vstupy + rámec ---------- */
+.split{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(320px,1fr);gap:28px;align-items:start}
+@media(max-width:900px){.split{grid-template-columns:1fr;gap:22px}}
+.splitR{position:sticky;top:112px}
+@media(max-width:900px){.splitR{position:static}}
+.ramec{background:var(--surface-1);border:1px solid var(--border);border-radius:13px;padding:18px}
+.ramec .lbl{font-size:12.5px;color:var(--ink-2);font-weight:550}
+.ramec .big{font-size:34px;font-weight:680;letter-spacing:-.03em;line-height:1.1;margin-top:4px;font-variant-numeric:tabular-nums}
+.ramec .bind{font-size:12.5px;color:var(--ink-2);margin-top:5px}
+.ramec .bind b{color:var(--s2);font-weight:620}
+.ramec .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+.ramec .tile{background:var(--card);padding:11px 12px}
+.ramec .tile .v{font-size:18px}
+.ramec .tile .k{font-size:11px}
+.ramec .tile .n{font-size:10.5px}
+.ramec .flag{font-size:12.5px;padding:10px 12px}
+.ramec .note{font-size:11px}
+
+/* ---------- ROZBAĽOVACIE BLOKY V KARTE ---------- */
+.rozbaly{margin-top:22px;border-top:1px solid var(--grid)}
+details.rozb{border-bottom:1px solid var(--grid)}
+details.rozb summary{
+  list-style:none;cursor:pointer;padding:15px 2px;display:flex;align-items:baseline;gap:12px;outline:none
+}
+details.rozb summary::-webkit-details-marker{display:none}
+details.rozb summary:hover .rn{color:var(--s1)}
+details.rozb summary:focus-visible{outline:2px solid var(--s1);outline-offset:2px;border-radius:6px}
+.rozb .rn{font-weight:620;font-size:15px;flex:0 0 auto}
+.rozb .rz{font-size:12.5px;color:var(--muted);flex:1 1 auto}
+.rozb .rs{width:16px;height:16px;color:var(--muted);flex:0 0 auto;transition:transform .18s;align-self:center}
+details.rozb[open] .rs{transform:rotate(180deg)}
+details.rozb[open] .rn{color:var(--s1)}
+.rbody{padding:2px 2px 24px}
+.rbody .sub{margin-bottom:16px}
+
+/* ---------- ROZBAĽOVACIA SEKCIA ---------- */
+details.seksek{padding:0}
+details.seksek>summary{
+  list-style:none;cursor:pointer;padding:22px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;outline:none
+}
+details.seksek>summary::-webkit-details-marker{display:none}
+details.seksek>summary h2{margin:0;flex:0 0 auto}
+details.seksek>summary:hover h2{color:var(--s1)}
+details.seksek>summary:focus-visible{outline:2px solid var(--s1);outline-offset:-2px;border-radius:var(--r)}
+.sekz{font-size:13.5px;color:var(--ink-2);flex:1 1 260px;line-height:1.45}
+details.seksek>summary .rs{width:17px;height:17px;color:var(--muted);flex:0 0 auto;transition:transform .18s;align-self:center}
+details.seksek[open]>summary .rs{transform:rotate(180deg)}
+details.seksek[open]>summary{padding-bottom:4px}
+details.seksek[open]>summary .sekz{display:none}
+.sekbody{padding:0 22px 22px}
+
+/* ---------- PÁSIK VLOŽENÉ / VÝNOS ---------- */
+.pasik{margin-top:20px}
+.pasik .p{display:flex;height:26px;border-radius:7px;overflow:hidden;background:var(--grid)}
+.pasik .p i{display:block;height:100%}
+.pasik .l{display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2);margin-top:9px}
+.pasik .l i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.pasik .l b{font-variant-numeric:tabular-nums}
+
+/* ---------- BULLET CHART ---------- */
+#bullet svg{display:block;width:100%;height:auto;overflow:visible}
+.bl-nazov{font-size:13.5px;font-weight:600;fill:var(--ink)}
+.bl-pozn{font-size:11px;fill:var(--muted)}
+.bl-bg{fill:var(--surface-1);stroke:var(--grid);stroke-width:1}
+.bl-pasmo{fill:var(--axis);opacity:.30}
+.bl-pruh{fill:var(--s1)}
+.bl-pruh.b2{opacity:.5}
+.bl-bod{fill:var(--s1);stroke:var(--card);stroke-width:2}
+.bl-bod.b2{opacity:.5}
+.bl-hod{font-size:12px;fill:var(--ink);font-variant-numeric:tabular-nums;font-weight:550}
+.bl-hod.pod{fill:var(--s2)}
+@media(max-width:700px){ #bullet svg{min-width:660px} #bullet{overflow-x:auto} }
+
 /* ---------- ROZKLIKÁVACIE FAKTY ---------- */
 .fakty{border-top:1px solid var(--grid)}
 details.fakt{border-bottom:1px solid var(--grid)}
@@ -177,7 +274,11 @@ table.ft th{
 table.ft td{padding:6px 10px;border-bottom:1px solid var(--grid);font-variant-numeric:tabular-nums}
 table.ft td:last-child,table.ft th:last-child{text-align:right}
 .ftp{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.45;max-width:420px}
-@media print{ details.fakt:not([open]) .fbody{display:none} .fakt .fs{display:none} }
+@media print{
+  details.fakt:not([open]) .fbody, details.rozb:not([open]) .rbody{display:none}
+  .fakt .fs,.rozb .rs,.seksek .rs{display:none}
+  details.seksek:not([open]) .sekbody{display:none}
+}
 
 /* ---------- MAPA PORTFÓLIA ---------- */
 .mapa>svg{display:block;width:100%;height:auto}
@@ -203,7 +304,7 @@ table.ft td:last-child,table.ft th:last-child{text-align:right}
 }
 
 /* ---------- SEKCIE ---------- */
-section{margin-top:26px;scroll-margin-top:110px}
+section{margin-top:26px;scroll-margin-top:168px}
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px}
 h2{font-size:20px;margin:0 0 4px;letter-spacing:-.015em;font-weight:650}
 h2 .num{color:var(--muted);font-weight:500;margin-right:8px}
@@ -344,6 +445,7 @@ figcaption{font-size:14px;font-weight:600;margin-bottom:2px}
     </div>
   </div>
   <div class="modules" id="modules"></div>
+  <div class="pruh-wrap" id="pruhWrap" aria-live="polite"><div class="pruh" id="pruh"></div></div>
 </header>
 
 <div class="wrap">
@@ -353,134 +455,111 @@ figcaption{font-size:14px;font-weight:600;margin-bottom:2px}
   <div class="card">
     <h2>Čo všetko vieme riešiť</h2>
     <p class="sub">V strede ste vy a vaša rodina. Kliknite na oblasť, ktorá vás zaujíma — označí sa a preskočíme na ňu.
-       Nemusíme prejsť všetko naraz; vybrané oblasti sa zapíšu do zhrnutia ako ďalšie kroky.</p>
+       Nemusíme prejsť všetko naraz; vybrané oblasti sa zapíšu do zhrnutia ako ďalšie kroky.
+       Ďalším kliknutím výber zrušíte.</p>
     <div id="mapa" class="mapa"></div>
-    <div class="mapahint">Mapa je len prehľad — poradie si určujete vy.</div>
+    <div class="mapahint">Mapa je len prehľad — poradie si určujete vy. Kliknutím oblasť označíte, ďalším kliknutím odznačíte.</div>
   </div>
 </section>
 
-<!-- 1. VSTUPY -->
+<!-- 1. SITUÁCIA + ÚVEROVÝ RÁMEC -->
 <section id="sec-vstup">
   <div class="card">
-    <h2><span class="num">1</span>Vaša situácia</h2>
-    <p class="sub">Stačí pár čísel. Všetko sa prepočítava okamžite a nikam sa neukladá.</p>
+    <h2><span class="num">1</span>Vaša situácia a úverový rámec</h2>
+    <p class="sub">Zadajte pár čísel — rámec vpravo sa prepočítava okamžite. Nič sa nikam neukladá.</p>
 
-    <h3>Domácnosť</h3>
-    <div class="grid g4">
-      <div>
-        <label>Rodinný stav</label>
-        <select id="iStav">
-          <option value="1">Jeden žiadateľ</option>
-          <option value="2" selected>Dvaja žiadatelia / manželia</option>
-        </select>
-      </div>
-      <div>
-        <label>Počet detí <span class="hint">nezaopatrených</span></label>
-        <input type="number" id="iDeti" value="1" min="0" max="10" step="1">
-      </div>
-      <div>
-        <label>Vek žiadateľa 1</label>
-        <input type="number" id="iVek1" value="34" min="18" max="70" step="1">
-      </div>
-      <div id="wVek2">
-        <label>Vek žiadateľa 2</label>
-        <input type="number" id="iVek2" value="32" min="18" max="70" step="1">
-      </div>
-    </div>
+    <div class="split">
+      <div class="splitL">
+        <h3>Domácnosť</h3>
+        <div class="grid g2">
+          <div>
+            <label>Rodinný stav</label>
+            <select id="iStav">
+              <option value="1">Jeden žiadateľ</option>
+              <option value="2" selected>Dvaja žiadatelia / manželia</option>
+            </select>
+          </div>
+          <div>
+            <label>Počet detí <span class="hint">nezaopatrených</span></label>
+            <input type="number" id="iDeti" value="1" min="0" max="10" step="1">
+          </div>
+          <div>
+            <label>Vek žiadateľa 1</label>
+            <input type="number" id="iVek1" value="34" min="18" max="70" step="1">
+          </div>
+          <div id="wVek2">
+            <label>Vek žiadateľa 2</label>
+            <input type="number" id="iVek2" value="32" min="18" max="70" step="1">
+          </div>
+        </div>
 
-    <h3 style="margin-top:22px">Príjmy a záväzky <span style="text-transform:none;font-weight:400;color:var(--muted)">— mesačne, čistý príjem</span></h3>
-    <div class="grid g4">
-      <div>
-        <label>Čistý príjem 1</label>
-        <div class="inline"><input type="number" id="iPr1" value="1450" min="0" step="10"><span class="suffix">€</span></div>
-      </div>
-      <div id="wPr2">
-        <label>Čistý príjem 2</label>
-        <div class="inline"><input type="number" id="iPr2" value="1150" min="0" step="10"><span class="suffix">€</span></div>
-      </div>
-      <div>
-        <label>Splátky existujúcich úverov</label>
-        <div class="inline"><input type="number" id="iSpl" value="0" min="0" step="10"><span class="suffix">€/mes.</span></div>
-      </div>
-      <div>
-        <label>Zostatky úverov + limity <span class="hint">kreditky, povolené prečerpanie</span></label>
-        <div class="inline"><input type="number" id="iZost" value="0" min="0" step="100"><span class="suffix">€</span></div>
-      </div>
-    </div>
+        <h3 style="margin-top:22px">Príjmy a záväzky <span style="text-transform:none;font-weight:400;color:var(--muted)">— mesačne, čisté</span></h3>
+        <div class="grid g2">
+          <div>
+            <label>Čistý príjem 1</label>
+            <div class="inline"><input type="number" id="iPr1" value="1450" min="0" step="10"><span class="suffix">€</span></div>
+          </div>
+          <div id="wPr2">
+            <label>Čistý príjem 2</label>
+            <div class="inline"><input type="number" id="iPr2" value="1150" min="0" step="10"><span class="suffix">€</span></div>
+          </div>
+          <div>
+            <label>Splátky existujúcich úverov</label>
+            <div class="inline"><input type="number" id="iSpl" value="0" min="0" step="10"><span class="suffix">€/mes.</span></div>
+          </div>
+          <div>
+            <label>Zostatky úverov + limity <span class="hint">kreditky, prečerpanie</span></label>
+            <div class="inline"><input type="number" id="iZost" value="0" min="0" step="100"><span class="suffix">€</span></div>
+          </div>
+        </div>
 
-    <h3 style="margin-top:22px">Nehnuteľnosť</h3>
-    <div class="grid g3">
-      <div>
-        <label>Hodnota nehnuteľnosti</label>
-        <div class="inline"><input type="number" id="iHodn" value="180000" min="0" step="1000"><span class="suffix">€</span></div>
+        <h3 style="margin-top:22px">Nehnuteľnosť</h3>
+        <div class="grid g2">
+          <div>
+            <label>Hodnota nehnuteľnosti</label>
+            <div class="inline"><input type="number" id="iHodn" value="180000" min="0" step="1000"><span class="suffix">€</span></div>
+          </div>
+          <div>
+            <label>Vlastné zdroje</label>
+            <div class="inline"><input type="number" id="iVlast" value="36000" min="0" step="1000"><span class="suffix">€</span></div>
+          </div>
+          <div style="grid-column:1/-1">
+            <label>Limit LTV <span class="hint">podiel financovania</span></label>
+            <select id="iLtv">
+              <option value="0.9">90 % — prvé bývanie, do 35 rokov</option>
+              <option value="0.8" selected>80 % — štandardný prípad</option>
+              <option value="0.7">70 % — tretia a ďalšia nehnuteľnosť</option>
+            </select>
+          </div>
+        </div>
       </div>
-      <div>
-        <label>Vlastné zdroje</label>
-        <div class="inline"><input type="number" id="iVlast" value="36000" min="0" step="1000"><span class="suffix">€</span></div>
-      </div>
-      <div>
-        <label>Limit LTV <span class="hint">podiel financovania</span></label>
-        <select id="iLtv">
-          <option value="0.9">90 % — prvé bývanie, do 35 rokov</option>
-          <option value="0.8" selected>80 % — štandardný prípad</option>
-          <option value="0.7">70 % — tretia a ďalšia nehnuteľnosť</option>
-        </select>
+
+      <div class="splitR">
+        <div class="ramec">
+          <div class="lbl">Maximálny úverový rámec</div>
+          <div class="big" id="oMax">—</div>
+          <div class="bind">rozhoduje <b id="oBind">—</b></div>
+
+          <div class="tiles" style="margin-top:16px">
+            <div class="tile" id="tDsti"><div class="k">DSTI — podľa rozpočtu</div><div class="v" id="oDsti">—</div><div class="n" id="nDsti"></div></div>
+            <div class="tile" id="tDti"><div class="k">DTI — násobok príjmu</div><div class="v" id="oDti">—</div><div class="n" id="nDti"></div></div>
+            <div class="tile" id="tLtv"><div class="k">LTV — podľa nehnuteľnosti</div><div class="v" id="oLtv">—</div><div class="n" id="nLtv"></div></div>
+            <div class="tile"><div class="k">Voľné na splátku</div><div class="v" id="oSpl">—</div><div class="n" id="nSpl"></div></div>
+          </div>
+
+          <div id="oFlags"></div>
+          <div class="note" id="oRozklad"></div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- 2. ÚVEROVÝ RÁMEC -->
-<section id="sec-ramec">
-  <div class="card">
-    <h2><span class="num">2</span>Koľko vám banka požičia</h2>
-    <p class="sub">Banka testuje tri veci naraz a platí tá najprísnejšia: koľko unesie váš rozpočet (DSTI), koľkonásobok ročného príjmu si smiete požičať (DTI) a aký podiel z ceny nehnuteľnosti smie financovať (LTV).</p>
-
-    <div class="hero">
-      <div>
-        <div class="lbl">Maximálny úverový rámec</div>
-        <div class="big" id="oMax">—</div>
-      </div>
-      <div>
-        <div class="lbl">Rozhoduje limit</div>
-        <div class="big" style="font-size:26px;color:var(--s2)" id="oBind">—</div>
-      </div>
-    </div>
-
-    <div class="tiles">
-      <div class="tile" id="tDsti">
-        <div class="k">DSTI — podľa rozpočtu</div>
-        <div class="v" id="oDsti">—</div>
-        <div class="n" id="nDsti"></div>
-      </div>
-      <div class="tile" id="tDti">
-        <div class="k">DTI — násobok príjmu</div>
-        <div class="v" id="oDti">—</div>
-        <div class="n" id="nDti"></div>
-      </div>
-      <div class="tile" id="tLtv">
-        <div class="k">LTV — podľa nehnuteľnosti</div>
-        <div class="v" id="oLtv">—</div>
-        <div class="n" id="nLtv"></div>
-      </div>
-      <div class="tile">
-        <div class="k">Voľné v rozpočte na splátku</div>
-        <div class="v" id="oSpl">—</div>
-        <div class="n" id="nSpl"></div>
-      </div>
-    </div>
-
-    <div id="oFlags"></div>
-
-    <div class="note" id="oRozklad"></div>
-  </div>
-</section>
-
-<!-- 3. HYPOTÉKA -->
+<!-- 2. HYPOTÉKA -->
 <section id="sec-hypo">
   <div class="card">
-    <h2><span class="num">3</span>Vaša hypotéka</h2>
-    <p class="sub">Nastavte, koľko reálne potrebujete. Graf nižšie ukazuje, ako klesá dlh a koľko z každej splátky ide banke na úroky.</p>
+    <h2><span class="num">2</span>Vaša hypotéka</h2>
+    <p class="sub">Nastavte, koľko reálne potrebujete. Podrobnosti si rozkliknite nižšie — vždy len to, čo práve preberáme.</p>
 
     <div class="grid g3">
       <div>
@@ -517,102 +596,109 @@ figcaption{font-size:14px;font-weight:600;margin-bottom:2px}
 
     <div id="hFlags"></div>
 
-    <figure>
-      <figcaption>Ako klesá váš dlh</figcaption>
-      <div class="figsub" id="cap1">Zostatok istiny počas splácania (€ podľa rokov)</div>
-      <div class="chart" id="chart1"><div class="tip" id="tip1"></div></div>
-      <div class="legend" id="leg1"></div>
-    </figure>
+    <div class="rozbaly">
+      <details class="rozb" id="d-graf1">
+        <summary><span class="rn">Ako klesá váš dlh</span><span class="rz">Zostatok istiny počas celého splácania</span>
+          <svg class="rs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></summary>
+        <div class="rbody">
+          <div class="figsub" id="cap1">Zostatok istiny počas splácania (€ podľa rokov)</div>
+          <div class="chart" id="chart1"><div class="tip" id="tip1"></div></div>
+          <div class="legend" id="leg1"></div>
+        </div>
+      </details>
 
-    <figure>
-      <figcaption>Koľko z ročných platieb ide na úrok a koľko na dlh</figcaption>
-      <div class="figsub">Zvislo € za rok, vodorovne rok splácania. V prvých rokoch tvorí úrok väčšinu splátky — preto má mimoriadna splátka na začiatku oveľa väčší efekt.</div>
-      <div class="chart" id="chart2"><div class="tip" id="tip2"></div></div>
-      <div class="legend">
-        <span><i style="background:var(--s2)"></i>Úrok pre banku</span>
-        <span><i style="background:var(--s1)"></i>Splatená istina</span>
-      </div>
-    </figure>
+      <details class="rozb" id="d-graf2">
+        <summary><span class="rn">Koľko z platieb ide na úrok a koľko na dlh</span><span class="rz">Rozdelenie ročných platieb</span>
+          <svg class="rs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></summary>
+        <div class="rbody">
+          <div class="figsub">Zvislo € za rok, vodorovne rok splácania. V prvých rokoch tvorí úrok väčšinu splátky — preto má mimoriadna splátka na začiatku oveľa väčší efekt.</div>
+          <div class="chart" id="chart2"><div class="tip" id="tip2"></div></div>
+          <div class="legend">
+            <span><i style="background:var(--s2)"></i>Úrok pre banku</span>
+            <span><i style="background:var(--s1)"></i>Splatená istina</span>
+          </div>
+        </div>
+      </details>
 
-    <div class="ask" id="askEarly">
-      <p>Chceli by ste vidieť, čo urobí predčasné splatenie?
-        <small>Ukážem vám, o koľko sa skráti splácanie a koľko ušetríte na úrokoch.</small></p>
-      <div style="display:flex;gap:8px">
-        <button class="btn" id="btnEarlyYes">Áno, zaujíma ma to</button>
-        <button class="btn ghost" id="btnEarlyNo">Teraz nie</button>
-      </div>
+      <details class="rozb" id="d-early">
+        <summary><span class="rn">Čo urobí predčasné splatenie</span><span class="rz">O koľko sa skráti splácanie a koľko ušetríte</span>
+          <svg class="rs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></summary>
+        <div class="rbody">
+          <p class="sub">Každé euro navyše ide celé na istinu — a tým zmizne aj úrok, ktorý by ste z nej platili ďalšie roky.</p>
+          <div class="grid g3">
+            <div>
+              <label>Mesačne navyše</label>
+              <div class="inline"><input type="number" id="iExtra" value="100" min="0" step="10"><span class="suffix">€/mes.</span></div>
+              <input type="range" id="rExtra" min="0" max="1000" step="10" value="100" style="margin-top:10px">
+            </div>
+            <div>
+              <label>Jednorazová mimoriadna splátka</label>
+              <div class="inline"><input type="number" id="iJedn" value="0" min="0" step="500"><span class="suffix">€</span></div>
+              <input type="range" id="rJedn" min="0" max="60000" step="500" value="0" style="margin-top:10px">
+            </div>
+            <div>
+              <label>Kedy ju vložíte</label>
+              <div class="inline"><input type="number" id="iKedy" value="3" min="1" max="40" step="1"><span class="suffix">. rok</span></div>
+            </div>
+          </div>
+
+          <div class="hero" style="margin-top:22px">
+            <div><div class="lbl">Ušetríte na úrokoch</div><div class="big" style="color:var(--good-ink)" id="oUspora">—</div></div>
+            <div><div class="lbl">Splatíte skôr o</div><div class="big" style="font-size:30px" id="oSkor">—</div></div>
+            <div><div class="lbl">Hypotéku doplatíte</div><div class="big" style="font-size:30px" id="oKoniec">—</div></div>
+          </div>
+
+          <div class="figsub" style="margin-top:16px">Zostatok istiny v € podľa rokov. Plocha medzi krivkami je dlh, ktorý vôbec nevznikne.</div>
+          <div class="chart" id="chart3"><div class="tip" id="tip3"></div></div>
+          <div class="legend">
+            <span><i style="background:var(--s2)"></i>Pôvodný splátkový plán</span>
+            <span><i style="background:var(--s1)"></i>S predčasným splácaním</span>
+          </div>
+          <div class="flag warn" id="poplatok"></div>
+        </div>
+      </details>
+
+      <details class="rozb" id="d-uroky">
+        <summary><span class="rn">Chcem zaplatené úroky naspäť</span><span class="rz">Koľko si sporiť, aby výnos pokryl všetky úroky</span>
+          <svg class="rs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></summary>
+        <div class="rbody">
+          <p class="sub">Úroky banke nevrátite — ale môžete si popri splátke sporiť tak, aby vám investícia
+             za rovnaký čas vytvorila sumu, akú na úrokoch zaplatíte. Hypotéku potom fakticky splatíte za cenu istiny.</p>
+          <div class="grid g2">
+            <div>
+              <label>Očakávané zhodnotenie <span class="hint">priemerný ročný výnos</span></label>
+              <div class="inline"><input type="number" id="iVynos" value="8" min="1" max="12" step="0.1"><span class="suffix">% p. a.</span></div>
+              <input type="range" id="rVynos" min="2" max="12" step="0.1" value="8" style="margin-top:10px">
+            </div>
+            <div>
+              <label>Doba sporenia</label>
+              <div class="inline"><input type="text" id="oDobaSpor" readonly style="border-style:dashed;color:var(--ink-2)"></div>
+            </div>
+          </div>
+
+          <div class="hero" style="margin-top:22px">
+            <div><div class="lbl">Stačí si mesačne odkladať</div><div class="big" style="color:var(--s1)" id="oUlozka">—</div></div>
+            <div><div class="lbl">Spolu vložíte</div><div class="big" style="font-size:30px" id="oVlozene">—</div></div>
+            <div><div class="lbl">Nasporíte</div><div class="big" style="font-size:30px;color:var(--good-ink)" id="oCiel">—</div></div>
+          </div>
+
+          <div class="pasik" id="pasikUroky"></div>
+          <div class="flag warn" id="urokyPozn"></div>
+        </div>
+      </details>
     </div>
   </div>
 </section>
 
-<!-- 4. PREDČASNÉ SPLATENIE -->
-<section id="sec-early" class="hidden">
-  <div class="card">
-    <h2><span class="num">4</span>Predčasné splatenie</h2>
-    <p class="sub">Každé euro navyše ide celé na istinu — a tým zmizne aj úrok, ktorý by ste z nej platili ďalšie roky.</p>
-
-    <div class="grid g3">
-      <div>
-        <label>Mesačne navyše</label>
-        <div class="inline"><input type="number" id="iExtra" value="100" min="0" step="10"><span class="suffix">€/mes.</span></div>
-        <input type="range" id="rExtra" min="0" max="1000" step="10" value="100" style="margin-top:10px">
-      </div>
-      <div>
-        <label>Jednorazová mimoriadna splátka</label>
-        <div class="inline"><input type="number" id="iJedn" value="0" min="0" step="500"><span class="suffix">€</span></div>
-        <input type="range" id="rJedn" min="0" max="60000" step="500" value="0" style="margin-top:10px">
-      </div>
-      <div>
-        <label>Kedy ju vložíte</label>
-        <div class="inline"><input type="number" id="iKedy" value="3" min="1" max="40" step="1"><span class="suffix">. rok</span></div>
-      </div>
-    </div>
-
-    <div class="hero" style="margin-top:24px">
-      <div>
-        <div class="lbl">Ušetríte na úrokoch</div>
-        <div class="big" style="color:var(--good-ink)" id="oUspora">—</div>
-      </div>
-      <div>
-        <div class="lbl">Splatíte skôr o</div>
-        <div class="big" style="font-size:30px" id="oSkor">—</div>
-      </div>
-      <div>
-        <div class="lbl">Hypotéku doplatíte</div>
-        <div class="big" style="font-size:30px" id="oKoniec">—</div>
-      </div>
-    </div>
-
-    <figure>
-      <figcaption>Porovnanie: s mimoriadnymi splátkami a bez nich</figcaption>
-      <div class="figsub">Zostatok istiny v € podľa rokov. Plocha medzi krivkami je dlh, ktorý vôbec nevznikne.</div>
-      <div class="chart" id="chart3"><div class="tip" id="tip3"></div></div>
-      <div class="legend">
-        <span><i style="background:var(--s2)"></i>Pôvodný splátkový plán</span>
-        <span><i style="background:var(--s1)"></i>S predčasným splácaním</span>
-      </div>
-    </figure>
-
-    <div class="flag warn" id="poplatok"></div>
-  </div>
-</section>
-
-<!-- otázka na životné poistenie -->
-<section id="sec-askz">
-  <div class="ask" id="askZivot">
-    <p>Hypotéku máme spočítanú. Pozrieme sa, čo by sa s ňou stalo, keby vypadol príjem?
-      <small>Ukážem vám tri úrovne zabezpečenia rodiny a orientačnú cenu.</small></p>
-    <div style="display:flex;gap:8px">
-      <button class="btn" id="btnZivotYes">Áno, ukážte mi to</button>
-      <button class="btn ghost" id="btnZivotNo">Teraz nie</button>
-    </div>
-  </div>
-</section>
-
-<!-- 5. ŽIVOTNÉ POISTENIE -->
-<section id="sec-zivot" class="hidden">
-  <div class="card">
-    <h2><span class="num">5</span>Zabezpečenie rodiny</h2>
+<!-- 3. ŽIVOTNÉ POISTENIE -->
+<section id="sec-zivot">
+  <details class="card seksek" id="d-zivot">
+    <summary>
+      <h2><span class="num">3</span>Zabezpečenie rodiny</h2>
+      <span class="sekz">Hypotéku máme spočítanú — pozrieme sa, čo by sa s ňou stalo, keby vypadol príjem?</span>
+      <svg class="rs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+    </summary>
+    <div class="sekbody">
     <p class="sub">Hypotéka je záväzok na desaťročia — poistenie rieši, čo sa stane, ak počas nich vypadne príjem.
        Sústredíme sa na päť rizík, ktoré rodinu reálne položia: smrť, invalidita, trvalé následky úrazu,
        kritické choroby a dlhodobá práceneschopnosť.</p>
@@ -655,13 +741,9 @@ figcaption{font-size:14px;font-weight:600;margin-bottom:2px}
     <div id="kryttab"></div>
 
     <figure>
-      <figcaption>Príjem domácnosti pri dlhodobej chorobe</figcaption>
-      <div class="figsub">Mesačný čistý príjem v €. Prerušovaná čiara je splátka hypotéky, ktorá beží ďalej bez ohľadu na to, či pracujete.</div>
-      <div class="chart" id="chartPN"><div class="tip" id="tipPN"></div></div>
-      <div class="legend">
-        <span><i style="background:var(--s1)"></i>Príjem domácnosti</span>
-        <span><i style="background:var(--s3)"></i>Plnenie z poistenia</span>
-      </div>
+      <figcaption>Krytie voči odporúčanému pásmu</figcaption>
+      <div class="figsub" id="bulletSub">Sivý úsek je rozpätie, ktoré podľa metodiky odporúčame. Modrá značka ukazuje, kde je krytie vo vybranom balíčku.</div>
+      <div class="chart" id="bullet"></div>
     </figure>
 
     <h3 style="margin-top:26px">Čo by sa stalo</h3>
@@ -670,26 +752,18 @@ figcaption{font-size:14px;font-weight:600;margin-bottom:2px}
     <h3 style="margin-top:28px">Prečo práve tieto riziká</h3>
     <p class="sub" style="margin-bottom:6px">Rozkliknite si, čo o jednotlivých rizikách hovoria čísla za Slovensko.</p>
     <div class="fakty" id="fakty"></div>
-  </div>
+    </div>
+  </details>
 </section>
 
-<!-- 6. OBLASTI -->
-<section id="sec-oblasti">
-  <div class="card">
-    <h2><span class="num">6</span>Čo ešte vieme vyriešiť</h2>
-    <p class="sub">Označte, čo vás zaujíma. Vybrané oblasti sa zapíšu do zhrnutia ako ďalšie kroky — nemusíme ich riešiť dnes.</p>
-    <div class="areas" id="areas"></div>
-  </div>
-</section>
-
-<!-- 6. ZHRNUTIE -->
+<!-- 4. ZHRNUTIE -->
 <section id="sec-sum">
   <div class="card">
-    <h2><span class="num">7</span>Zhrnutie stretnutia</h2>
+    <h2><span class="num">4</span>Zhrnutie stretnutia</h2>
     <p class="sub">Prehľad čísel, ktoré sme prešli, a dohodnutých ďalších krokov.</p>
     <div id="sumBox"></div>
     <div style="margin-top:20px" class="noprint">
-      <button class="btn" onclick="window.print()">Vytlačiť / uložiť ako PDF</button>
+      <button class="btn" id="btnPrint" type="button">Vytlačiť / uložiť ako PDF</button>
     </div>
     <div class="disc">
       Všetky uvedené čísla sú orientačné a nepredstavujú záväznú ponuku ani prísľub úveru. Skutočnú výšku úveru, sadzbu a splátku

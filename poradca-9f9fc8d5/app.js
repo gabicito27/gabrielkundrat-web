@@ -191,6 +191,45 @@ const OBLASTI = [
 ];
 const zaujem = {rezerva:false, hypo:true, zivot:false, deti:false, doch:false, auto:false, uver:false, dom:false, early:false};
 
+/* Priebežný pruh — kľúčové čísla zostanú na očiach aj po zrolovaní.
+   Zobrazí sa až vtedy, keď zmizne úvodná sekcia s rámcom. */
+function renderPruh(polozky){
+  $("pruh").innerHTML = polozky.filter(Boolean)
+    .map(x => `<span class="pi"><span class="pk">${x.k}</span><span class="pv ${x.f||''}">${x.v}</span></span>`)
+    .join('<span class="sep"></span>');
+}
+function sledujPruh(){
+  const ciel = $("sec-vstup");
+  if (!ciel) return;
+  let ceka = false;
+  const uprav = () => {
+    ceka = false;
+    // pruh sa objaví, až keď sekcia s rámcom odíde nad horný okraj obrazovky
+    $("pruhWrap").classList.toggle("on", ciel.getBoundingClientRect().bottom < 150);
+  };
+  const naplanuj = () => { if (!ceka){ ceka = true; requestAnimationFrame(uprav); } };
+  window.addEventListener("scroll", naplanuj, {passive:true});
+  window.addEventListener("resize", naplanuj);
+  uprav();
+}
+
+/* Klik na oblasť v mape alebo v lište.
+   Moduly s vlastnou sekciou (live) otvoria a preskočia na ňu;
+   ostatné oblasti sa len prepínajú ako záujem klienta — druhým klikom sa odznačia. */
+function klikOblast(id){
+  const o = OBLASTI.find(x => x.id === id);
+  if (!o) return;
+  if (o.live){
+    if (id === "zivot"){ $("d-zivot").open = true; zivotOn = true; }
+    zaujem[id] = true;
+    renderAll();
+    $(o.sec).scrollIntoView({behavior:"smooth", block:"start"});
+  } else {
+    zaujem[id] = !zaujem[id];
+    renderAll();
+  }
+}
+
 /* ============================================================
    MAPA PORTFÓLIA — klient v strede, oblasti okolo neho
    ============================================================ */
@@ -245,13 +284,7 @@ function renderMapa(v){
   </svg>`;
 
   $("mapa").querySelectorAll(".node").forEach(el => {
-    const klik = () => {
-      const o = OBLASTI.find(x => x.id === el.dataset.id);
-      if (o.id === "zivot" && !zivotOn) { odomkniZivot(); return; }
-      zaujem[o.id] = true;
-      renderAll();
-      $(o.sec).scrollIntoView({behavior:"smooth", block:"start"});
-    };
+    const klik = () => klikOblast(el.dataset.id);
     el.addEventListener("click", klik);
     el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); klik(); } });
   });
@@ -263,14 +296,105 @@ function renderModules(){
   $("modules").innerHTML =
     `<div class="mod mapbtn" data-sec="sec-mapa" title="Späť na mapu oblastí">${svgIc("mapa")}<span>Mapa</span></div>` +
     uzly.map(o =>
-    `<div class="mod ${zaujem[o.id]?'on':(o.live?'ready':'')}" data-id="${o.id}" data-sec="${o.sec}">
+    `<div class="mod ${zaujem[o.id]?'on':(o.live?'ready':'')}" data-id="${o.id}" data-sec="${o.sec}"
+          title="${o.live ? 'Prejsť na sekciu' : (zaujem[o.id] ? 'Kliknutím zrušíte výber' : 'Kliknutím označíte ako oblasť na riešenie')}">
        ${svgIc(o.id)}<span>${o.nazov}</span><span class="dot"></span>
      </div>`).join("");
   document.querySelectorAll(".mod").forEach(el => el.onclick = () => {
-    const id = el.dataset.id;
-    if (id === "zivot" && !zivotOn) { odomkniZivot(); return; }
-    if (id){ zaujem[id] = true; renderAll(); }
-    $(el.dataset.sec).scrollIntoView({behavior:"smooth", block:"start"});
+    if (el.dataset.id) klikOblast(el.dataset.id);
+    else $(el.dataset.sec).scrollIntoView({behavior:"smooth", block:"start"});   // tlačidlo Mapa
+  });
+}
+/* Klik na oblasť v mape alebo v lište.
+   Moduly s vlastnou sekciou (live) otvoria a preskočia na ňu;
+   ostatné oblasti sa len prepínajú ako záujem klienta — druhým klikom sa odznačia. */
+function klikOblast(id){
+  const o = OBLASTI.find(x => x.id === id);
+  if (!o) return;
+  if (o.live){
+    if (id === "zivot"){ $("d-zivot").open = true; zivotOn = true; }
+    zaujem[id] = true;
+    renderAll();
+    $(o.sec).scrollIntoView({behavior:"smooth", block:"start"});
+  } else {
+    zaujem[id] = !zaujem[id];
+    renderAll();
+  }
+}
+
+/* ============================================================
+   MAPA PORTFÓLIA — klient v strede, oblasti okolo neho
+   ============================================================ */
+function renderMapa(v){
+  const uzly = OBLASTI.filter(o => !o.skryPreMapu);
+  const W = 1000, H = 580, cx = W/2, cy = H/2, rx = 335, ry = 196;
+  const bh = 44;
+  const n = uzly.length;
+
+  let spoj = "", boxy = "";
+  uzly.forEach((o, i) => {
+    const a = (-90 + i * (360/n)) * Math.PI/180;
+    const x = cx + rx * Math.cos(a), y = cy + ry * Math.sin(a);
+    // šírka podľa dĺžky názvu, aby fajka nikdy neprekryla text
+    const bw = Math.max(168, 62 + o.nazov.length * 8.4 + 26);
+    const bx = x - bw/2, by = y - bh/2;
+    // spojnica končí na okraji boxu, nie v jeho strede
+    const k = 0.80;
+    spoj += `<line x1="${cx + 60*Math.cos(a)}" y1="${cy + 60*Math.sin(a)}"
+                   x2="${cx + rx*k*Math.cos(a)}" y2="${cy + ry*k*Math.sin(a)}"
+                   stroke="var(--grid)" stroke-width="1.5"/>`;
+    const on = zaujem[o.id];
+    boxy += `<g class="node ${on?'on':''}" data-id="${o.id}" data-sec="${o.sec}" tabindex="0" role="button"
+                aria-pressed="${on}" aria-label="${o.nazov}">
+      <rect x="${bx-8}" y="${by-6}" width="${bw+16}" height="${bh+14+o.vetvy.length*13}" rx="14"
+            fill="transparent" class="nhit"/>
+      <rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="11" class="nbox"/>
+      <g transform="translate(${bx+14},${by+bh/2-9}) scale(0.75)" class="nic">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
+             stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${ICONS[o.id]}</svg>
+      </g>
+      <text x="${bx+40}" y="${by+bh/2+5}" class="ntxt">${o.nazov}</text>
+      ${on ? `<g transform="translate(${bx+bw-19},${by+7})"><circle cx="6" cy="6" r="8" class="nchk"/>
+        <path d="M2.6 6.2 5 8.6 9.4 4" fill="none" stroke="#fff" stroke-width="1.8"
+              stroke-linecap="round" stroke-linejoin="round"/></g>` : ""}
+      ${o.vetvy.map((t,j) => `<text x="${x}" y="${by+bh+15+j*13}" class="nsub">${t}</text>`).join("")}
+    </g>`;
+  });
+
+  const deti = v ? v.deti : 0;
+  const kto = v ? `${v.dvaja ? "2 dospelí" : "1 dospelý"}${deti>0 ? ", "+deti+" "+(deti===1?"dieťa":deti<=4?"deti":"detí") : ""}` : "";
+
+  $("mapa").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Mapa oblastí finančného portfólia">
+    ${spoj}
+    <circle cx="${cx}" cy="${cy}" r="52" class="hub"/>
+    <g transform="translate(${cx-21},${cy-21})" class="hubic">
+      <svg viewBox="0 0 24 24" width="42" height="42" fill="none" stroke="currentColor"
+           stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${ICONS.klient}</svg>
+    </g>
+    <text x="${cx}" y="${cy+72}" class="hubtxt">${kto}</text>
+    ${boxy}
+  </svg>`;
+
+  $("mapa").querySelectorAll(".node").forEach(el => {
+    const klik = () => klikOblast(el.dataset.id);
+    el.addEventListener("click", klik);
+    el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); klik(); } });
+  });
+}
+
+/* horná lišta */
+function renderModules(){
+  const uzly = OBLASTI.filter(o => !o.skryPreMapu);
+  $("modules").innerHTML =
+    `<div class="mod mapbtn" data-sec="sec-mapa" title="Späť na mapu oblastí">${svgIc("mapa")}<span>Mapa</span></div>` +
+    uzly.map(o =>
+    `<div class="mod ${zaujem[o.id]?'on':(o.live?'ready':'')}" data-id="${o.id}" data-sec="${o.sec}"
+          title="${o.live ? 'Prejsť na sekciu' : (zaujem[o.id] ? 'Kliknutím zrušíte výber' : 'Kliknutím označíte ako oblasť na riešenie')}">
+       ${svgIc(o.id)}<span>${o.nazov}</span><span class="dot"></span>
+     </div>`).join("");
+  document.querySelectorAll(".mod").forEach(el => el.onclick = () => {
+    if (el.dataset.id) klikOblast(el.dataset.id);
+    else $(el.dataset.sec).scrollIntoView({behavior:"smooth", block:"start"});   // tlačidlo Mapa
   });
 }
 /* karty oblastí */
@@ -530,64 +654,119 @@ function renderZivot(v){
       <div class="sb"><span class="tag ok">s poistením</span><p>${x.s}</p></div>
     </div>`).join("");
 
-  /* --- graf: príjem pri dlhodobej PN --- */
-  const c3 = $("chartPN"); c3.querySelectorAll("svg").forEach(e=>e.remove());
-  const prijemDom = v.prijem;
-  const vypadok = vyb.o1.prijem * (1 - CONFIG.zivot.nemocenskePodiel);
-  const doplatok = vyb.ps1.pnDenne * 30;
-  prijemChart(c3, $("tipPN"), [
-    {n:"Dnes",                z:prijemDom,          d:0,        p:"plný príjem domácnosti"},
-    {n:"PN bez poistenia",    z:prijemDom-vypadok,  d:0,        p:"nemocenské kryje len časť mzdy"},
-    {n:"PN s poistením",      z:prijemDom-vypadok,  d:doplatok, p:"poistné plnenie dorovnáva výpadok"}
-  ], splatkaGlob);
+  /* --- bullet chart: krytie voči odporúčanému pásmu --- */
+  const Z = CONFIG.zivot;
+  const osoby = [vyb.o1].concat(vyb.o2 ? [vyb.o2] : []);
+  const ps    = [vyb.ps1].concat(vyb.ps2 ? [vyb.ps2] : []);
+  const roc   = osoby.map(o => o.prijem * 12);
+  const hornaSmrt = osoby.map((o,i) => v.suma + v.deti*Z.rezervaNaDieta + 2*roc[i]);
+
+  bulletChart($("bullet"), [
+    { nazov:"Smrť a invalidita", pozn:"hypotéka až hypotéka + rezerva",
+      pasmoOd: hornaSmrt[0] > 0 ? v.suma / hornaSmrt[0] : 0,
+      horna: hornaSmrt,
+      osoby: ps.map(x => ({hodnota:x.smrt, text:eur(x.smrt)})) },
+    { nazov:"Trvalé následky úrazu", pozn:"3–5× ročný čistý príjem",
+      pasmoOd: 0.6, horna: roc.map(r => 5*r),
+      osoby: ps.map(x => ({hodnota:x.tnu, text:eur(x.tnu)})) },
+    { nazov:"Kritické choroby", pozn:"1,5–3× ročný čistý príjem",
+      pasmoOd: 0.5, horna: roc.map(r => 3*r),
+      osoby: ps.map(x => ({hodnota:x.kch, text:eur(x.kch)})) },
+    { nazov:"Práceneschopnosť", pozn:"dorovnanie mzdy až maximum poisťovne",
+      pasmoOd: (() => { const st = maxPnDenne(osoby[0].prijem);
+                        return st > 0 ? Math.round((1-Z.nemocenskePodiel)*osoby[0].prijem/30) / st : 0; })(),
+      horna: osoby.map(o => maxPnDenne(o.prijem)),
+      osoby: ps.map(x => ({hodnota:x.pnDenne, text: x.pnDenne ? eur(x.pnDenne)+" / deň" : "nekryté"})) }
+  ], v.dvaja ? ["Žiadateľ 1","Žiadateľ 2"] : null);
+
+  $("bulletSub").innerHTML = `Sivý úsek je rozpätie, ktoré podľa metodiky odporúčame. Značka ukazuje, kde je krytie
+    v balíčku <b>${vyb.bal.nazov}</b>. Každý riadok má vlastnú mierku — porovnávajte polohu voči pásmu, nie dĺžku pruhov medzi riadkami.`;
 
   return vyb;
 }
 
-/* stĺpcový graf mesačného príjmu domácnosti s čiarou splátky */
-function prijemChart(host, tipEl, data, splatka){
-  const W=900,H=250,PADl=68,PADr=16,PADt=16,PADb=40;
-  const iw=W-PADl-PADr, ih=H-PADt-PADb;
-  const yMax = niceMax(Math.max(...data.map(d=>d.z+d.d), splatka*1.15));
-  const bw = Math.min(120, iw/data.length - 40);
-  const X = i => PADl + (i+0.5)*(iw/data.length) - bw/2;
-  const Y = val => PADt + ih - (val/yMax)*ih;
-  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Mesačný príjem domácnosti pri dlhodobej práceneschopnosti">`;
-  for (let i=0;i<=4;i++){ const val=yMax*i/4,y=Y(val);
-    s+=`<line x1="${PADl}" x2="${W-PADr}" y1="${y}" y2="${y}" stroke="var(--grid)"/>
-        <text x="${PADl-10}" y="${y+4}" text-anchor="end" font-size="11" fill="var(--muted)">${kFmt(val)}</text>`; }
-  data.forEach((d,i)=>{
-    const hz=ih*(d.z/yMax), hd=ih*(d.d/yMax);
-    s+=`<rect x="${X(i)}" y="${Y(d.z)}" width="${bw}" height="${hz}" rx="${hd>0?0:4}" fill="var(--s1)"/>`;
-    if (hd>0) s+=`<path d="M${X(i)} ${Y(d.z+d.d)+4} a4 4 0 0 1 4-4 h${bw-8} a4 4 0 0 1 4 4 v${hd-4} h${-bw} Z" fill="var(--s3)"/>`;
-    s+=`<text x="${X(i)+bw/2}" y="${Y(d.z+d.d)-8}" text-anchor="middle" font-size="13" font-weight="640" fill="var(--ink)">${eur(d.z+d.d)}</text>`;
-    s+=`<text x="${X(i)+bw/2}" y="${H-PADb+18}" text-anchor="middle" font-size="12" fill="var(--ink-2)">${d.n}</text>`;
-    s+=`<rect class="pnb" data-i="${i}" x="${X(i)-6}" y="${PADt}" width="${bw+12}" height="${ih}" fill="transparent"/>`;
-  });
-  if (splatka>0){
-    const lbl = `splátka hypotéky ${eur(splatka)}`, lw = lbl.length*6.4 + 12;
-    s+=`<line x1="${PADl}" x2="${W-PADr}" y1="${Y(splatka)}" y2="${Y(splatka)}" stroke="var(--s2)" stroke-width="1.6" stroke-dasharray="6 4"/>
-        <rect x="${W-PADr-lw}" y="${Y(splatka)-19}" width="${lw}" height="17" rx="4" fill="var(--card)" opacity="0.94"/>
-        <text x="${W-PADr-6}" y="${Y(splatka)-7}" text-anchor="end" font-size="11.5" fill="var(--s2)" font-weight="600">${lbl}</text>`;
-  }
-  s+=`<line x1="${PADl}" x2="${W-PADr}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--axis)" stroke-width="1.5"/></svg>`;
-  host.insertAdjacentHTML("afterbegin", s);
-  host.querySelectorAll(".pnb").forEach(el=>{
-    el.addEventListener("mousemove", e=>{
-      const d=data[+el.dataset.i];
-      tipEl.innerHTML = `<div style="margin-bottom:4px;color:#aaa">${d.n}</div>
-        <div class="r"><span><i style="background:var(--s1)"></i>Príjem</span><b>${eur(d.z)}</b></div>
-        ${d.d>0?`<div class="r"><span><i style="background:var(--s3)"></i>Poistné plnenie</span><b>${eur(d.d)}</b></div>`:""}
-        <div style="margin-top:4px;color:#aaa">${d.p}</div>`;
-      tipEl.style.opacity="1";
-      const hb=host.getBoundingClientRect();
-      let left=e.clientX-hb.left+14;
-      if (left+tipEl.offsetWidth>hb.width) left=e.clientX-hb.left-tipEl.offsetWidth-14;
-      tipEl.style.left=left+"px";
-      tipEl.style.top=clamp(e.clientY-hb.top-10,0,hb.height-tipEl.offsetHeight)+"px";
+/* ============================================================
+   „ÚROKY NASPÄŤ" — koľko si mesačne sporiť, aby výnos z investície
+   za dobu splácania pokryl všetky zaplatené úroky.
+   FV = PMT × ((1+i)^n − 1) / i   →   PMT = FV × i / ((1+i)^n − 1)
+   ============================================================ */
+function renderUroky(ciel, mesiacov){
+  const r = clamp(+$("iVynos").value || 8, 1, 12);
+  const i = r/100/12, n = mesiacov;
+  const ulozka = (i === 0 || n === 0) ? (n ? ciel/n : 0)
+                                      : ciel * i / (Math.pow(1+i, n) - 1);
+  const vlozene = ulozka * n;
+  const vynos   = Math.max(0, ciel - vlozene);
+
+  $("oDobaSpor").value = `${Math.floor(n/12)} rokov (rovnako ako hypotéka)`;
+  $("oUlozka").textContent  = eur(ulozka);
+  $("oVlozene").textContent = eur(vlozene);
+  $("oCiel").textContent    = eur(ciel);
+
+  const pV = ciel > 0 ? vlozene/ciel*100 : 0;
+  $("pasikUroky").innerHTML = `
+    <div class="p"><i style="width:${pV}%;background:var(--s1)"></i><i style="width:${100-pV}%;background:var(--s3)"></i></div>
+    <div class="l">
+      <span><i style="background:var(--s1)"></i>Vaše vklady <b>${eur(vlozene)}</b> (${Math.round(pV)} %)</span>
+      <span><i style="background:var(--s3)"></i>Výnos z investície <b>${eur(vynos)}</b> (${Math.round(100-pV)} %)</span>
+    </div>`;
+
+  $("urokyPozn").innerHTML = `<span><b>${num(r)} % ročne je predpoklad, nie záruka.</b>
+    Ide o dlhodobý priemer akciových trhov — jednotlivé roky môžu byť aj výrazne stratové a výsledok
+    závisí od zvoleného riešenia. Prepočet neuvažuje poplatky ani infláciu. Pri investovaní cez ETF je
+    výnos po ročnom teste držby oslobodený od dane, pri podielových fondoch sa zdaňuje 19 %.</span>`;
+}
+
+/* ============================================================
+   BULLET CHART — krytie voči odporúčanému pásmu
+   Každý riadok má vlastnú relatívnu škálu: 1,0 = horná hranica
+   odporúčaného pásma pre danú osobu. Vďaka tomu sa dajú porovnať
+   riziká s úplne odlišnými jednotkami (€ poistnej sumy vs. €/deň).
+   ============================================================ */
+function bulletChart(host, riadky, menaOsob){
+  const W = 900, RH = 52, PADt = 8;
+  const x0 = 232, x1 = 700, sirka = x1 - x0, OS = 1.25;
+  const H = PADt + riadky.length * RH + 4;
+  const X = pomer => x0 + Math.min(pomer, OS) / OS * sirka;
+
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Krytie jednotlivých rizík voči odporúčanému pásmu">`;
+  riadky.forEach((r, i) => {
+    const yr = PADt + i * RH;
+    const n = r.osoby.length;
+    s += `<text x="0" y="${yr + RH/2 + 1}" class="bl-nazov">${r.nazov}</text>`;
+    if (r.pozn) s += `<text x="0" y="${yr + RH/2 + 15}" class="bl-pozn">${r.pozn}</text>`;
+
+    // pozadie osi a odporúčané pásmo (rovnaké pre všetky pruhy riadku)
+    const yStred = yr + RH/2;
+    s += `<rect x="${x0}" y="${yStred-11}" width="${sirka}" height="22" rx="4" class="bl-bg"/>`;
+    const od = Math.min(r.pasmoOd, 0.88);            // pásmo nech je vždy viditeľné
+    s += `<rect x="${X(od)}" y="${yStred-11}" width="${X(1)-X(od)}" height="22" rx="3" class="bl-pasmo"/>`;
+
+    r.osoby.forEach((o, j) => {
+      const vyska = n === 1 ? 9 : 7;
+      const y = n === 1 ? yStred - vyska/2 : yStred - 11 + j*12;
+      const p = r.horna[j] > 0 ? o.hodnota / r.horna[j] : 0;
+      const w = Math.max(p > 0 ? 3 : 0, X(p) - x0);
+      s += `<rect x="${x0}" y="${y}" width="${w}" height="${vyska}" rx="${vyska/2}"
+                  class="bl-pruh ${j===1?'b2':''}"/>`;
+      if (p > 0) s += `<circle cx="${X(p)}" cy="${y+vyska/2}" r="${vyska/2+1.5}" class="bl-bod ${j===1?'b2':''}"/>`;
+      const pod = p < r.pasmoOd - 0.03;               // tolerancia na zaokrúhlenie poistných súm
+      s += `<text x="${x1+14}" y="${y+vyska/2+4}" class="bl-hod ${pod ? 'pod' : ''}">${o.text}</text>`;
     });
-    el.addEventListener("mouseleave",()=>tipEl.style.opacity="0");
   });
+  s += `</svg>`;
+  host.innerHTML = s;
+
+  if (menaOsob && menaOsob.length > 1){
+    host.insertAdjacentHTML("beforeend",
+      `<div class="legend"><span><i style="background:var(--s1)"></i>${menaOsob[0]}</span>
+       <span><i style="background:var(--s1);opacity:.5"></i>${menaOsob[1]}</span>
+       <span><i style="background:var(--axis)"></i>odporúčané pásmo</span></div>`);
+  } else {
+    host.insertAdjacentHTML("beforeend",
+      `<div class="legend"><span><i style="background:var(--s1)"></i>krytie v balíčku</span>
+       <span><i style="background:var(--axis)"></i>odporúčané pásmo</span></div>`);
+  }
 }
 
 /* ============================================================
@@ -806,7 +985,9 @@ function renderAll(){
   if (potreba > L.max && L.max > 0)
     flags.push(["warn",`Na kúpu potrebujete <b>${eur(potreba)}</b>, rámec je <b>${eur(L.max)}</b>. Chýba <b>${eur(potreba-L.max)}</b> — riešením je vyššia akontácia, dlhšia splatnosť, spoludlžník alebo lacnejšia nehnuteľnosť.`]);
   else if (L.max > 0 && potreba > 0)
-    flags.push(["ok",`Rámec pokrýva potrebu <b>${eur(potreba)}</b> s rezervou <b>${eur(L.max-potreba)}</b>.`]);
+    flags.push(["ok", L.max - potreba < 1000
+      ? `Rámec presne pokrýva potrebu <b>${eur(potreba)}</b> — bez rezervy navyše.`
+      : `Rámec pokrýva potrebu <b>${eur(potreba)}</b> s rezervou <b>${eur(L.max-potreba)}</b>.`]);
   const maxRokovVek = Math.max(1, Math.round(CONFIG.splatnost.vekStrop - v.vekVaz));
   if (v.roky > Math.min(CONFIG.splatnost.maxRokov, maxRokovVek))
     flags.push(["warn",`Splatnosť ${v.roky} rokov je nad hranicou — banka dá spravidla najviac ${Math.min(CONFIG.splatnost.maxRokov, maxRokovVek)} rokov (limit 30 rokov a vek do ${CONFIG.splatnost.vekStrop} rokov pri poslednej splátke).`]);
@@ -857,6 +1038,9 @@ function renderAll(){
   const c2 = $("chart2"); c2.querySelectorAll("svg").forEach(e=>e.remove());
   stackChart(c2, $("tip2"), zaklad.rocne);
 
+  /* --- úroky naspäť --- */
+  if ($("d-uroky").open) renderUroky(zaklad.urokCelkom, zaklad.mesiacov);
+
   /* --- 4. predčasné splatenie --- */
   if (earlyOn){
     const e = porovnanie || amortizacia(v.suma, v.sadz, v.roky*12, splatka, v.extra, v.jedn, Math.round(v.kedy*12));
@@ -899,8 +1083,17 @@ function renderAll(){
 
   /* --- 6/7 --- */
   if (earlyOn) zaujem.early = true;
-  if (zivotOn) zaujem.zivot = true;
-  renderMapa(v); renderModules(); renderAreas(); renderSum(v, L, splatka, zaklad, porovnanie, vybZivot);
+  zaujem.zivot = zivotOn;
+  renderPruh([
+    {k:"Rámec",   v: eur(Math.floor(L.max/1000)*1000)},
+    {k:"Hypotéka",v: eur(v.suma)},
+    {k:"Splátka", v: eur(splatka), f:"a"},
+    {k:"Úroky",   v: eur(zaklad.urokCelkom), f:"b"},
+    earlyOn && porovnanie ? {k:"Úspora", v: eur(Math.max(0, zaklad.urokCelkom - porovnanie.urokCelkom)), f:"c"} : null,
+    vybZivot ? {k:"Poistné "+vybZivot.bal.nazov,
+                v: `${Math.round(vybZivot.dolna/5)*5} – ${Math.round(vybZivot.horna/5)*5} €`} : null
+  ]);
+  renderMapa(v); renderModules(); renderSum(v, L, splatka, zaklad, porovnanie, vybZivot);
 }
 
 function renderSum(v, L, splatka, zaklad, porov, z){
@@ -918,6 +1111,13 @@ function renderSum(v, L, splatka, zaklad, porov, z){
     html += `<p><b>Predčasné splatenie:</b> ${v.extra>0?eur(v.extra)+" mesačne navyše":""}${v.extra>0&&v.jedn>0?", ":""}${v.jedn>0?"jednorazovo "+eur(v.jedn)+" v "+v.kedy+". roku":""} →
       úspora na úrokoch <b>${eur(zaklad.urokCelkom-porov.urokCelkom)}</b>, splatené skôr o ${Math.floor(skor/12)} r. ${skor%12} mes.</p>`;
   }
+  if ($("d-uroky").open && zaklad.urokCelkom > 0){
+    const r = clamp(+$("iVynos").value || 8, 1, 12), i = r/100/12, n = zaklad.mesiacov;
+    const ul = zaklad.urokCelkom * i / (Math.pow(1+i, n) - 1);
+    html += `<p><b>Úroky naspäť:</b> pri odkladaní <b>${eur(ul)}</b> mesačne a predpokladanom zhodnotení
+      ${num(r)} % ročne by ste za ${Math.floor(n/12)} rokov nasporili ${eur(zaklad.urokCelkom)} —
+      teda sumu, ktorú zaplatíte banke na úrokoch. Vaše vklady by tvorili ${eur(ul*n)}.</p>`;
+  }
   if (z){
     const d = z.bal.deti;
     html += `<p><b>Zabezpečenie rodiny — balíček ${z.bal.nazov}:</b> odhad
@@ -930,7 +1130,7 @@ function renderSum(v, L, splatka, zaklad, porov, z){
   }
   html += kroky.length
     ? `<p><b>Ďalšie kroky — klient prejavil záujem o:</b></p><ul>${kroky.map(k=>`<li>${k}</li>`).join("")}</ul>`
-    : `<p style="color:var(--muted)">Zatiaľ nie sú vybrané žiadne ďalšie oblasti. Označte ich v sekcii 6.</p>`;
+    : `<p style="color:var(--muted)">Zatiaľ nie sú vybrané žiadne ďalšie oblasti. Označte ich kliknutím v mape hore.</p>`;
   const k = poradca.kontakt || {};
   const kont = [k.tel, k.email, k.web].filter(Boolean).join(" · ");
   html += `<div class="sumfoot">${markHTML(poradca,"mk")}
@@ -941,19 +1141,17 @@ function renderSum(v, L, splatka, zaklad, porov, z){
 const skupHodnota = {1:1, 2:1};
 
 function odomkniZivot(){
+  $("d-zivot").open = true;
   zivotOn = true;
-  $("sec-zivot").classList.remove("hidden");
-  $("sec-askz").classList.add("hidden");
   renderAll();
   setTimeout(()=>$("sec-zivot").scrollIntoView({behavior:"smooth",block:"start"}), 60);
 }
 
 function odomkniEarly(){
+  $("d-early").open = true;
   earlyOn = true;
-  $("sec-early").classList.remove("hidden");
-  $("askEarly").classList.add("hidden");
   renderAll();
-  setTimeout(()=>$("sec-early").scrollIntoView({behavior:"smooth",block:"start"}), 60);
+  setTimeout(()=>$("d-early").scrollIntoView({behavior:"smooth",block:"start"}), 60);
 }
 
 /* ============================================================
@@ -1011,12 +1209,15 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("keydown", e => { if (e.key === "Escape") zavriMenu(); });
   try { const ulozeny = PORADCOVIA.find(p => p.id === localStorage.getItem("poradcaId")); if (ulozeny) poradca = ulozeny; } catch(e){}
   renderPoradca();
+  sledujPruh();
   ["iPohl1","iPohl2","iFajc1","iFajc2"].forEach(id => $(id).addEventListener("change", renderAll));
   $("iSkup1").addEventListener("change", e => { skupHodnota[1] = +e.target.value; renderAll(); });
   $("iSkup2").addEventListener("change", e => { skupHodnota[2] = +e.target.value; renderAll(); });
-  $("btnZivotYes").onclick = odomkniZivot;
-  $("btnZivotNo").onclick  = () => $("sec-askz").classList.add("hidden");
-  $("btnEarlyYes").onclick = odomkniEarly;
-  $("btnEarlyNo").onclick  = () => $("askEarly").classList.add("hidden");
+  $("d-early").addEventListener("toggle", () => { earlyOn = $("d-early").open; renderAll(); });
+  $("d-zivot").addEventListener("toggle", () => { zivotOn = $("d-zivot").open; renderAll(); });
+  $("d-uroky").addEventListener("toggle", renderAll);
+  ["d-graf1","d-graf2"].forEach(id => $(id).addEventListener("toggle", renderAll));
+  pair("iVynos","rVynos");
+  $("btnPrint").addEventListener("click", () => window.print());
   renderAll();
 });
