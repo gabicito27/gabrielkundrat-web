@@ -13,6 +13,38 @@ const CONFIG = {
   mimoriadne:{ bezPoplatkuRocne: 0.30, poplatokMax: 0.01 },
   sadzbaTrh: { min: 3.39, max: 3.88 },    // orientačné trhové rozpätie 08/2026
 
+  /* ---------- DÔCHODOK ----------
+     I. pilier: dôchodok = POMB × ODP × ADH (Sociálna poisťovňa)
+       POMB … priemerný osobný mzdový bod = podiel vašej hrubej mzdy k priemernej mzde v hospodárstve
+       ODP  … počet rokov dôchodkového poistenia
+       ADH  … aktuálna dôchodková hodnota, pre rok 2026 je 19,7633 €
+     Krátenie za II. pilier: od roku 2022 sa odpočíta 22/91 pomernej sumy za roky sporenia (§ 66 ods. 6). */
+  dochodok: {
+    adh: 19.7633,              // aktuálna dôchodková hodnota 2026
+    priemernaMzda: 1777,       // priemerná mzda v hospodárstve SR, odhad 2026
+    vekOdchodu: 65,
+    kratenieII: 22/91,         // podiel, o ktorý sa kráti I. pilier za roky v II. pilieri
+    sadzbaII: 0.04,            // príspevok do II. piliera z hrubej mzdy (2026)
+    vynosII: 6,                // predpokladané zhodnotenie II. piliera, % p. a. (nominálne)
+    vynosIII: 5,               // predpokladané zhodnotenie III. piliera, % p. a. (nominálne)
+    inflacia: 2.5,             // dlhodobý cieľ ECB — počítame v dnešných eurách, preto ju odpočítavame
+    vyplataRokov: 20,          // na koľko rokov sa kapitál rozpočíta na rentu
+    vyplataVynos: 3,           // zhodnotenie počas výplaty, % p. a. (nominálne)
+    referencnaSuma: 702.30     // referenčná suma 2026 (Sociálna poisťovňa)
+  },
+
+  /* ---------- INVESTÍCIE (kýbliková metóda) ----------
+     Zdroj: prezentér RHR str. 7 a materiál Profi Sporenie ETF. */
+  vedierka: {
+    rezervaNasobok: { min: 3, max: 6 },     // krátkodobá rezerva = násobok mesačných výdavkov
+    podielPrijmu:   { min: 0.05, max: 0.10 },// odporúčaný príspevok do stredno- aj dlhodobej rezervy
+    vynos: { kratke: {min:0, max:3}, stredne: {min:3, max:6}, dlhe: {min:6, max:10} },
+    // rozdelenie voľných peňazí, kým nie je krátkodobá rezerva naplnená / keď už naplnená je
+    rozdelenieNeplna: { kratke: 0.60, stredne: 0.15, dlhe: 0.25 },
+    rozdeleniePlna:   { kratke: 0.00, stredne: 0.35, dlhe: 0.65 },
+    vynosProjekcia: 8                        // % p. a. pre dlhodobé vedierko
+  },
+
   /* ---------- ŽIVOTNÉ POISTENIE ----------
      Poistné sumy vychádzajú z metodiky RHR (prezentér pre klientov, str. 5):
        Smrť a invalidita nad 40 %  … zostatok hypotéky (+ rezerva pre deti pri Maxi)
@@ -153,7 +185,7 @@ function amortizacia(P, rocna, mesiacov, splatka, extra = 0, jednorazova = 0, me
    IKONY
    ============================================================ */
 const ICONS = {
-  rezerva:'<path d="M12 3 4.5 6v5.5c0 4.3 3.1 8 7.5 9.5 4.4-1.5 7.5-5.2 7.5-9.5V6L12 3Z"/><path d="M9.5 12.2 11.3 14l3.4-3.4"/>',
+  invest: '<path d="M4 19h16"/><path d="M6.5 19v-5m5 5V8m5 11V4"/>',
   hypo:  '<path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V21h13V9.5"/><path d="M10 21v-6h4v6"/>',
   early: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
   zivot: '<path d="M12 20s-7-4.5-7-9.5A4 4 0 0 1 12 7a4 4 0 0 1 7-.5c0 5-7 13.5-7 13.5Z"/>',
@@ -172,62 +204,43 @@ const svgIc = k => '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="curr
    live:true = modul je v aplikácii hotový a má vlastnú sekciu.
    ============================================================ */
 const OBLASTI = [
-  {id:"rezerva", nazov:"Finančná rezerva", vetvy:["3–6 mesačných výdavkov","rýchlo dostupné peniaze"],
-   sec:"sec-oblasti", live:false, popis:"Vankúš na nečakané výdavky. Bez neho sa pri prvom probléme siaha po úvere."},
+  {id:"invest",  nazov:"Investície",       vetvy:["rezerva a strednodobé ciele","dlhodobé budovanie majetku"],
+   sec:"sec-invest", rozbal:"d-invest", live:true,
+   popis:"Rozdelenie peňazí podľa toho, kedy ich budete potrebovať — kýbliková metóda."},
   {id:"hypo",    nazov:"Hypotéka",         vetvy:["predčasné splatenie","poistenie nehnuteľnosti"],
    sec:"sec-hypo",   live:true,  popis:"Úverový rámec, splátka a splátkový plán."},
   {id:"zivot",   nazov:"Životné poistenie",vetvy:["krytie príjmu","krytie hypotéky"],
-   sec:"sec-zivot",  live:true, popis:"Krytie príjmu a hypotéky pri chorobe, úraze alebo úmrtí. Tri úrovne — mini, optimal, maxi."},
-  {id:"deti",    nazov:"Deti",             vetvy:["poistenie","sporenie a investovanie"],
-   sec:"sec-oblasti", live:false, popis:"Poistenie dieťaťa a dlhodobé sporenie na štart do života — škola, bývanie, prvé auto."},
-  {id:"doch",    nazov:"Dôchodok",         vetvy:["I. a II. pilier","III. a IV. pilier"],
-   sec:"sec-oblasti", live:false, popis:"Kde reálne skončíte pri dnešnom nastavení a čo sa s tým dá urobiť teraz."},
-  {id:"auto",    nazov:"Auto",             vetvy:["PZP","kasko a GAP"],
-   sec:"sec-oblasti", live:false, popis:"PZP, havarijné poistenie a GAP, porovnanie a načasovanie výpovede."},
-  {id:"uver",    nazov:"Spotrebné úvery",  vetvy:["refinancovanie","konsolidácia"],
-   sec:"sec-oblasti", live:false, popis:"Zlúčenie drahých úverov do jedného lacnejšieho a nižšia mesačná splátka."},
-  {id:"dom",     nazov:"Poistenie nehnuteľnosti", vetvy:[], skryPreMapu:true,
-   sec:"sec-oblasti", live:false, popis:"Poistenie stavby a domácnosti, zodpovednosť za škodu. Banka ho pri hypotéke vyžaduje."}
+   sec:"sec-zivot", rozbal:"d-zivot", live:true, popis:"Krytie príjmu a hypotéky pri chorobe, úraze alebo úmrtí. Tri úrovne — mini, optimal, maxi."},
+  {id:"doch",    nazov:"Dôchodok",         vetvy:["I., II. a III. pilier","doživotná renta"],
+   sec:"sec-doch",  live:true, popis:"Kde reálne skončíte pri dnešnom nastavení a čo sa s tým dá urobiť teraz."},
+  {id:"auto",    nazov:"Auto",             vetvy:["PZP a havarijné","GAP"],
+   sec:"sec-auto",  live:true, popis:"PZP, havarijné poistenie a GAP — porovnanie a načasovanie výpovede."},
+  {id:"dom",     nazov:"Nehnuteľnosť",    vetvy:["poistenie stavby a domácnosti","podpoistenie"],
+   sec:"sec-dom",   live:true,
+   popis:"Poistenie stavby a domácnosti, zodpovednosť za škodu. Banka ho pri hypotéke vyžaduje."}
 ];
-const zaujem = {rezerva:false, hypo:true, zivot:false, deti:false, doch:false, auto:false, uver:false, dom:false, early:false};
+const zaujem = {invest:false, hypo:false, zivot:false, doch:false, auto:false, dom:false, early:false};
 
 /* Priebežný pruh — kľúčové čísla zostanú na očiach aj po zrolovaní.
    Zobrazí sa až vtedy, keď zmizne úvodná sekcia s rámcom. */
 function renderPruh(polozky){
-  $("pruh").innerHTML = polozky.filter(Boolean)
+  const p = polozky.filter(Boolean);
+  $("pruhWrap").classList.toggle("prazdny", p.length === 0);
+  $("pruh").innerHTML = p
     .map(x => `<span class="pi"><span class="pk">${x.k}</span><span class="pv ${x.f||''}">${x.v}</span></span>`)
     .join('<span class="sep"></span>');
 }
-function sledujPruh(){
-  const ciel = $("sec-vstup");
-  if (!ciel) return;
-  let ceka = false;
-  const uprav = () => {
-    ceka = false;
-    // pruh sa objaví, až keď sekcia s rámcom odíde nad horný okraj obrazovky
-    $("pruhWrap").classList.toggle("on", ciel.getBoundingClientRect().bottom < 150);
-  };
-  const naplanuj = () => { if (!ceka){ ceka = true; requestAnimationFrame(uprav); } };
-  window.addEventListener("scroll", naplanuj, {passive:true});
-  window.addEventListener("resize", naplanuj);
-  uprav();
+/* Dve nezávislé akcie:
+   — zaškrtávacie políčko označuje, že klient chce oblasť riešiť (zapíše sa do zhrnutia)
+   — klik na názov prepne obrazovku, výber nemení */
+function prepniZaujem(id){
+  if (!id) return;
+  zaujem[id] = !zaujem[id];
+  renderAll();
 }
-
-/* Klik na oblasť v mape alebo v lište.
-   Moduly s vlastnou sekciou (live) otvoria a preskočia na ňu;
-   ostatné oblasti sa len prepínajú ako záujem klienta — druhým klikom sa odznačia. */
-function klikOblast(id){
-  const o = OBLASTI.find(x => x.id === id);
-  if (!o) return;
-  if (o.live){
-    if (id === "zivot"){ $("d-zivot").open = true; zivotOn = true; }
-    zaujem[id] = true;
-    renderAll();
-    $(o.sec).scrollIntoView({behavior:"smooth", block:"start"});
-  } else {
-    zaujem[id] = !zaujem[id];
-    renderAll();
-  }
+function prejdiNaOblast(id){
+  const k = KROKY.find(x => x.oblast === id);
+  if (k) prepniObrazovku(k.id);
 }
 
 /* ============================================================
@@ -262,9 +275,13 @@ function renderMapa(v){
              stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${ICONS[o.id]}</svg>
       </g>
       <text x="${bx+40}" y="${by+bh/2+5}" class="ntxt">${o.nazov}</text>
-      ${on ? `<g transform="translate(${bx+bw-19},${by+7})"><circle cx="6" cy="6" r="8" class="nchk"/>
-        <path d="M2.6 6.2 5 8.6 9.4 4" fill="none" stroke="#fff" stroke-width="1.8"
-              stroke-linecap="round" stroke-linejoin="round"/></g>` : ""}
+      <g class="nzchk" data-id="${o.id}" transform="translate(${bx+bw-19},${by+7})"
+         role="checkbox" aria-checked="${on}" aria-label="${o.nazov} — označiť ako oblasť na riešenie">
+        <circle cx="6" cy="6" r="11" fill="transparent"/>
+        <circle cx="6" cy="6" r="8" class="${on?'nchk':'nchk-off'}"/>
+        <path d="M2.6 6.2 5 8.6 9.4 4" fill="none" stroke="${on?'#fff':'var(--axis)'}" stroke-width="1.8"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
       ${o.vetvy.map((t,j) => `<text x="${x}" y="${by+bh+15+j*13}" class="nsub">${t}</text>`).join("")}
     </g>`;
   });
@@ -284,133 +301,70 @@ function renderMapa(v){
   </svg>`;
 
   $("mapa").querySelectorAll(".node").forEach(el => {
-    const klik = () => klikOblast(el.dataset.id);
+    const klik = () => prejdiNaOblast(el.dataset.id);
     el.addEventListener("click", klik);
     el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); klik(); } });
   });
-}
-
-/* horná lišta */
-function renderModules(){
-  const uzly = OBLASTI.filter(o => !o.skryPreMapu);
-  $("modules").innerHTML =
-    `<div class="mod mapbtn" data-sec="sec-mapa" title="Späť na mapu oblastí">${svgIc("mapa")}<span>Mapa</span></div>` +
-    uzly.map(o =>
-    `<div class="mod ${zaujem[o.id]?'on':(o.live?'ready':'')}" data-id="${o.id}" data-sec="${o.sec}"
-          title="${o.live ? 'Prejsť na sekciu' : (zaujem[o.id] ? 'Kliknutím zrušíte výber' : 'Kliknutím označíte ako oblasť na riešenie')}">
-       ${svgIc(o.id)}<span>${o.nazov}</span><span class="dot"></span>
-     </div>`).join("");
-  document.querySelectorAll(".mod").forEach(el => el.onclick = () => {
-    if (el.dataset.id) klikOblast(el.dataset.id);
-    else $(el.dataset.sec).scrollIntoView({behavior:"smooth", block:"start"});   // tlačidlo Mapa
-  });
-}
-/* Klik na oblasť v mape alebo v lište.
-   Moduly s vlastnou sekciou (live) otvoria a preskočia na ňu;
-   ostatné oblasti sa len prepínajú ako záujem klienta — druhým klikom sa odznačia. */
-function klikOblast(id){
-  const o = OBLASTI.find(x => x.id === id);
-  if (!o) return;
-  if (o.live){
-    if (id === "zivot"){ $("d-zivot").open = true; zivotOn = true; }
-    zaujem[id] = true;
-    renderAll();
-    $(o.sec).scrollIntoView({behavior:"smooth", block:"start"});
-  } else {
-    zaujem[id] = !zaujem[id];
-    renderAll();
-  }
+  $("mapa").querySelectorAll(".nzchk").forEach(el => el.addEventListener("click", e => {
+    e.stopPropagation();
+    prepniZaujem(el.dataset.id);
+  }));
 }
 
 /* ============================================================
-   MAPA PORTFÓLIA — klient v strede, oblasti okolo neho
+   OBRAZOVKY — v jednom čase je viditeľná práve jedna.
+   Bočný panel slúži ako osnova stretnutia: prepína obrazovky
+   a zaškrtávacím políčkom sa označuje, čo klient chce riešiť.
    ============================================================ */
-function renderMapa(v){
-  const uzly = OBLASTI.filter(o => !o.skryPreMapu);
-  const W = 1000, H = 580, cx = W/2, cy = H/2, rx = 335, ry = 196;
-  const bh = 44;
-  const n = uzly.length;
+const KROKY = [
+  {id:"mapa",   sec:"sec-mapa",   nazov:"Mapa oblastí"},
+  {id:"vstup",  sec:"sec-vstup",  nazov:"Situácia"},
+  {id:"hypo",   sec:"sec-hypo",   nazov:"Hypotéka",           oblast:"hypo"},
+  {id:"invest", sec:"sec-invest", nazov:"Investície",         oblast:"invest"},
+  {id:"zivot",  sec:"sec-zivot",  nazov:"Zabezpečenie rodiny",oblast:"zivot"},
+  {id:"doch",   sec:"sec-doch",   nazov:"Dôchodok",           oblast:"doch"},
+  {id:"dom",    sec:"sec-dom",    nazov:"Nehnuteľnosť",       oblast:"dom"},
+  {id:"auto",   sec:"sec-auto",   nazov:"Auto",               oblast:"auto"},
+  {id:"sum",    sec:"sec-sum",    nazov:"Zhrnutie"}
+];
+let obrazovka = "mapa";
 
-  let spoj = "", boxy = "";
-  uzly.forEach((o, i) => {
-    const a = (-90 + i * (360/n)) * Math.PI/180;
-    const x = cx + rx * Math.cos(a), y = cy + ry * Math.sin(a);
-    // šírka podľa dĺžky názvu, aby fajka nikdy neprekryla text
-    const bw = Math.max(168, 62 + o.nazov.length * 8.4 + 26);
-    const bx = x - bw/2, by = y - bh/2;
-    // spojnica končí na okraji boxu, nie v jeho strede
-    const k = 0.80;
-    spoj += `<line x1="${cx + 60*Math.cos(a)}" y1="${cy + 60*Math.sin(a)}"
-                   x2="${cx + rx*k*Math.cos(a)}" y2="${cy + ry*k*Math.sin(a)}"
-                   stroke="var(--grid)" stroke-width="1.5"/>`;
-    const on = zaujem[o.id];
-    boxy += `<g class="node ${on?'on':''}" data-id="${o.id}" data-sec="${o.sec}" tabindex="0" role="button"
-                aria-pressed="${on}" aria-label="${o.nazov}">
-      <rect x="${bx-8}" y="${by-6}" width="${bw+16}" height="${bh+14+o.vetvy.length*13}" rx="14"
-            fill="transparent" class="nhit"/>
-      <rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="11" class="nbox"/>
-      <g transform="translate(${bx+14},${by+bh/2-9}) scale(0.75)" class="nic">
-        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
-             stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${ICONS[o.id]}</svg>
-      </g>
-      <text x="${bx+40}" y="${by+bh/2+5}" class="ntxt">${o.nazov}</text>
-      ${on ? `<g transform="translate(${bx+bw-19},${by+7})"><circle cx="6" cy="6" r="8" class="nchk"/>
-        <path d="M2.6 6.2 5 8.6 9.4 4" fill="none" stroke="#fff" stroke-width="1.8"
-              stroke-linecap="round" stroke-linejoin="round"/></g>` : ""}
-      ${o.vetvy.map((t,j) => `<text x="${x}" y="${by+bh+15+j*13}" class="nsub">${t}</text>`).join("")}
-    </g>`;
-  });
+/* Affiliate odkazy pre sekciu Auto — doplňte svoje adresy. */
+const ODKAZY = {
+  pzp:   "https://www.najpoistenie.sk/pzp-povinne-zmluvne-poistenie/?kod=108900379",
+  kasko: "https://www.najpoistenie.sk/havarijne-poistenie/?kod=108900379",
+  gap:   "https://www.najpoistenie.sk/gap-poistenie-financnej-straty/?kod=108900379",
+  dom:   "https://www.najpoistenie.sk/poistenie-domu-bytu-domacnosti/?kod=108900379"
+};
 
-  const deti = v ? v.deti : 0;
-  const kto = v ? `${v.dvaja ? "2 dospelí" : "1 dospelý"}${deti>0 ? ", "+deti+" "+(deti===1?"dieťa":deti<=4?"deti":"detí") : ""}` : "";
-
-  $("mapa").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Mapa oblastí finančného portfólia">
-    ${spoj}
-    <circle cx="${cx}" cy="${cy}" r="52" class="hub"/>
-    <g transform="translate(${cx-21},${cy-21})" class="hubic">
-      <svg viewBox="0 0 24 24" width="42" height="42" fill="none" stroke="currentColor"
-           stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${ICONS.klient}</svg>
-    </g>
-    <text x="${cx}" y="${cy+72}" class="hubtxt">${kto}</text>
-    ${boxy}
-  </svg>`;
-
-  $("mapa").querySelectorAll(".node").forEach(el => {
-    const klik = () => klikOblast(el.dataset.id);
-    el.addEventListener("click", klik);
-    el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); klik(); } });
-  });
+function prepniObrazovku(id, bezHistorie){
+  if (!KROKY.some(k => k.id === id)) id = "mapa";
+  obrazovka = id;
+  const k = KROKY.find(x => x.id === id);
+  document.querySelectorAll(".obr").forEach(el => el.classList.toggle("on", el.id === k.sec));
+  $("obrazovky").scrollTop = 0;
+  if (!bezHistorie && location.hash !== "#"+id) history.replaceState(null, "", "#"+id);
+  renderAll();
 }
 
-/* horná lišta */
-function renderModules(){
-  const uzly = OBLASTI.filter(o => !o.skryPreMapu);
-  $("modules").innerHTML =
-    `<div class="mod mapbtn" data-sec="sec-mapa" title="Späť na mapu oblastí">${svgIc("mapa")}<span>Mapa</span></div>` +
-    uzly.map(o =>
-    `<div class="mod ${zaujem[o.id]?'on':(o.live?'ready':'')}" data-id="${o.id}" data-sec="${o.sec}"
-          title="${o.live ? 'Prejsť na sekciu' : (zaujem[o.id] ? 'Kliknutím zrušíte výber' : 'Kliknutím označíte ako oblasť na riešenie')}">
-       ${svgIc(o.id)}<span>${o.nazov}</span><span class="dot"></span>
-     </div>`).join("");
-  document.querySelectorAll(".mod").forEach(el => el.onclick = () => {
-    if (el.dataset.id) klikOblast(el.dataset.id);
-    else $(el.dataset.sec).scrollIntoView({behavior:"smooth", block:"start"});   // tlačidlo Mapa
+function renderKroky(){
+  $("kroky").innerHTML = KROKY.map(k => {
+    const ozn = k.oblast && zaujem[k.oblast];
+    return `<div class="krok ${obrazovka===k.id?'on':''} ${ozn?'ozn':''}" data-id="${k.id}">
+      ${k.oblast
+        ? `<button class="kchk" type="button" role="checkbox" aria-checked="${!!ozn}"
+             data-obl="${k.oblast}" title="${ozn?'Klient túto oblasť rieši — kliknutím zrušíte':'Označiť ako oblasť, ktorú klient chce riešiť'}">
+             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+           </button>`
+        : `<span class="kbez"></span>`}
+      <span class="kn">${k.nazov}</span><span class="rail"></span>
+    </div>`;
+  }).join("");
+  $("kroky").querySelectorAll(".krok").forEach(el => el.onclick = () => prepniObrazovku(el.dataset.id));
+  $("kroky").querySelectorAll(".kchk").forEach(el => el.onclick = e => {
+    e.stopPropagation(); prepniZaujem(el.dataset.obl);
   });
 }
-/* karty oblastí */
-function renderAreas(){
-  $("areas").innerHTML = OBLASTI.filter(o=>!o.live).map(o =>
-    `<div class="area ${zaujem[o.id]?'on':''}" data-id="${o.id}">
-       <div class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></div>
-       <div class="h">${svgIc(o.id)}<span class="t">${o.nazov}</span></div>
-       <p>${o.popis}</p>
-     </div>`).join("");
-  document.querySelectorAll(".area").forEach(el => el.onclick = () => {
-    zaujem[el.dataset.id] = !zaujem[el.dataset.id]; renderAll();
-  });
-}
-
-
 
 /* ============================================================
    FAKTY K RIZIKÁM — zbalené, rozkliknú sa až na požiadanie.
@@ -502,6 +456,446 @@ function renderFakty(){
 }
 
 /* ============================================================
+   INVESTÍCIE
+   Hore názorné vedierka (bez počítania — slúžia na pochopenie),
+   pod nimi samostatné kalkulačky na konkrétne ciele.
+   ============================================================ */
+function buducaHodnota(mesacne, rocnyVynos, mesiacov){
+  const i = rocnyVynos/100/12;
+  if (i === 0) return mesacne * mesiacov;
+  return mesacne * (Math.pow(1+i, mesiacov) - 1) / i;
+}
+function ulozkaNaCiel(ciel, rocnyVynos, mesiacov){
+  const i = rocnyVynos/100/12;
+  if (mesiacov <= 0) return 0;
+  if (i === 0) return ciel / mesiacov;
+  return ciel * i / (Math.pow(1+i, mesiacov) - 1);
+}
+/* kapitál potrebný na vyplácanie renty (anuita s výnosom počas výplaty) */
+function kapitalNaRentu(mesacne, rocnyVynos, mesiacov){
+  const i = rocnyVynos/100/12;
+  if (i === 0) return mesacne * mesiacov;
+  return mesacne * (1 - Math.pow(1+i, -mesiacov)) / i;
+}
+
+/* ---- názorné vedierka ---- */
+const VEDIERKA = [
+  { id:"bezny", nazov:"Bežný účet", horizont:"na tento mesiac",
+    popis:"Peniaze na bežné výdavky. Nič sa tu nezhodnocuje a ani nemá.",
+    ciel:"približne jeden mesačný výdavok", vynos:"0 %", farba:"var(--s1)", vyska:0.34 },
+  { id:"rezerva", nazov:"Rezerva", horizont:"do 5 rokov",
+    popis:"Vankúš na nečakané výdavky a výpadok príjmu. Musí byť dostupná do pár dní.",
+    ciel:"3 až 6 mesačných výdavkov", vynos:"0–3 % ročne", farba:"var(--s4)", vyska:0.62 },
+  { id:"ciel", nazov:"Dlhodobý cieľ", horizont:"10 rokov a viac",
+    popis:"Dôchodok, predčasné splatenie hypotéky, štart pre deti. Čas tu pracuje za vás.",
+    ciel:"5 až 10 % príjmu mesačne", vynos:"6–10 % ročne", farba:"var(--s3)", vyska:1.0 }
+];
+
+function renderKybliky(v){
+  const vyd = Math.max(0, +$("iVyd").value || 0);
+  const orient = [
+    vyd > 0 ? eur(vyd) : "—",
+    vyd > 0 ? `${eur(vyd*3)} – ${eur(vyd*6)}` : "—",
+    v.prijem > 0 ? `${eur(v.prijem*0.05)} – ${eur(v.prijem*0.10)} mesačne` : "—"
+  ];
+  $("kybliky").innerHTML = `<div class="kyb">` + VEDIERKA.map((k,i) => {
+    const H = 92, h = Math.round(H * k.vyska);
+    return `<div class="kb">
+      <svg viewBox="0 0 120 120" class="kbimg" role="img" aria-label="Vedierko ${k.nazov}">
+        <defs><clipPath id="cp${i}"><path d="M22 26 h76 l-9 74 a6 6 0 0 1 -6 5 h-46 a6 6 0 0 1 -6 -5 Z"/></clipPath></defs>
+        <rect x="0" y="${118-h}" width="120" height="${h}" fill="${k.farba}" opacity=".22" clip-path="url(#cp${i})"/>
+        <path d="M22 26 h76 l-9 74 a6 6 0 0 1 -6 5 h-46 a6 6 0 0 1 -6 -5 Z"
+              fill="none" stroke="${k.farba}" stroke-width="2.4" stroke-linejoin="round"/>
+        <rect x="16" y="19" width="88" height="9" rx="4.5" fill="${k.farba}"/>
+        <path d="M38 19 a22 14 0 0 1 44 0" fill="none" stroke="${k.farba}" stroke-width="2.2" opacity=".55"/>
+      </svg>
+      <div class="kbh">${k.horizont}</div>
+      <div class="kbn">${k.nazov}</div>
+      <p>${k.popis}</p>
+      <div class="kbc"><b>${orient[i]}</b><span>${k.ciel}</span></div>
+      <div class="kbv">Zhodnotenie ${k.vynos}</div>
+    </div>`;
+  }).join("") + `</div>
+  <div class="kybpozn">Poradie nie je náhodné: kým nestojí rezerva, každý nečakaný výdavok sa rieši úverom
+    alebo predajom investície v najhoršom možnom čase. Preto sa najprv naplní druhé vedierko a až potom tretie.</div>`;
+}
+
+/* ---- kalkulačka: doživotná renta ---- */
+function renderRenta(v){
+  const mes  = Math.max(0, +$("iRenta").value || 0);
+  const roky = clamp(+$("iRentaRoky").value || 20, 5, 35);
+  const vyn  = clamp(+$("iRentaVynos").value || 3, 0, 8);
+  const spor = clamp(+$("iRentaSpor").value || 8, 0, 12);
+  const kapital = kapitalNaRentu(mes, vyn, roky*12);
+  const doDochodku = Math.max(1, Math.round(65 - v.vekVaz));
+  const ulozka  = ulozkaNaCiel(kapital, spor, doDochodku*12);
+  const neskor  = ulozkaNaCiel(kapital, spor, Math.max(1, doDochodku-10)*12);
+
+  /* priebeh: rast počas sporenia, potom čerpanie renty */
+  const vekTeraz = Math.round(v.vekVaz);
+  const body = [];
+  for (let r = 0; r <= doDochodku; r++)
+    body.push({vek: vekTeraz+r, v: buducaHodnota(ulozka, spor, r*12), faza:"spor"});
+  const iv = vyn/100/12;
+  for (let r = 1; r <= roky; r++){
+    const m = r*12;
+    const zost = iv === 0 ? kapital - mes*m
+      : kapital*Math.pow(1+iv,m) - mes*(Math.pow(1+iv,m)-1)/iv;
+    body.push({vek: vekTeraz+doDochodku+r, v: Math.max(0, zost), faza:"vyplata"});
+  }
+  rentaChart($("chartRenta"), $("tipRenta"), body, vekTeraz+doDochodku);
+  $("rentaSub").innerHTML = `Hodnota účtu v eurách podľa veku. Do ${vekTeraz+doDochodku} rokov sporíte
+    ${eur(ulozka)} mesačne pri ${num(spor)} % ročne, potom si ${roky} rokov vyplácate ${eur(mes)} mesačne
+    a zvyšok sa medzitým zhodnocuje ${num(vyn)} %.`;
+  $("oRentaKapital").textContent = eur(kapital);
+  $("oRentaUlozka").textContent  = eur(ulozka);
+  $("oRentaNeskor").textContent  = eur(neskor);
+  $("oRentaDoba").textContent = `mesačne počas ${doDochodku} rokov pri ${num(spor)} % ročne`;
+  $("rentaPozn").innerHTML = `<span>Kapitál <b>${eur(kapital)}</b> vystačí na rentu ${eur(mes)} mesačne
+    počas ${roky} rokov, ak sa zvyšok medzitým zhodnocuje ${num(vyn)} % ročne. Po tomto období sa vyčerpá —
+    doživotnú garanciu dáva len anuita z poisťovne alebo II. pilier, tam je však renta spravidla nižšia.
+    Sumy sú v dnešných eurách, infláciu prepočet neuvažuje.</span>`;
+}
+
+/* graf: rast kapitálu počas sporenia a jeho čerpanie počas výplaty */
+function rentaChart(host, tipEl, data, vekZlom){
+  host.querySelectorAll("svg").forEach(e => e.remove());
+  const W=900,H=250,PADl=70,PADr=16,PADt=16,PADb=32;
+  const iw=W-PADl-PADr, ih=H-PADt-PADb;
+  const v0=data[0].vek, v1=data[data.length-1].vek;
+  const yMax=niceMax(Math.max(...data.map(d=>d.v),1));
+  const X=vek=>PADl+((vek-v0)/Math.max(1,v1-v0))*iw;
+  const Y=val=>PADt+ih-(val/yMax)*ih;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Vývoj kapitálu počas sporenia a výplaty renty">`;
+  for(let i=0;i<=4;i++){const val=yMax*i/4,y=Y(val);
+    s+=`<line x1="${PADl}" x2="${W-PADr}" y1="${y}" y2="${y}" stroke="var(--grid)"/>
+        <text x="${PADl-10}" y="${y+4}" text-anchor="end" font-size="11" fill="var(--muted)">${kFmt(val)}</text>`;}
+  const krok = (v1-v0)>30?10:5;
+  for(let vek=v0;vek<=v1;vek+=krok)
+    s+=`<text x="${X(vek)}" y="${H-PADb+18}" text-anchor="middle" font-size="11" fill="var(--muted)">${vek}</text>`;
+  const useky=(f)=>data.filter(d=>d.faza===f);
+  const plocha=(arr,farba)=>{
+    if(!arr.length) return "";
+    const c=arr.map((d,i)=>(i?"L":"M")+X(d.vek).toFixed(1)+" "+Y(d.v).toFixed(1)).join(" ");
+    return `<path d="${c} L ${X(arr[arr.length-1].vek).toFixed(1)} ${Y(0)} L ${X(arr[0].vek).toFixed(1)} ${Y(0)} Z" fill="${farba}" opacity=".18"/>
+            <path d="${c}" fill="none" stroke="${farba}" stroke-width="2.4" stroke-linejoin="round"/>`;
+  };
+  const spor=useky("spor"), vypl=[spor[spor.length-1]].concat(useky("vyplata"));
+  s+=plocha(spor,"var(--s3)")+plocha(vypl,"var(--s2)");
+  s+=`<line x1="${X(vekZlom)}" x2="${X(vekZlom)}" y1="${PADt}" y2="${Y(0)}" stroke="var(--axis)" stroke-dasharray="4 4"/>
+      <text x="${X(vekZlom)}" y="${PADt-4}" text-anchor="middle" font-size="11" fill="var(--muted)">odchod do dôchodku</text>`;
+  s+=`<line x1="${PADl}" x2="${W-PADr}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--axis)" stroke-width="1.5"/>
+      <line class="rt-hair" x1="0" x2="0" y1="${PADt}" y2="${Y(0)}" stroke="var(--axis)" opacity="0"/>
+      <circle class="rt-dot" r="4.5" fill="var(--ink)" stroke="var(--card)" stroke-width="2" opacity="0"/>
+      <rect class="rt-hit" x="${PADl}" y="${PADt}" width="${iw}" height="${ih}" fill="transparent" style="cursor:crosshair"/></svg>`;
+  host.insertAdjacentHTML("afterbegin", s);
+  const svg=host.querySelector("svg");
+  svg.querySelector(".rt-hit").addEventListener("mousemove", e=>{
+    const box=svg.getBoundingClientRect();
+    const vek=v0+clamp((e.clientX-box.left)/box.width*W-PADl,0,iw)/iw*(v1-v0);
+    const d=data.reduce((a,b)=>Math.abs(b.vek-vek)<Math.abs(a.vek-vek)?b:a);
+    svg.querySelector(".rt-hair").setAttribute("x1",X(d.vek));
+    svg.querySelector(".rt-hair").setAttribute("x2",X(d.vek));
+    svg.querySelector(".rt-hair").setAttribute("opacity","1");
+    svg.querySelector(".rt-dot").setAttribute("cx",X(d.vek));
+    svg.querySelector(".rt-dot").setAttribute("cy",Y(d.v));
+    svg.querySelector(".rt-dot").setAttribute("opacity","1");
+    tipEl.innerHTML=`<div style="margin-bottom:4px;color:#aaa">vo veku ${d.vek} rokov</div>
+      <div class="r"><span>Na účte</span><b>${eur(d.v)}</b></div>
+      <div style="margin-top:4px;color:#aaa">${d.faza==="spor"?"ešte sporíte":"vyplácate si rentu"}</div>`;
+    tipEl.style.opacity="1";
+    const hb=host.getBoundingClientRect();
+    let left=e.clientX-hb.left+14;
+    if(left+tipEl.offsetWidth>hb.width) left=e.clientX-hb.left-tipEl.offsetWidth-14;
+    tipEl.style.left=left+"px"; tipEl.style.top=clamp(e.clientY-hb.top-10,0,hb.height-tipEl.offsetHeight)+"px";
+  });
+  svg.querySelector(".rt-hit").addEventListener("mouseleave",()=>{
+    tipEl.style.opacity="0";
+    [".rt-hair",".rt-dot"].forEach(q=>svg.querySelector(q).setAttribute("opacity","0"));
+  });
+}
+
+/* ---- kalkulačka: sporenie pre deti ---- */
+function renderDeti(){
+  const vek  = clamp(+$("iDietaVek").value || 0, 0, 25);
+  const ciel = clamp(+$("iDietaCiel").value || 20, 15, 30);
+  const suma = Math.max(0, +$("iDietaSuma").value || 0);
+  const roky = Math.max(1, ciel - vek);
+  const V = clamp(+$("iDetiVynos").value || 8, 0, 12);
+  const ul = ulozkaNaCiel(suma, V, roky*12);
+  const vklad = ul*roky*12, vynos = Math.max(0, suma - vklad);
+  $("oDetiUlozka").textContent = eur(ul);
+  $("oDetiDoba").textContent   = `mesačne počas ${roky} rokov pri ${num(V)} % ročne`;
+  $("oDetiVklad").textContent  = eur(vklad);
+  $("oDetiVynos").textContent  = eur(vynos);
+  pasik("pasikDeti", vklad, suma);
+  $("detiPozn").className = "flag ok";
+  $("detiPozn").innerHTML = `<span>Čas je tu najsilnejší nástroj: pri dieťati, ktoré má ${vek} ${vek===1?"rok":vek<5?"roky":"rokov"},
+    tvorí výnos <b>${suma>0?Math.round(vynos/suma*100):0} %</b> cieľovej sumy. O päť rokov neskôr by ste na rovnaký cieľ
+    potrebovali <b>${eur(ulozkaNaCiel(suma, V, Math.max(1,roky-5)*12))}</b> mesačne.</span>`;
+}
+
+/* ---- kalkulačka: vlastný cieľ ---- */
+function renderSen(){
+  const nazov = ($("iSenNazov").value || "").trim() || "váš cieľ";
+  const suma  = Math.max(0, +$("iSenSuma").value || 0);
+  const roky  = clamp(+$("iSenRoky").value || 10, 1, 40);
+  const vyn   = clamp(+$("iSenVynos").value || 6, 0, 12);
+  const ul = ulozkaNaCiel(suma, vyn, roky*12);
+  const vklad = ul*roky*12, vynos = Math.max(0, suma - vklad);
+  $("lblSen").textContent   = `Na „${nazov}" odkladajte`;
+  $("oSenUlozka").textContent = eur(ul);
+  $("oSenVklad").textContent  = eur(vklad);
+  $("oSenVynos").textContent  = eur(vynos);
+  pasik("pasikSen", vklad, suma);
+  $("senPozn").className = "flag ok";
+  $("senPozn").innerHTML = `<span>Na <b>${eur(suma)}</b> o ${roky} ${roky===1?"rok":roky<5?"roky":"rokov"} treba
+    <b>${eur(ul)}</b> mesačne. Bez zhodnotenia by to bolo ${eur(suma/(roky*12))} — rozdiel
+    <b>${eur(Math.max(0, suma/(roky*12) - ul))}</b> mesačne urobí trh za vás.</span>`;
+}
+
+/* spoločný pásik vklady vs. výnos */
+function pasik(id, vklad, cielova){
+  const pV = cielova > 0 ? clamp(vklad/cielova*100, 0, 100) : 0;
+  $(id).innerHTML = `
+    <div class="p"><i style="width:${pV}%;background:var(--s1)"></i><i style="width:${100-pV}%;background:var(--s3)"></i></div>
+    <div class="l">
+      <span><i style="background:var(--s1)"></i>Vaše vklady <b>${eur(vklad)}</b> (${Math.round(pV)} %)</span>
+      <span><i style="background:var(--s3)"></i>Výnos <b>${eur(Math.max(0,cielova-vklad))}</b> (${Math.round(100-pV)} %)</span>
+    </div>`;
+}
+
+function renderInvest(v){
+  renderKybliky(v);
+  if ($("d-renta").open) renderRenta(v);
+  if ($("d-deti").open)  renderDeti();
+  if ($("d-sen").open)   renderSen();
+  return null;
+}
+
+/* plošný graf rastu investície — vklady vs. celková hodnota */
+function investChart(host, tipEl, data, maxRokov){
+  host.querySelectorAll("svg").forEach(e => e.remove());
+  const W = 900, H = 260, PADl = 68, PADr = 16, PADt = 14, PADb = 30;
+  const iw = W-PADl-PADr, ih = H-PADt-PADb;
+  const yMax = niceMax(Math.max(...data.map(d => d.hodnota), 1));
+  const X = r => PADl + (r/Math.max(maxRokov,1))*iw;
+  const Y = v => PADt + ih - (v/yMax)*ih;
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Rast dlhodobej investície v čase">`;
+  for (let i=0;i<=4;i++){ const val=yMax*i/4, y=Y(val);
+    s+=`<line x1="${PADl}" x2="${W-PADr}" y1="${y}" y2="${y}" stroke="var(--grid)"/>
+        <text x="${PADl-10}" y="${y+4}" text-anchor="end" font-size="11" fill="var(--muted)">${kFmt(val)}</text>`; }
+  const krok = maxRokov<=10?2:5;
+  for (let r=0;r<=maxRokov;r+=krok) s+=`<text x="${X(r)}" y="${H-PADb+18}" text-anchor="middle" font-size="11" fill="var(--muted)">${r}</text>`;
+  const ciara = (kluc) => data.map((d,i)=>(i?"L":"M")+X(d.r).toFixed(1)+" "+Y(d[kluc]).toFixed(1)).join(" ");
+  s += `<path d="${ciara("hodnota")} L ${X(maxRokov)} ${Y(0)} L ${PADl} ${Y(0)} Z" fill="var(--s3)" opacity=".16"/>`;
+  s += `<path d="${ciara("vklad")} L ${X(maxRokov)} ${Y(0)} L ${PADl} ${Y(0)} Z" fill="var(--s1)" opacity=".22"/>`;
+  s += `<path d="${ciara("hodnota")}" fill="none" stroke="var(--s3)" stroke-width="2.2"/>`;
+  s += `<path d="${ciara("vklad")}" fill="none" stroke="var(--s1)" stroke-width="2"/>`;
+  s += `<line x1="${PADl}" x2="${W-PADr}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--axis)" stroke-width="1.5"/>`;
+  s += `<line id="iv-hair" x1="0" x2="0" y1="${PADt}" y2="${Y(0)}" stroke="var(--axis)" opacity="0"/>
+        <circle id="iv-d1" r="4" fill="var(--s1)" stroke="#fff" stroke-width="2" opacity="0"/>
+        <circle id="iv-d2" r="4" fill="var(--s3)" stroke="#fff" stroke-width="2" opacity="0"/>
+        <rect id="iv-hit" x="${PADl}" y="${PADt}" width="${iw}" height="${ih}" fill="transparent" style="cursor:crosshair"/></svg>`;
+  host.insertAdjacentHTML("afterbegin", s);
+  const svg = host.querySelector("svg");
+  svg.querySelector("#iv-hit").addEventListener("mousemove", e => {
+    const box = svg.getBoundingClientRect();
+    const rok = clamp((e.clientX-box.left)/box.width*W - PADl, 0, iw)/iw*maxRokov;
+    const d = data.reduce((a,b)=>Math.abs(b.r-rok)<Math.abs(a.r-rok)?b:a);
+    svg.querySelector("#iv-hair").setAttribute("x1", X(d.r));
+    svg.querySelector("#iv-hair").setAttribute("x2", X(d.r));
+    svg.querySelector("#iv-hair").setAttribute("opacity","1");
+    svg.querySelector("#iv-d1").setAttribute("cx", X(d.r)); svg.querySelector("#iv-d1").setAttribute("cy", Y(d.vklad));   svg.querySelector("#iv-d1").setAttribute("opacity","1");
+    svg.querySelector("#iv-d2").setAttribute("cx", X(d.r)); svg.querySelector("#iv-d2").setAttribute("cy", Y(d.hodnota)); svg.querySelector("#iv-d2").setAttribute("opacity","1");
+    tipEl.innerHTML = `<div style="margin-bottom:4px;color:#aaa">po ${d.r} rokoch</div>
+      <div class="r"><span><i style="background:var(--s1)"></i>Vložené</span><b>${eur(d.vklad)}</b></div>
+      <div class="r"><span><i style="background:var(--s3)"></i>Hodnota</span><b>${eur(d.hodnota)}</b></div>`;
+    tipEl.style.opacity="1";
+    const hb = host.getBoundingClientRect();
+    let left = e.clientX-hb.left+14;
+    if (left+tipEl.offsetWidth>hb.width) left = e.clientX-hb.left-tipEl.offsetWidth-14;
+    tipEl.style.left=left+"px"; tipEl.style.top=clamp(e.clientY-hb.top-10,0,hb.height-tipEl.offsetHeight)+"px";
+  });
+  svg.querySelector("#iv-hit").addEventListener("mouseleave", () => {
+    tipEl.style.opacity="0";
+    ["#iv-hair","#iv-d1","#iv-d2"].forEach(q=>svg.querySelector(q).setAttribute("opacity","0"));
+  });
+}
+
+/* ============================================================
+   DÔCHODOK — odhad z troch pilierov
+   I. pilier podľa vzorca Sociálnej poisťovne, II. a III. ako
+   nasporený kapitál prepočítaný na mesačnú rentu.
+   ============================================================ */
+function renderDoch(v){
+  const D = CONFIG.dochodok;
+  const hruba  = Math.max(0, +$("iHruba").value || 0);
+  const odprac = clamp(+$("iOdprac").value || 0, 0, 50);
+  const maII   = $("iMaII").value === "a";
+  const rokII  = clamp(+$("iRokII").value || 2015, 2005, 2060);
+  const stavII = Math.max(0, +$("iStavII").value || 0);
+  const stavIII= Math.max(0, +$("iStavIII").value || 0);
+  const prisIII= Math.max(0, +$("iPrispIII").value || 0);
+  document.querySelectorAll(".w2ii").forEach(el => el.style.display = maII ? "" : "none");
+
+  const vek = v.vekVaz;
+  const rokovDo = Math.max(0, D.vekOdchodu - vek);
+  const mesiacov = Math.round(rokovDo*12);
+  const rokTeraz = 2026;
+
+  /* --- I. pilier --- */
+  const pomb = D.priemernaMzda > 0 ? hruba / D.priemernaMzda : 0;
+  const odp  = odprac + rokovDo;
+  const plny = pomb * odp * D.adh;
+  const rokovVII = maII ? Math.max(0, (rokTeraz - rokII) + rokovDo) : 0;
+  const kratenie = pomb * rokovVII * D.adh * D.kratenieII;
+  const p1 = Math.max(0, plny - kratenie);
+
+  /* --- II. a III. pilier ---
+     Počítame v dnešných eurách: od nominálneho výnosu odpočítavame infláciu.
+     Inak by kapitál za 30 rokov vyzeral obrovsky, hoci jeho kúpna sila bude oveľa nižšia. */
+  const r2 = D.vynosII  - D.inflacia;
+  const r3 = D.vynosIII - D.inflacia;
+  const rv = Math.max(0, D.vyplataVynos - D.inflacia);
+  const anuita = kapitalNaRentu(1, rv, D.vyplataRokov*12);   // kapitál potrebný na 1 € renty
+
+  const vklad2 = maII ? hruba * D.sadzbaII : 0;
+  const kapital2 = maII
+    ? stavII * Math.pow(1 + r2/100, rokovDo) + buducaHodnota(vklad2, r2, mesiacov) : 0;
+  const p2 = kapital2 > 0 ? kapital2 / anuita : 0;
+
+  const kapital3 = stavIII * Math.pow(1 + r3/100, rokovDo) + buducaHodnota(prisIII, r3, mesiacov);
+  const p3 = kapital3 > 0 ? kapital3 / anuita : 0;
+
+  const spolu = p1 + p2 + p3;
+  const dnes  = v.prijem;                       // čistý príjem domácnosti dnes
+  const cisty1 = hruba * 0.79;                  // hrubá → čistá, orientačne
+  const podiel = cisty1 > 0 ? spolu/cisty1*100 : 0;
+
+  $("oDochSpolu").textContent  = eur(spolu);
+  $("oDochPodiel").textContent = cisty1 > 0 ? `${Math.round(podiel)} % vášho dnešného čistého príjmu` : "";
+  $("oDochDnes").textContent   = eur(cisty1);
+  $("oDochDoba").textContent   = `do dôchodku ${Math.round(rokovDo)} rokov`;
+  $("oDochChyba").textContent  = eur(Math.max(0, cisty1 - spolu));
+
+  dochChart($("chartDoch"), $("tipDoch"), [
+    {n:"I. pilier",   v:p1, f:"var(--s1)", p:"štátny dôchodok zo Sociálnej poisťovne"},
+    {n:"II. pilier",  v:p2, f:"var(--s4)", p:"vaše sporenie, renta na "+D.vyplataRokov+" rokov"},
+    {n:"III. pilier", v:p3, f:"var(--s3)", p:"doplnkové sporenie, renta na "+D.vyplataRokov+" rokov"}
+  ], cisty1);
+
+  $("dochSub").innerHTML = `Mesačná suma v eurách, v dnešných cenách. Prerušovaná čiara je váš dnešný čistý príjem
+    ${eur(cisty1)} — rozdiel medzi ňou a stĺpcami je to, čo si treba pripraviť sám.`;
+
+  $("dochPozn").innerHTML = `<span><b>Ide o odhad, nie o výpočet Sociálnej poisťovne.</b>
+    Predpokladá, že váš pomer k priemernej mzde zostane rovnaký po celý život (dnes ${num(pomb)}),
+    že odpracujete ${Math.round(odp)} rokov a že sa hodnoty nezmenia legislatívou.
+    Všetky sumy sú <b>v dnešných eurách</b> — od predpokladaného zhodnotenia (${D.vynosII} % v II. a ${D.vynosIII} % v III. pilieri)
+    odpočítavame infláciu ${D.inflacia} %, aby boli porovnateľné s dnešným príjmom.
+    Presný nárok vám Sociálna poisťovňa vypočíta až pri žiadosti — toto slúži na rozhodovanie, nie na plánovanie na euro.</span>`;
+
+  /* --- IV. pilier: vlastná renta --- */
+  if (!r4Dotknute) { $("iR4").value = Math.round(Math.max(0, cisty1 - spolu)); $("rR4").value = $("iR4").value; }
+  const r4mes  = Math.max(0, +$("iR4").value || 0);
+  const r4roky = clamp(+$("iR4Roky").value || 20, 5, 35);
+  const r4vyn  = clamp(+$("iR4Vynos").value || 3, 0, 8);
+  const r4spor = clamp(+$("iR4Spor").value || CONFIG.vedierka.vynosProjekcia, 0, 12);
+  const r4sporR= Math.max(0, r4spor - D.inflacia);         // reálne zhodnotenie počas sporenia
+  const r4vynR = Math.max(0, r4vyn  - D.inflacia);         // reálne zhodnotenie počas výplaty
+  const r4kap  = kapitalNaRentu(r4mes, r4vynR, r4roky*12);
+  const r4mes_ = Math.max(1, mesiacov);
+  const r4ul   = ulozkaNaCiel(r4kap, r4sporR, r4mes_);
+  const r4nesk = ulozkaNaCiel(r4kap, r4sporR, Math.max(12, mesiacov-120));
+  $("oR4Kapital").textContent = eur(r4kap);
+  $("oR4Ulozka").textContent  = eur(r4ul);
+  $("oR4Doba").textContent    = `mesačne počas ${Math.round(rokovDo)} rokov pri ${num(r4spor)} % ročne`;
+  $("oR4Neskor").textContent  = eur(r4nesk);
+  pasik("pasikR4", r4ul*mesiacov, r4kap);
+
+  /* priebeh: rast počas sporenia, potom čerpanie renty — všetko v dnešných eurách */
+  const r4Vek   = Math.round(vek);
+  const r4Odchod= Math.max(1, Math.round(rokovDo));
+  const r4Body  = [];
+  for (let r = 0; r <= r4Odchod; r++)
+    r4Body.push({vek: r4Vek+r, v: buducaHodnota(r4ul, r4sporR, Math.round(r*12)), faza:"spor"});
+  const r4i = r4vynR/100/12;
+  for (let r = 1; r <= r4roky; r++){
+    const m = r*12;
+    const zost = r4i === 0 ? r4kap - r4mes*m
+      : r4kap*Math.pow(1+r4i,m) - r4mes*(Math.pow(1+r4i,m)-1)/r4i;
+    r4Body.push({vek: r4Vek+r4Odchod+r, v: Math.max(0, zost), faza:"vyplata"});
+  }
+  rentaChart($("chartR4"), $("tipR4"), r4Body, r4Vek+r4Odchod);
+  $("r4Sub").innerHTML = `Hodnota účtu v dnešných eurách podľa veku. Do ${r4Vek+r4Odchod} rokov si odkladáte
+    ${eur(r4ul)} mesačne pri ${num(r4spor)} % ročne, potom si ${r4roky} rokov vyplácate ${eur(r4mes)} mesačne
+    a zvyšok sa medzitým zhodnocuje ${num(r4vyn)} %.`;
+
+  $("r4Pozn").innerHTML = `<span>Aj tu počítame <b>v dnešných eurách</b> — od predpokladaného zhodnotenia
+    ${num(r4spor)} % odpočítavame infláciu ${D.inflacia} %, takže ${eur(r4ul)} mesačne má
+    dnešnú kúpnu silu. Renta ${eur(r4mes)} vydrží ${r4roky} rokov a potom sa kapitál vyčerpá.</span>`;
+
+  $("dochRozpis").innerHTML = `
+    <table class="kt"><tbody>
+      <tr><td>POMB — pomer vašej mzdy k priemernej<span>hrubá ${eur(hruba)} ÷ priemerná mzda ${eur(D.priemernaMzda)}</span></td><td>${num(pomb)}</td></tr>
+      <tr><td>Roky dôchodkového poistenia<span>${odprac} odpracovaných + ${Math.round(rokovDo)} do 65 rokov</span></td><td>${Math.round(odp)}</td></tr>
+      <tr><td>Aktuálna dôchodková hodnota 2026</td><td>${eur(D.adh,4)}</td></tr>
+      <tr><td>I. pilier pred krátením<span>POMB × roky × ADH</span></td><td>${eur(plny)}</td></tr>
+      ${maII ? `<tr><td>Krátenie za ${Math.round(rokovVII)} rokov v II. pilieri<span>22/91 pomernej sumy podľa § 66 ods. 6</span></td><td>− ${eur(kratenie)}</td></tr>` : ""}
+      <tr><td><b>I. pilier — mesačne</b></td><td><b>${eur(p1)}</b></td></tr>
+      ${maII ? `<tr><td>II. pilier — kapitál v 65<span>${eur(stavII)} dnes + ${eur(vklad2)} mesačne; ${D.vynosII} % výnos − ${D.inflacia} % inflácia = ${num(r2)} % reálne</span></td><td>${eur(kapital2)}</td></tr>
+      <tr><td><b>II. pilier — renta na ${D.vyplataRokov} rokov</b></td><td><b>${eur(p2)}</b></td></tr>` : ""}
+      <tr><td>III. pilier — kapitál v 65<span>${eur(stavIII)} dnes + ${eur(prisIII)} mesačne; ${D.vynosIII} % výnos − ${D.inflacia} % inflácia = ${num(r3)} % reálne</span></td><td>${eur(kapital3)}</td></tr>
+      <tr><td><b>III. pilier — renta na ${D.vyplataRokov} rokov</b></td><td><b>${eur(p3)}</b></td></tr>
+    </tbody></table>`;
+  return {p1, p2, p3, spolu, cisty1, chyba: Math.max(0, cisty1-spolu), rokovDo, r4kap, r4ul};
+}
+
+/* stĺpcový graf pilierov s čiarou dnešného príjmu */
+function dochChart(host, tipEl, data, prijem){
+  host.querySelectorAll("svg").forEach(e => e.remove());
+  const W=900,H=250,PADl=68,PADr=16,PADt=18,PADb=40;
+  const iw=W-PADl-PADr, ih=H-PADt-PADb;
+  const yMax = niceMax(Math.max(prijem*1.1, ...data.map(d=>d.v), 1));
+  const bw = Math.min(110, iw/data.length - 60);
+  const X = i => PADl + (i+0.5)*(iw/data.length) - bw/2;
+  const Y = val => PADt + ih - (val/yMax)*ih;
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Odhadovaný dôchodok podľa pilierov">`;
+  for (let i=0;i<=4;i++){ const val=yMax*i/4,y=Y(val);
+    s+=`<line x1="${PADl}" x2="${W-PADr}" y1="${y}" y2="${y}" stroke="var(--grid)"/>
+        <text x="${PADl-10}" y="${y+4}" text-anchor="end" font-size="11" fill="var(--muted)">${kFmt(val)}</text>`; }
+  data.forEach((d,i)=>{
+    const h = Math.max(0, ih*(d.v/yMax));
+    s+=`<path d="M${X(i)} ${Y(d.v)+4} a4 4 0 0 1 4-4 h${bw-8} a4 4 0 0 1 4 4 v${h-4} h${-bw} Z" fill="${d.f}"/>`;
+    s+=`<text x="${X(i)+bw/2}" y="${Y(d.v)-8}" text-anchor="middle" font-size="13" font-weight="600" fill="var(--ink)">${eur(d.v)}</text>`;
+    s+=`<text x="${X(i)+bw/2}" y="${H-PADb+18}" text-anchor="middle" font-size="12" fill="var(--ink-2)">${d.n}</text>`;
+    s+=`<rect class="dhb" data-i="${i}" x="${X(i)-8}" y="${PADt}" width="${bw+16}" height="${ih}" fill="transparent"/>`;
+  });
+  if (prijem>0){
+    const lbl=`dnešný čistý príjem ${eur(prijem)}`, lw=lbl.length*6.2+12;
+    s+=`<line x1="${PADl}" x2="${W-PADr}" y1="${Y(prijem)}" y2="${Y(prijem)}" stroke="var(--s2)" stroke-width="1.6" stroke-dasharray="6 4"/>
+        <rect x="${W-PADr-lw}" y="${Y(prijem)-19}" width="${lw}" height="17" rx="4" fill="var(--page)" opacity=".95"/>
+        <text x="${W-PADr-6}" y="${Y(prijem)-7}" text-anchor="end" font-size="11.5" fill="var(--s2)" font-weight="600">${lbl}</text>`;
+  }
+  s+=`<line x1="${PADl}" x2="${W-PADr}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--axis)" stroke-width="1.5"/></svg>`;
+  host.insertAdjacentHTML("afterbegin", s);
+  host.querySelectorAll(".dhb").forEach(el=>{
+    el.addEventListener("mousemove", e=>{
+      const d=data[+el.dataset.i];
+      tipEl.innerHTML=`<div style="margin-bottom:4px;color:#aaa">${d.n}</div>
+        <div class="r"><span><i style="background:${d.f}"></i>Mesačne</span><b>${eur(d.v)}</b></div>
+        <div style="margin-top:4px;color:#aaa">${d.p}</div>`;
+      tipEl.style.opacity="1";
+      const hb=host.getBoundingClientRect();
+      let left=e.clientX-hb.left+14;
+      if(left+tipEl.offsetWidth>hb.width) left=e.clientX-hb.left-tipEl.offsetWidth-14;
+      tipEl.style.left=left+"px"; tipEl.style.top=clamp(e.clientY-hb.top-10,0,hb.height-tipEl.offsetHeight)+"px";
+    });
+    el.addEventListener("mouseleave",()=>tipEl.style.opacity="0");
+  });
+}
+
+/* ============================================================
    ŽIVOTNÉ POISTENIE — poistné sumy a odhad ceny
    ============================================================ */
 function osobaVstup(i){
@@ -588,45 +982,104 @@ function renderZivot(v){
   const navrhy = BALICKY.map(b => navrh(v, b));
   const vyb = navrhy.find(n => n.bal.id === vybranyBalicek) || navrhy[1];
 
-  /* --- karty balíčkov --- */
-  $("balicky").innerHTML = navrhy.map(n => `
-    <div class="bal ${n.bal.id===vybranyBalicek?'on':''}" data-id="${n.bal.id}" tabindex="0" role="button">
-      ${n.bal.odporucane ? '<span class="odp">odporúčame</span>' : ''}
-      <div class="bt">${n.bal.nazov}</div>
-      <div class="bp">${n.bal.podnadpis}</div>
-      <div class="bc">${Math.round(n.dolna/5)*5} – ${Math.round(n.horna/5)*5} €</div>
-      <div class="bm">mesačne za celú rodinu</div>
-      <p>${n.bal.popis}</p>
-    </div>`).join("");
-  $("balicky").querySelectorAll(".bal").forEach(el => {
-    const k = () => { vybranyBalicek = el.dataset.id; renderAll(); };
-    el.onclick = k;
-    el.onkeydown = e => { if (e.key==="Enter"||e.key===" ") { e.preventDefault(); k(); } };
+  /* --- porovnanie balíčkov aj krytí v jednej tabuľke --- */
+  const dvaja = !!vyb.o2;
+  const dvojhodnota = (f) => navrhy.map(n => {
+    const a = f(n.ps1, n.o1), b = n.ps2 ? f(n.ps2, n.o2) : null;
+    return b === null ? a : `${a}<i>${b}</i>`;
+  });
+  const stavZnak = (hod, min) => hod <= 0 ? `<em class="st st-ne">nekryté</em>`
+      : hod >= min*0.97 ? `<em class="st st-ok">✓ v pásme</em>` : `<em class="st st-pod">pod pásmom</em>`;
+  const riadok = (nazov, pozn, f, minF) => {
+    const h = dvojhodnota(f);
+    return `<tr>
+      <th scope="row">${nazov}${pozn?`<span>${pozn}</span>`:""}</th>
+      ${navrhy.map((n,i) => `<td class="${n.bal.id===vybranyBalicek?'sel':''}">${h[i]}${
+        minF ? stavZnak(minF(n.ps1, n.o1), minF(null, n.o1, true)) : ""}</td>`).join("")}
+    </tr>`;
+  };
+
+  const d0 = navrhy.map(n => n.bal.deti);
+  $("balTab").innerHTML = `
+    <table class="bt">
+      <thead>
+        <tr>
+          <th></th>
+          ${navrhy.map(n => `<th class="${n.bal.id===vybranyBalicek?'sel':''}" data-bal="${n.bal.id}">
+            ${n.bal.odporucane?'<span class="odp">odporúčame</span>':''}
+            <span class="bn">${n.bal.nazov}</span>
+            <span class="bp">${n.bal.podnadpis}</span>
+            <span class="bc">${Math.round(n.dolna/5)*5} – ${Math.round(n.horna/5)*5} €</span>
+            <span class="bm">mesačne za rodinu</span>
+            <button type="button" class="bvyb ${n.bal.id===vybranyBalicek?'on':''}" data-bal="${n.bal.id}">
+              ${n.bal.id===vybranyBalicek?'✓ vybraté':'vybrať'}</button>
+          </th>`).join("")}
+        </tr>
+      </thead>
+      <tbody>
+        ${dvaja?`<tr class="pozn"><th scope="row"></th>${navrhy.map(n=>`<td class="${n.bal.id===vybranyBalicek?'sel':''}">žiadateľ 1 / žiadateľ 2</td>`).join("")}</tr>`:""}
+        ${riadok("Smrť a invalidita nad 40 %", "aspoň zostatok hypotéky", ps => eur(ps.smrt),
+                 (ps,o,min) => min ? v.suma : ps.smrt)}
+        ${riadok("Trvalé následky úrazu", "odporúčame 3–5× ročný príjem", ps => eur(ps.tnu),
+                 (ps,o,min) => min ? 3*o.prijem*12 : ps.tnu)}
+        ${riadok("Kritické choroby", "odporúčame 1,5–3× ročný príjem", ps => eur(ps.kch),
+                 (ps,o,min) => min ? 1.5*o.prijem*12 : ps.kch)}
+        ${riadok("Práceneschopnosť", "dorovnanie mzdy", ps => ps.pnDenne ? eur(ps.pnDenne)+" / deň" : "—",
+                 (ps,o,min) => min ? Math.round((1-CONFIG.zivot.nemocenskePodiel)*o.prijem/30) : ps.pnDenne)}
+        <tr><th scope="row">Začiatok krytia PN</th>
+          ${navrhy.map(n => `<td class="${n.bal.id===vybranyBalicek?'sel':''}">${n.bal.pn?`od ${n.bal.pnOd}. dňa`:"—"}</td>`).join("")}</tr>
+        <tr><th scope="row">Deti${v.deti>0?` (${v.deti})`:""}<span>úraz · kritické choroby · denne</span></th>
+          ${navrhy.map((n,i) => `<td class="${n.bal.id===vybranyBalicek?'sel':''}">${
+            d0[i] ? `${eur(d0[i].tnu)} · ${eur(d0[i].kch)} · ${eur(d0[i].denne)}` : "nekryté"}</td>`).join("")}</tr>
+      </tbody>
+    </table>`;
+
+  $("balTab").querySelectorAll("[data-bal]").forEach(el => el.onclick = () => {
+    vybranyBalicek = el.dataset.bal; renderAll();
   });
 
-  /* --- tabuľka krytí --- */
-  const dvaja = !!vyb.o2;
-  const riadok = (nazov, f, pozn) => `<tr><td>${nazov}<span>${pozn||""}</span></td>
-      <td>${f(vyb.ps1, vyb.o1)}</td>${dvaja?`<td>${f(vyb.ps2, vyb.o2)}</td>`:""}</tr>`;
-  const d = vyb.bal.deti;
-  $("kryttab").innerHTML = `
-    <table class="kt">
-      <thead><tr><th>Riziko</th><th>${dvaja?"Žiadateľ 1":"Žiadateľ"}</th>${dvaja?"<th>Žiadateľ 2</th>":""}</tr></thead>
-      <tbody>
-        ${riadok("Smrť", ps => eur(ps.smrt), "poistná suma")}
-        ${riadok("Invalidita nad 40 %", ps => eur(ps.invalidita), "poistná suma")}
-        ${riadok("Trvalé následky úrazu", ps => eur(ps.tnu), `s progresiou · ${num(vyb.bal.tnu)}× ročný príjem`)}
-        ${riadok("Kritické choroby", ps => eur(ps.kch), `${num(vyb.bal.kch)}× ročný príjem`)}
-        ${riadok(`Práceneschopnosť od ${vyb.bal.pnOd}. dňa`, ps => ps.pnDenne ? eur(ps.pnDenne)+" / deň" : "—",
-                  vyb.bal.pnMax ? "maximum, ktoré poisťovňa pripustí" : "dorovnanie mzdy")}
-      </tbody>
-      ${d && v.deti>0 ? `<thead><tr><th>Deti (${v.deti})</th><th colspan="${dvaja?2:1}">na každé dieťa</th></tr></thead>
-      <tbody>
-        <tr><td>Trvalé následky úrazu<span>s progresiou</span></td><td colspan="${dvaja?2:1}">${eur(d.tnu)}</td></tr>
-        <tr><td>Detské kritické choroby</td><td colspan="${dvaja?2:1}">${eur(d.kch)}</td></tr>
-        <tr><td>Úraz a hospitalizácia<span>denné odškodné</span></td><td colspan="${dvaja?2:1}">${eur(d.denne)} / deň</td></tr>
-      </tbody>` : ""}
-    </table>`;
+  /* koľko krytí vo vybranom balíčku je v odporúčanom pásme */
+  let vPasme = 0, spolu = 0;
+  [[ps => ps.smrt, o => v.suma],
+   [ps => ps.tnu,  o => 3*o.prijem*12],
+   [ps => ps.kch,  o => 1.5*o.prijem*12],
+   [ps => ps.pnDenne, o => Math.round((1-CONFIG.zivot.nemocenskePodiel)*o.prijem/30)]
+  ].forEach(([hod, min]) => {
+    [[vyb.ps1, vyb.o1], [vyb.ps2, vyb.o2]].forEach(([ps, o]) => {
+      if (!ps) return;
+      spolu++;
+      if (hod(ps) > 0 && hod(ps) >= min(o)*0.97) vPasme++;
+    });
+  });
+  $("cenaPozn").innerHTML = `<span><b>Cena je odhad, nie ponuka poisťovne.</b> Vychádza z metodiky poistných súm,
+    ktorú používame, a je nastavená tak, aby modelová rodina z nášho prezentéra vyšla na 130–150 € mesačne.
+    Skutočnú cenu určuje poisťovňa podľa veku, zdravotného stavu a povolania.
+    ${vPasme === spolu
+      ? `V balíčku <b>${vyb.bal.nazov}</b> sú všetky krytia v odporúčanom pásme.`
+      : `V balíčku <b>${vyb.bal.nazov}</b> je <b>${vPasme} z ${spolu}</b> krytí v odporúčanom pásme.`}</span>`;
+
+  /* --- krytie detí --- */
+  const dd = vyb.bal.deti;
+  $("detipoistZ").textContent = dd && v.deti > 0
+    ? `${v.deti} ${v.deti===1?"dieťa":v.deti<5?"deti":"detí"} · v balíčku ${vyb.bal.nazov}`
+    : "v tomto balíčku nie je zahrnuté";
+  $("detiKryt").innerHTML = !dd
+    ? `<p class="sub">Balíček <b>${vyb.bal.nazov}</b> deti nekryje. Optimal a Maxi obsahujú tri riziká,
+       ktoré u detí dávajú zmysel — trvalé následky úrazu, detské kritické choroby a denné odškodné.</p>`
+    : v.deti === 0
+      ? `<p class="sub">V prvej sekcii nie sú zadané žiadne deti. Ak nejaké sú, doplňte ich počet — krytie sa dopočíta.</p>`
+      : `<p class="sub">U detí neriešime výpadok príjmu, ale <b>náklady a čas rodiča</b>. Pri vážnej diagnóze
+         jeden z rodičov spravidla prestane pracovať — a to je skutočná strata, ktorú poistenie kryje.</p>
+      <table class="kt"><thead><tr><th>Riziko</th><th>na každé dieťa</th></tr></thead><tbody>
+        <tr><td>Trvalé následky úrazu<span>s progresiou</span></td><td>${eur(dd.tnu)}</td></tr>
+        <tr><td>Detské kritické choroby<span>onkologické a vážne diagnózy</span></td><td>${eur(dd.kch)}</td></tr>
+        <tr><td>Úraz a hospitalizácia<span>denné odškodné</span></td><td>${eur(dd.denne)} / deň</td></tr>
+        <tr><td><b>Spolu za ${v.deti} ${v.deti===1?"dieťa":v.deti<5?"deti":"detí"}</b><span>zahrnuté v cene balíčka</span></td>
+            <td><b>${eur(cenaDietata(vyb.bal)*v.deti*CONFIG.zivot.rezia)}</b> / mes.</td></tr>
+      </tbody></table>
+      <div class="flag" style="background:var(--ok-bg);color:#2F5C3D"><span>Denné odškodné pri hospitalizácii
+        ${eur(dd.denne)} znamená pri dvojtýždňovom pobyte v nemocnici ${eur(dd.denne*14)} — presne na to,
+        aby mohol rodič zostať s dieťaťom bez toho, aby riešil výpadok mzdy.</span></div>`;
 
   /* --- scenáre --- */
   const rocny1 = vyb.o1.prijem*12;
@@ -654,34 +1107,6 @@ function renderZivot(v){
       <div class="sb"><span class="tag ok">s poistením</span><p>${x.s}</p></div>
     </div>`).join("");
 
-  /* --- bullet chart: krytie voči odporúčanému pásmu --- */
-  const Z = CONFIG.zivot;
-  const osoby = [vyb.o1].concat(vyb.o2 ? [vyb.o2] : []);
-  const ps    = [vyb.ps1].concat(vyb.ps2 ? [vyb.ps2] : []);
-  const roc   = osoby.map(o => o.prijem * 12);
-  const hornaSmrt = osoby.map((o,i) => v.suma + v.deti*Z.rezervaNaDieta + 2*roc[i]);
-
-  bulletChart($("bullet"), [
-    { nazov:"Smrť a invalidita", pozn:"hypotéka až hypotéka + rezerva",
-      pasmoOd: hornaSmrt[0] > 0 ? v.suma / hornaSmrt[0] : 0,
-      horna: hornaSmrt,
-      osoby: ps.map(x => ({hodnota:x.smrt, text:eur(x.smrt)})) },
-    { nazov:"Trvalé následky úrazu", pozn:"3–5× ročný čistý príjem",
-      pasmoOd: 0.6, horna: roc.map(r => 5*r),
-      osoby: ps.map(x => ({hodnota:x.tnu, text:eur(x.tnu)})) },
-    { nazov:"Kritické choroby", pozn:"1,5–3× ročný čistý príjem",
-      pasmoOd: 0.5, horna: roc.map(r => 3*r),
-      osoby: ps.map(x => ({hodnota:x.kch, text:eur(x.kch)})) },
-    { nazov:"Práceneschopnosť", pozn:"dorovnanie mzdy až maximum poisťovne",
-      pasmoOd: (() => { const st = maxPnDenne(osoby[0].prijem);
-                        return st > 0 ? Math.round((1-Z.nemocenskePodiel)*osoby[0].prijem/30) / st : 0; })(),
-      horna: osoby.map(o => maxPnDenne(o.prijem)),
-      osoby: ps.map(x => ({hodnota:x.pnDenne, text: x.pnDenne ? eur(x.pnDenne)+" / deň" : "nekryté"})) }
-  ], v.dvaja ? ["Žiadateľ 1","Žiadateľ 2"] : null);
-
-  $("bulletSub").innerHTML = `Sivý úsek je rozpätie, ktoré podľa metodiky odporúčame. Značka ukazuje, kde je krytie
-    v balíčku <b>${vyb.bal.nazov}</b>. Každý riadok má vlastnú mierku — porovnávajte polohu voči pásmu, nie dĺžku pruhov medzi riadkami.`;
-
   return vyb;
 }
 
@@ -690,83 +1115,44 @@ function renderZivot(v){
    za dobu splácania pokryl všetky zaplatené úroky.
    FV = PMT × ((1+i)^n − 1) / i   →   PMT = FV × i / ((1+i)^n − 1)
    ============================================================ */
+let rezimUroky = "suma";   // "suma" = celá nasporená suma kryje úroky, "vynos" = kryje ich samotný výnos
+
 function renderUroky(ciel, mesiacov){
   const r = clamp(+$("iVynos").value || 8, 1, 12);
   const i = r/100/12, n = mesiacov;
-  const ulozka = (i === 0 || n === 0) ? (n ? ciel/n : 0)
-                                      : ciel * i / (Math.pow(1+i, n) - 1);
+  const faktor = i === 0 ? n : (Math.pow(1+i, n) - 1) / i;   // budúca hodnota 1 € mesačne
+  // režim „suma":  PMT × faktor = ciel
+  // režim „vynos": PMT × faktor − PMT × n = ciel   (výnos bez vlastných vkladov)
+  const delitel = rezimUroky === "vynos" ? Math.max(faktor - n, 0.0001) : faktor;
+  const ulozka  = n === 0 ? 0 : ciel / delitel;
   const vlozene = ulozka * n;
-  const vynos   = Math.max(0, ciel - vlozene);
+  const konecna = ulozka * faktor;
+  const vynos   = Math.max(0, konecna - vlozene);
+
+  $("rezimPopis").innerHTML = rezimUroky === "vynos"
+    ? "Prísnejší variant: úroky pokryje <b>samotný výnos</b>, vaše vklady zostávajú navyše. Na konci máte viac, než ste zaplatili banke."
+    : "Nasporená suma sa bude rovnať zaplateným úrokom — <b>vrátane vašich vkladov</b>.";
+  $("lblCiel").textContent = rezimUroky === "vynos" ? "Nasporíte celkovo" : "Nasporíte";
 
   $("oDobaSpor").value = `${Math.floor(n/12)} rokov (rovnako ako hypotéka)`;
   $("oUlozka").textContent  = eur(ulozka);
   $("oVlozene").textContent = eur(vlozene);
-  $("oCiel").textContent    = eur(ciel);
+  $("oCiel").textContent    = eur(konecna);
 
-  const pV = ciel > 0 ? vlozene/ciel*100 : 0;
+  const pV = konecna > 0 ? vlozene/konecna*100 : 0;
   $("pasikUroky").innerHTML = `
     <div class="p"><i style="width:${pV}%;background:var(--s1)"></i><i style="width:${100-pV}%;background:var(--s3)"></i></div>
     <div class="l">
       <span><i style="background:var(--s1)"></i>Vaše vklady <b>${eur(vlozene)}</b> (${Math.round(pV)} %)</span>
       <span><i style="background:var(--s3)"></i>Výnos z investície <b>${eur(vynos)}</b> (${Math.round(100-pV)} %)</span>
-    </div>`;
+    </div>
+    <div class="ftp" style="margin-top:8px">Zaplatené úroky: <b>${eur(ciel)}</b>${
+      rezimUroky === "vynos" ? " — pokryté samotným výnosom, vklady " + eur(vlozene) + " vám zostávajú." : "."}</div>`;
 
   $("urokyPozn").innerHTML = `<span><b>${num(r)} % ročne je predpoklad, nie záruka.</b>
     Ide o dlhodobý priemer akciových trhov — jednotlivé roky môžu byť aj výrazne stratové a výsledok
     závisí od zvoleného riešenia. Prepočet neuvažuje poplatky ani infláciu. Pri investovaní cez ETF je
     výnos po ročnom teste držby oslobodený od dane, pri podielových fondoch sa zdaňuje 19 %.</span>`;
-}
-
-/* ============================================================
-   BULLET CHART — krytie voči odporúčanému pásmu
-   Každý riadok má vlastnú relatívnu škálu: 1,0 = horná hranica
-   odporúčaného pásma pre danú osobu. Vďaka tomu sa dajú porovnať
-   riziká s úplne odlišnými jednotkami (€ poistnej sumy vs. €/deň).
-   ============================================================ */
-function bulletChart(host, riadky, menaOsob){
-  const W = 900, RH = 52, PADt = 8;
-  const x0 = 232, x1 = 700, sirka = x1 - x0, OS = 1.25;
-  const H = PADt + riadky.length * RH + 4;
-  const X = pomer => x0 + Math.min(pomer, OS) / OS * sirka;
-
-  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Krytie jednotlivých rizík voči odporúčanému pásmu">`;
-  riadky.forEach((r, i) => {
-    const yr = PADt + i * RH;
-    const n = r.osoby.length;
-    s += `<text x="0" y="${yr + RH/2 + 1}" class="bl-nazov">${r.nazov}</text>`;
-    if (r.pozn) s += `<text x="0" y="${yr + RH/2 + 15}" class="bl-pozn">${r.pozn}</text>`;
-
-    // pozadie osi a odporúčané pásmo (rovnaké pre všetky pruhy riadku)
-    const yStred = yr + RH/2;
-    s += `<rect x="${x0}" y="${yStred-11}" width="${sirka}" height="22" rx="4" class="bl-bg"/>`;
-    const od = Math.min(r.pasmoOd, 0.88);            // pásmo nech je vždy viditeľné
-    s += `<rect x="${X(od)}" y="${yStred-11}" width="${X(1)-X(od)}" height="22" rx="3" class="bl-pasmo"/>`;
-
-    r.osoby.forEach((o, j) => {
-      const vyska = n === 1 ? 9 : 7;
-      const y = n === 1 ? yStred - vyska/2 : yStred - 11 + j*12;
-      const p = r.horna[j] > 0 ? o.hodnota / r.horna[j] : 0;
-      const w = Math.max(p > 0 ? 3 : 0, X(p) - x0);
-      s += `<rect x="${x0}" y="${y}" width="${w}" height="${vyska}" rx="${vyska/2}"
-                  class="bl-pruh ${j===1?'b2':''}"/>`;
-      if (p > 0) s += `<circle cx="${X(p)}" cy="${y+vyska/2}" r="${vyska/2+1.5}" class="bl-bod ${j===1?'b2':''}"/>`;
-      const pod = p < r.pasmoOd - 0.03;               // tolerancia na zaokrúhlenie poistných súm
-      s += `<text x="${x1+14}" y="${y+vyska/2+4}" class="bl-hod ${pod ? 'pod' : ''}">${o.text}</text>`;
-    });
-  });
-  s += `</svg>`;
-  host.innerHTML = s;
-
-  if (menaOsob && menaOsob.length > 1){
-    host.insertAdjacentHTML("beforeend",
-      `<div class="legend"><span><i style="background:var(--s1)"></i>${menaOsob[0]}</span>
-       <span><i style="background:var(--s1);opacity:.5"></i>${menaOsob[1]}</span>
-       <span><i style="background:var(--axis)"></i>odporúčané pásmo</span></div>`);
-  } else {
-    host.insertAdjacentHTML("beforeend",
-      `<div class="legend"><span><i style="background:var(--s1)"></i>krytie v balíčku</span>
-       <span><i style="background:var(--axis)"></i>odporúčané pásmo</span></div>`);
-  }
 }
 
 /* ============================================================
@@ -907,7 +1293,8 @@ function bodyRocne(rows, krok){
 /* ============================================================
    VÝPOČET + RENDER
    ============================================================ */
-let earlyOn = false, zivotOn = false, splatkaGlob = 0;
+let earlyOn = false, splatkaGlob = 0;
+let r4Dotknute = false;   // keď poradca prepíše rentu, prestaneme ju predvypĺňať
 
 function citajVstupy(){
   const dvaja = $("iStav").value === "2";
@@ -1006,6 +1393,10 @@ function renderAll(){
   splatkaGlob = splatka;
   const zaklad = amortizacia(v.suma, v.sadz, v.roky*12, splatka);
   $("oSplatka").textContent = eur(splatka);
+  $("oSplatkaPodiel").textContent = v.prijem > 0
+    ? `${Math.round(splatka/v.prijem*100)} % čistého príjmu domácnosti` : "";
+  $("oUrokyPodiel").textContent = (v.suma + zaklad.urokCelkom) > 0
+    ? `${Math.round(zaklad.urokCelkom/(v.suma+zaklad.urokCelkom)*100)} % zo všetkého, čo banke pošlete` : "";
   $("oUroky").textContent   = eur(zaklad.urokCelkom);
   $("oCelkom").textContent  = eur(v.suma + zaklad.urokCelkom);
 
@@ -1066,37 +1457,51 @@ function renderAll(){
       Konkrétne podmienky sa medzi bankami líšia — overíme ich pri vašej zmluve.</span>`;
   }
 
-  /* --- 5. životné poistenie --- */
+  /* --- 3. investície --- */
+  let vybInvest = null;
+  if (obrazovka === "invest" || zaujem.invest) vybInvest = renderInvest(v);
+
+  /* --- 5. dôchodok --- */
+  let vybDoch = null;
+  if (obrazovka === "doch" || zaujem.doch) vybDoch = renderDoch(v);
+
+  /* --- odkazy v sekcii Auto --- */
+  [["lnkPzp","pzp"],["lnkKasko","kasko"],["lnkGap","gap"],["lnkDom","dom"]].forEach(([id,k]) => {
+    const a = $(id); if (!a) return;
+    a.href = ODKAZY[k] || "#";
+    a.classList.toggle("off", !ODKAZY[k]);
+  });
+  $("autoPozn").style.display = (ODKAZY.pzp || ODKAZY.kasko || ODKAZY.gap) ? "none" : "";
+
+  /* --- 4. životné poistenie --- */
   let vybZivot = null;
-  if (zivotOn){
+  if (obrazovka === "zivot" || zaujem.zivot){
     $("iSkup1").innerHTML = $("iSkup2").innerHTML = CONFIG.zivot.skupiny
       .map(x => `<option value="${x.k}">${x.k}. skupina — ${x.popis}</option>`).join("");
     $("iSkup1").value = skupHodnota[1]; $("iSkup2").value = skupHodnota[2];
     document.querySelectorAll(".w2").forEach(el => el.classList.toggle("skryt", !v.dvaja));
     vybZivot = renderZivot(v);
     renderFakty();
-    $("cenaPozn").innerHTML = `<span><b>Cena je odhad, nie ponuka poisťovne.</b> Vychádza z metodiky poistných súm,
-      ktorú používame, a je nastavená tak, aby modelová rodina z nášho prezentéra vyšla na 130–150 € mesačne.
-      Skutočnú cenu určuje konkrétna poisťovňa podľa veku, zdravotného stavu, povolania a svojho sadzobníka —
-      spočítam vám ju presne, keď si vyberieme poisťovňu.</span>`;
   }
 
   /* --- 6/7 --- */
   if (earlyOn) zaujem.early = true;
-  zaujem.zivot = zivotOn;
+  /* Pruh ukazuje len to, čo klient rieši — pribúda so zaškrtnutými oblasťami. */
+  const V = CONFIG.vedierka.podielPrijmu;
   renderPruh([
-    {k:"Rámec",   v: eur(Math.floor(L.max/1000)*1000)},
-    {k:"Hypotéka",v: eur(v.suma)},
-    {k:"Splátka", v: eur(splatka), f:"a"},
-    {k:"Úroky",   v: eur(zaklad.urokCelkom), f:"b"},
-    earlyOn && porovnanie ? {k:"Úspora", v: eur(Math.max(0, zaklad.urokCelkom - porovnanie.urokCelkom)), f:"c"} : null,
-    vybZivot ? {k:"Poistné "+vybZivot.bal.nazov,
-                v: `${Math.round(vybZivot.dolna/5)*5} – ${Math.round(vybZivot.horna/5)*5} €`} : null
+    zaujem.hypo ? {k:"Hypotéka", v: eur(v.suma)} : null,
+    zaujem.hypo ? {k:"Splátka",  v: eur(splatka), f:"a"} : null,
+    zaujem.invest && v.prijem > 0
+      ? {k:"Na investovanie", v: `${eur(v.prijem*V.min)} – ${eur(v.prijem*V.max)}`, f:"a"} : null,
+    zaujem.zivot && vybZivot
+      ? {k:"Poistné", v: `${vybZivot.bal.nazov} · ${Math.round(vybZivot.dolna/5)*5} – ${Math.round(vybZivot.horna/5)*5} €`} : null,
+    zaujem.doch && vybDoch && vybDoch.cisty1 > 0
+      ? {k:"Na dôchodku bude chýbať", v: eur(vybDoch.chyba), f:"b"} : null
   ]);
-  renderMapa(v); renderModules(); renderSum(v, L, splatka, zaklad, porovnanie, vybZivot);
+  renderMapa(v); renderKroky(); renderSum(v, L, splatka, zaklad, porovnanie, vybZivot, vybInvest, vybDoch);
 }
 
-function renderSum(v, L, splatka, zaklad, porov, z){
+function renderSum(v, L, splatka, zaklad, porov, z, inv, dch){
   const potreba = Math.max(0, v.hodn - v.vlast);
   const kroky = OBLASTI.filter(o=>!o.live && zaujem[o.id]).map(o=>o.nazov);
   let html = `
@@ -1111,12 +1516,30 @@ function renderSum(v, L, splatka, zaklad, porov, z){
     html += `<p><b>Predčasné splatenie:</b> ${v.extra>0?eur(v.extra)+" mesačne navyše":""}${v.extra>0&&v.jedn>0?", ":""}${v.jedn>0?"jednorazovo "+eur(v.jedn)+" v "+v.kedy+". roku":""} →
       úspora na úrokoch <b>${eur(zaklad.urokCelkom-porov.urokCelkom)}</b>, splatené skôr o ${Math.floor(skor/12)} r. ${skor%12} mes.</p>`;
   }
+  if (inv){
+    html += `<p><b>Investície — rozdelenie ${eur(inv.odklad)} mesačne:</b>
+      krátkodobá rezerva ${eur(inv.doKratke)}, strednodobé ciele ${eur(inv.doStredne)},
+      dlhodobý majetok ${eur(inv.doDlhe)}.${inv.chyba > 0 ? ` Do minimálnej rezervy chýba ${eur(inv.chyba)}.` : " Rezerva je naplnená."}
+      ${inv.doDlhe > 0 ? `Dlhodobé vedierko by pri 8 % ročne za ${Math.floor(inv.mesiacov/12)} rokov narástlo na
+      ${eur(buducaHodnota(inv.doDlhe, CONFIG.vedierka.vynosProjekcia, inv.mesiacov))}.` : ""}</p>`;
+  }
   if ($("d-uroky").open && zaklad.urokCelkom > 0){
     const r = clamp(+$("iVynos").value || 8, 1, 12), i = r/100/12, n = zaklad.mesiacov;
-    const ul = zaklad.urokCelkom * i / (Math.pow(1+i, n) - 1);
+    const f = (Math.pow(1+i, n) - 1) / i;
+    const ul = zaklad.urokCelkom / (rezimUroky === "vynos" ? Math.max(f - n, 0.0001) : f);
     html += `<p><b>Úroky naspäť:</b> pri odkladaní <b>${eur(ul)}</b> mesačne a predpokladanom zhodnotení
-      ${num(r)} % ročne by ste za ${Math.floor(n/12)} rokov nasporili ${eur(zaklad.urokCelkom)} —
-      teda sumu, ktorú zaplatíte banke na úrokoch. Vaše vklady by tvorili ${eur(ul*n)}.</p>`;
+      ${num(r)} % ročne by ${rezimUroky === "vynos"
+        ? `samotný výnos za ${Math.floor(n/12)} rokov dosiahol ${eur(zaklad.urokCelkom)} — teda zaplatené úroky —
+           a vaše vklady ${eur(ul*n)} by vám zostali navyše`
+        : `ste za ${Math.floor(n/12)} rokov nasporili ${eur(zaklad.urokCelkom)}, teda sumu zaplatených úrokov
+           (z toho vaše vklady ${eur(ul*n)})`}.</p>`;
+  }
+  if (dch && dch.cisty1 > 0){
+    html += `<p><b>Dôchodok:</b> odhad <b>${eur(dch.spolu)}</b> mesačne
+      (I. pilier ${eur(dch.p1)}${dch.p2>0?", II. pilier "+eur(dch.p2):""}, III. pilier ${eur(dch.p3)}),
+      čo je ${Math.round(dch.spolu/dch.cisty1*100)} % dnešného čistého príjmu ${eur(dch.cisty1)}.
+      Chýbať bude približne <b>${eur(dch.chyba)}</b> mesačne — na jej pokrytie treba do 65 rokov nasporiť
+      <b>${eur(dch.r4kap)}</b>, teda odkladať ${eur(dch.r4ul)} mesačne.</p>`;
   }
   if (z){
     const d = z.bal.deti;
@@ -1133,26 +1556,15 @@ function renderSum(v, L, splatka, zaklad, porov, z){
     : `<p style="color:var(--muted)">Zatiaľ nie sú vybrané žiadne ďalšie oblasti. Označte ich kliknutím v mape hore.</p>`;
   const k = poradca.kontakt || {};
   const kont = [k.tel, k.email, k.web].filter(Boolean).join(" · ");
+  const klient = ($("iKlient").value || "").trim();
+  const datum  = ($("iDatum").value || "").trim();
+  if (klient || datum) html = `<p class="sumhd">${klient || "Klient"}${datum ? " · " + datum : ""}</p>` + html;
   html += `<div class="sumfoot">${markHTML(poradca,"mk")}
     <span><b>${poradca.meno}</b>, ${poradca.rola}${kont ? " · " + kont : ""}</span></div>`;
   $("sumBox").innerHTML = html;
 }
 
 const skupHodnota = {1:1, 2:1};
-
-function odomkniZivot(){
-  $("d-zivot").open = true;
-  zivotOn = true;
-  renderAll();
-  setTimeout(()=>$("sec-zivot").scrollIntoView({behavior:"smooth",block:"start"}), 60);
-}
-
-function odomkniEarly(){
-  $("d-early").open = true;
-  earlyOn = true;
-  renderAll();
-  setTimeout(()=>$("d-early").scrollIntoView({behavior:"smooth",block:"start"}), 60);
-}
 
 /* ============================================================
    PREPÍNAČ PORADCU
@@ -1205,19 +1617,42 @@ document.addEventListener("DOMContentLoaded", () => {
   pair("iSuma","rSuma"); pair("iSadz","rSadz"); pair("iRoky","rRoky");
   pair("iExtra","rExtra"); pair("iJedn","rJedn");
   $("whoBtn").onclick = e => { e.stopPropagation(); prepniMenu(); };
-  document.addEventListener("click", e => { if (!$("who").contains(e.target)) zavriMenu(); });
+  document.addEventListener("click", e => {
+    if (!$("whoMenu").contains(e.target) && e.target !== $("whoBtn")) zavriMenu();
+  });
   document.addEventListener("keydown", e => { if (e.key === "Escape") zavriMenu(); });
   try { const ulozeny = PORADCOVIA.find(p => p.id === localStorage.getItem("poradcaId")); if (ulozeny) poradca = ulozeny; } catch(e){}
   renderPoradca();
-  sledujPruh();
   ["iPohl1","iPohl2","iFajc1","iFajc2"].forEach(id => $(id).addEventListener("change", renderAll));
   $("iSkup1").addEventListener("change", e => { skupHodnota[1] = +e.target.value; renderAll(); });
   $("iSkup2").addEventListener("change", e => { skupHodnota[2] = +e.target.value; renderAll(); });
   $("d-early").addEventListener("toggle", () => { earlyOn = $("d-early").open; renderAll(); });
-  $("d-zivot").addEventListener("toggle", () => { zivotOn = $("d-zivot").open; renderAll(); });
   $("d-uroky").addEventListener("toggle", renderAll);
+  ["d-renta","d-deti","d-sen"].forEach(id => $(id).addEventListener("toggle", renderAll));
+  ["iRentaRoky","iRentaVynos","iDietaVek","iDietaCiel","iDetiVynos","iSenNazov","iSenRoky","iSenVynos"]
+    .forEach(id => $(id).addEventListener("input", renderAll));
+  $("iVyd").addEventListener("input", renderAll);
+  ["iHruba","iOdprac","iMaII","iRokII","iStavII","iStavIII","iPrispIII"]
+    .forEach(id => $(id).addEventListener("input", renderAll));
+  $("iMaII").addEventListener("change", renderAll);
+  $("d-dochdet").addEventListener("toggle", renderAll);
+  ["iR4","rR4"].forEach(id => $(id).addEventListener("input", () => { r4Dotknute = true; }));
+  pair("iR4","rR4"); pair("iR4Spor","rR4Spor");
+  ["iR4Roky","iR4Vynos"].forEach(id => $(id).addEventListener("input", renderAll));
+  $("d-detipoist").addEventListener("toggle", renderAll);
+  pair("iRenta","rRenta"); pair("iDietaSuma","rDietaSuma"); pair("iRentaSpor","rRentaSpor");
   ["d-graf1","d-graf2"].forEach(id => $(id).addEventListener("toggle", renderAll));
   pair("iVynos","rVynos");
+  document.querySelectorAll("[data-rezim]").forEach(b => b.onclick = () => {
+    rezimUroky = b.dataset.rezim;
+    document.querySelectorAll("[data-rezim]").forEach(x => x.classList.toggle("on", x === b));
+    renderAll();
+  });
   $("btnPrint").addEventListener("click", () => window.print());
+  $("btnSum").addEventListener("click", () => prepniObrazovku("sum"));
+  ["iKlient","iDatum"].forEach(id => $(id).addEventListener("input", renderAll));
+  $("iDatum").value = new Date().toLocaleDateString("sk-SK", {day:"numeric", month:"numeric", year:"numeric"});
+  window.addEventListener("hashchange", () => prepniObrazovku(location.hash.slice(1), true));
+  prepniObrazovku(location.hash.slice(1) || "mapa", true);
   renderAll();
 });
