@@ -38,6 +38,7 @@
   --nav-hover:#31403A; --nav-box:#26332F; --nav-border:#3A4741;
   --r:8px;               /* jemnejšie rohy než predtým */
   --logo-bg:#1C2A2B; --logo-ink:#F6F4EF;
+  --prim:#C4623C; --prim-tm:#B0552F;   /* hlavné tlačidlo (Zhrnutie) */
   --font:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;
   --font-nad:'Instrument Serif',Georgia,serif;
 }
@@ -67,6 +68,21 @@ body{
 }
 .logo .mark img{width:100%;height:100%;object-fit:contain;border-radius:50%;display:block}
 .logo .mark.img{background:transparent !important}
+/* Značkové (široké) logo — nie kruhový monogram, ale celý lockup na svetlom štítku.
+   Logo je tmavozelené/tmavomodré, na tmavom paneli by zaniklo, preto svetlý podklad. */
+.logo .mark.img.sirok,.pdfhd .mk.img.sirok,.sumfoot .mk.img.sirok,.nav .menu .mk.img.sirok{
+  width:auto !important;max-width:100%;min-width:0;flex:0 1 auto;border-radius:5px;overflow:hidden;
+  padding:3px 6px;background:var(--logo-bg) !important;display:inline-flex;align-items:center;justify-content:center}
+.mark.sirok img,.mk.sirok img{width:auto !important;height:100% !important;max-width:100%;
+  border-radius:0 !important;object-fit:contain}
+/* pri značke je názov aj rola priamo v obrázku */
+.logo.zn .nm{display:none}
+.nav .logo.zn .mark{height:38px}
+
+/* prepínač poradcu — kompaktné tlačidlo, aby vedľa neho ostalo miesto na široké logo */
+.nav-who{width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:6px}
+.nav-who svg{width:14px;height:14px;display:block}
+.nav-who:hover{background:var(--nav-hover);color:#F6F4EF}
 .logo .nm{line-height:1.25;min-width:0}
 .logo .nm b{display:block}
 .logo .nm small{display:block}
@@ -93,6 +109,11 @@ body{
   display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:700;flex:0 0 auto}
 .nav .menu .mk img{width:100%;height:100%;object-fit:contain;border-radius:50%;display:block}
 .nav .menu .mk.img{background:transparent !important}
+/* v menu sa ukazujú aj neaktívne značky — ich štítok musí byť vždy svetlý,
+   --logo-bg patrí práve prihlásenému poradcovi */
+.nav .menu .mk.img.sirokmenu{width:auto !important;height:18px;border-radius:3px;padding:2px 5px;
+  background:#F1F4F8 !important;flex:0 0 auto}
+.nav .menu .mk.sirokmenu img{width:auto !important;height:100% !important;border-radius:0 !important}
 .nav .menu .empty{padding:8px 9px;font-size:11.5px;color:var(--nav-muted);line-height:1.45}
 
 .nav-hd{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--nav-muted);padding:0 18px 9px}
@@ -126,8 +147,8 @@ body{
   background:transparent;border:1px solid var(--nav-border);color:var(--nav-ink);font-family:inherit
 }
 .nb:hover{border-color:var(--nav-muted)}
-.nb.prim{flex:1;background:var(--s2);border-color:var(--s2);color:#fff;font-weight:500}
-.nb.prim:hover{background:#B0552F;border-color:#B0552F}
+.nb.prim{flex:1;background:var(--prim);border-color:var(--prim);color:#fff;font-weight:500}
+.nb.prim:hover{background:var(--prim-tm);border-color:var(--prim-tm)}
 
 .main{flex:1;min-width:0;display:flex;flex-direction:column}
 .obrazovky{flex:1;min-height:0;overflow:auto}
@@ -173,13 +194,7 @@ body{
   .nav .menu{left:16px;right:auto;width:230px}
   .obrazovky{overflow:visible}
 }
-@media print{
-  .app{display:block;height:auto;overflow:visible}
-  .nav,.pruh-klient{display:none !important}
-  .obrazovky{overflow:visible}
-  .obr{display:block !important;padding:0;page-break-after:always}
-  .obr:last-child{page-break-after:auto}
-}
+/* Pravidlá pre tlač sú zhromaždené v jednom bloku na konci štýlov. */
 
 /* checkbox v lište oddelený od názvu */
 .mod{padding:5px 13px 5px 7px;gap:0}
@@ -608,12 +623,85 @@ figcaption{font-size:14px;font-weight:600;margin-bottom:2px}
 .sumfoot .mk.img{background:transparent !important}
 .sumfoot .mk img{width:100%;height:100%;object-fit:contain;border-radius:50%;display:block}
 .disc{font-size:11.5px;color:var(--muted);line-height:1.55;margin-top:26px;border-top:1px solid var(--border);padding-top:14px}
+.discp{display:none}
 
+
+/* ---------- UKLADANIE DO ZHRNUTIA ---------- */
+.zrad{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:18px;padding-top:14px;border-top:1px dashed var(--border)}
+.zbtn{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border:1px solid var(--s1);background:var(--card);color:var(--s1);
+  border-radius:var(--r);font:600 13px/1 var(--font);cursor:pointer}
+.zbtn:hover{background:var(--s1);color:#fff}
+.zbtn svg{width:15px;height:15px;flex:0 0 15px}
+.zbtn.on{border-color:var(--s3);color:var(--s3)}
+.zbtn.on:hover{background:var(--s3);color:#fff}
+.zbtn[disabled]{opacity:.45;cursor:not-allowed;border-color:var(--border);color:var(--muted);background:var(--card)}
+.zchips{display:flex;flex-wrap:wrap;gap:6px}
+.zchip{display:inline-flex;align-items:center;gap:6px;padding:5px 6px 5px 11px;border-radius:999px;
+  background:var(--ok-bg);color:var(--good-ink);font-size:12.5px;font-weight:600}
+.zchip button{border:0;background:transparent;color:var(--good-ink);cursor:pointer;font-size:13px;line-height:1;padding:2px 4px;opacity:.6}
+.zchip button:hover{opacity:1}
+
+/* ---------- PODKLAD PRE KLIENTA ---------- */
+.pdfhd{display:flex;align-items:center;gap:14px;padding-bottom:12px;border-bottom:2px solid var(--s1);margin-bottom:18px}
+.pdfhd .mk.img.sirok{height:40px}
+.pdfhd .mk{width:38px;height:38px;border-radius:10px;background:var(--logo-bg);color:var(--logo-ink);
+  display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex:0 0 38px}
+.pdfhd .mk.img{background:transparent !important}
+.pdfhd .mk img{width:100%;height:100%;object-fit:contain;border-radius:50%;display:block}
+.pdfme,.pdfkl{display:flex;flex-direction:column;line-height:1.3}
+.pdfme span,.pdfkl span{font-size:12px;color:var(--muted)}
+.pdfkl{margin-left:auto;text-align:right}
+.zsek{margin-top:18px}
+.zsek h3{font:600 11px/1 var(--font);letter-spacing:.14em;text-transform:uppercase;color:var(--s2);margin:0 0 10px}
+.zsek>p{margin:0 0 8px}
+.zpol{margin:0 0 12px;break-inside:avoid;page-break-inside:avoid}
+.zpol h4{margin:0;font:600 14px/1.4 var(--font);color:var(--ink)}
+.zpol .zin{font-size:12px;color:var(--muted);margin:1px 0 2px}
+.zpol .zout{font-size:13.5px;line-height:1.5}
+.zpol .zout b{color:var(--s1)}
+.zprazdne{color:var(--muted);font-style:italic}
+ul.zkroky{margin:0;padding-left:18px}
+ul.zkroky li{margin:3px 0}
+.zedit{margin-top:22px;padding-top:16px;border-top:1px solid var(--border)}
+.zedit label{display:block;font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:6px}
+.zedit textarea{width:100%;min-height:88px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--r);
+  font:14px/1.6 var(--font);background:var(--card);color:var(--ink);resize:vertical}
+.zedit .zpod{display:flex;gap:10px;align-items:center;margin-top:8px;flex-wrap:wrap}
+.zkand{margin-top:16px;font-size:13px;color:var(--ink-2);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.zkand button.zchip{background:var(--surface-1);color:var(--ink-2);cursor:pointer;padding:5px 11px;border:1px solid var(--border);font:600 12.5px/1.3 var(--font)}
+.zkand button.zchip:hover{background:var(--s1);color:#fff;border-color:var(--s1)}
+
+/* ============================================================
+   TLAČ — na papier ide výhradne obrazovka Zhrnutie.
+   ============================================================ */
 @media print{
-  body{background:#fff}
-  header.top,.ask,.btn,.noprint,#sec-mapa{display:none !important}
-  .card{border:1px solid var(--grid);break-inside:avoid;page-break-inside:avoid}
-  section{margin-top:14px}
+  @page{size:A4;margin:14mm}
+  html,body{background:#fff}
+  body{font-size:10.5pt;line-height:1.42}
+  .app{display:block;height:auto;overflow:visible}
+  .main{display:block;overflow:visible}
+  .nav,.pruh-wrap,.pruh-klient,header.top,.ask,.btn,.nb,.noprint{display:none !important}
+  .obrazovky{overflow:visible;height:auto;display:block;padding:0}
+  .obr{display:none !important}
+  #sec-sum{display:block !important;padding:0;margin:0}
+  #sec-sum>.card{border:0 !important;box-shadow:none !important;padding:0;margin:0;background:#fff}
+  #sec-sum>.card>h2,#sec-sum>.card>.sub{display:none}
+  .pdfhd{margin-bottom:12pt;padding-bottom:8pt}
+  .pdfhd .mk.img.sirok,.sumfoot .mk.img.sirok{background:transparent !important;padding:0}
+  .zsek{margin-top:10pt}
+  .zsek h3{font-size:8pt;letter-spacing:.13em;margin-bottom:6pt}
+  .zpol{margin-bottom:5pt}
+  .zpol h4{font-size:10.5pt}
+  .zpol .zin{font-size:8.5pt}
+  .zpol .zout{font-size:10pt}
+  ul.zkroky li{margin:2pt 0}
+  .sumfoot{margin-top:8pt;padding-top:5pt;border-top:1px solid #C9C4B8}
+  .disc{display:none}
+  .discp{display:block;font-size:7.5pt;margin-top:5pt;padding-top:4pt;line-height:1.4;max-width:none;
+    color:#6B706C;border-top:1px solid #C9C4B8}
+  .zpol,.pdfhd{break-inside:avoid;page-break-inside:avoid}
+  #sumFoot{break-inside:avoid;page-break-inside:avoid}
+  .zsek h3{break-after:avoid;page-break-after:avoid}
 }
 </style>
 </head>
@@ -633,10 +721,10 @@ figcaption{font-size:14px;font-weight:600;margin-bottom:2px}
 
   <div class="nav-pata">
     <div class="nav-line"></div>
-    <p>Nič sa neukladá. Zhrnutie viete vytlačiť alebo poslať klientovi ako PDF.</p>
+    <p>Údaje sa nikam neodosielajú. Zhrnutie viete vytlačiť alebo poslať klientovi ako PDF.</p>
     <div class="nav-btns">
       <button class="nb prim" id="btnSum" type="button">Zhrnutie</button>
-      <button class="nb" id="btnPrint" type="button">PDF</button>
+      <button class="nb" id="btnPrintNav" type="button">PDF</button>
     </div>
   </div>
 </aside>
@@ -790,6 +878,7 @@ figcaption{font-size:14px;font-weight:600;margin-bottom:2px}
     </div>
 
     <div id="hFlags"></div>
+    <div class="zrad" data-z="hypo"></div>
 
     </div>
       <div class="splitR">
@@ -807,6 +896,7 @@ figcaption{font-size:14px;font-weight:600;margin-bottom:2px}
 
           <div id="oFlags"></div>
           <div class="note" id="oRozklad"></div>
+          <div class="zrad" data-z="ramec"></div>
         </div>
       </div>
     </div>
@@ -847,6 +937,7 @@ figcaption{font-size:14px;font-weight:600;margin-bottom:2px}
        Tri vedierka, tri úlohy. Až keď stoja prvé dve, má zmysel plniť tretie.</p>
 
     <div id="kybliky"></div>
+    <div class="zrad" data-z="vedierka"></div>
 
     <h3 style="margin-top:30px">Na čo si sporiť</h3>
     <p class="sub" style="margin-bottom:4px">Rozkliknite cieľ, ktorý klienta zaujíma — každý má vlastnú kalkulačku.</p>
@@ -886,6 +977,7 @@ figcaption{font-size:14px;font-weight:600;margin-bottom:2px}
             <span><i style="background:var(--s1)"></i>S predčasným splácaním</span>
           </div>
           <div class="flag warn" id="poplatok"></div>
+          <div class="zrad" data-z="early"></div>
         </div>
       </details>
 
@@ -924,6 +1016,7 @@ figcaption{font-size:14px;font-weight:600;margin-bottom:2px}
 
           <div class="pasik" id="pasikUroky"></div>
           <div class="flag warn" id="urokyPozn"></div>
+          <div class="zrad" data-z="uroky"></div>
         </div>
       </details>
 
@@ -968,6 +1061,7 @@ figcaption{font-size:14px;font-weight:600;margin-bottom:2px}
             </div>
           </figure>
           <div class="flag warn" id="rentaPozn"></div>
+          <div class="zrad" data-z="renta"></div>
         </div>
       </details>
 
@@ -993,6 +1087,10 @@ figcaption{font-size:14px;font-weight:600;margin-bottom:2px}
               <label>Očakávané zhodnotenie</label>
               <div class="inline"><input type="number" id="iDetiVynos" value="8" min="0" max="12" step="0.1"><span class="suffix">% p. a.</span></div>
             </div>
+            <div>
+              <label>Pre koho <span class="hint">rozlíši dve deti v zhrnutí</span></label>
+              <input type="text" id="iDetiMeno" placeholder="napr. Ema" spellcheck="false">
+            </div>
           </div>
           <div class="hero" style="margin-top:22px">
             <div><div class="lbl">Stačí odkladať</div><div class="big" style="color:var(--s1)" id="oDetiUlozka">—</div><div class="pod" id="oDetiDoba"></div></div>
@@ -1001,6 +1099,7 @@ figcaption{font-size:14px;font-weight:600;margin-bottom:2px}
           </div>
           <div class="pasik" id="pasikDeti"></div>
           <div class="flag" id="detiPozn"></div>
+          <div class="zrad" data-z="deti"></div>
         </div>
       </details>
 
@@ -1033,6 +1132,7 @@ figcaption{font-size:14px;font-weight:600;margin-bottom:2px}
           </div>
           <div class="pasik" id="pasikSen"></div>
           <div class="flag" id="senPozn"></div>
+          <div class="zrad" data-z="sen"></div>
         </div>
       </details>
     </div>
@@ -1082,6 +1182,7 @@ figcaption{font-size:14px;font-weight:600;margin-bottom:2px}
        ktorý si klient zvolil. Prenesie sa do horného pruhu aj do zhrnutia.</p>
     <div id="balTab"></div>
     <div class="flag warn" id="cenaPozn"></div>
+    <div class="zrad" data-z="zivot"></div>
 
     <div class="rozbaly" style="margin-top:20px">
       <details class="rozb cta" id="d-detipoist">
@@ -1161,6 +1262,7 @@ figcaption{font-size:14px;font-weight:600;margin-bottom:2px}
     </figure>
 
     <div class="flag warn" id="dochPozn"></div>
+    <div class="zrad" data-z="doch"></div>
 
     <h3 style="margin-top:30px">IV. pilier — čo si doplníte sami</h3>
     <p class="sub" style="margin-bottom:16px">Rozdiel medzi štátnym dôchodkom a príjmom, na ktorý ste zvyknutí,
@@ -1203,6 +1305,7 @@ figcaption{font-size:14px;font-weight:600;margin-bottom:2px}
       </div>
     </figure>
     <div class="flag warn" id="r4Pozn"></div>
+    <div class="zrad" data-z="r4"></div>
 
     <div class="rozbaly" style="margin-top:22px">
       <details class="rozb info" id="d-dochdet">
@@ -1267,20 +1370,19 @@ figcaption{font-size:14px;font-weight:600;margin-bottom:2px}
 
     <div class="autobox">
       <svg viewBox="0 0 300 120" class="autoimg" role="img" aria-label="Auto">
-        <path d="M14 100 h272" stroke="var(--axis)" stroke-width="2" stroke-linecap="round"/>
-        <path d="M28 98 V78 c0-7 5-13 12-15 l34-9 20-21 c4-4 9-6 15-6 h56 c6 0 11 2 15 6 l20 21 34 9
-                 c7 2 12 8 12 15 v20 Z" fill="var(--s1)" opacity=".10"/>
-        <path d="M28 98 V78 c0-7 5-13 12-15 l34-9 20-21 c4-4 9-6 15-6 h56 c6 0 11 2 15 6 l20 21 34 9
-                 c7 2 12 8 12 15 v20" fill="none" stroke="var(--s1)" stroke-width="2.6" stroke-linejoin="round"/>
-        <path d="M92 60 l14-16 c2-3 5-4 9-4 h30 v20 Z" fill="none" stroke="var(--s1)" stroke-width="1.8" opacity=".55"/>
-        <path d="M152 40 h28 c4 0 7 1 9 4 l14 16 h-51 Z" fill="none" stroke="var(--s1)" stroke-width="1.8" opacity=".55"/>
-        <circle cx="86" cy="98" r="15" fill="var(--card)" stroke="var(--s1)" stroke-width="2.6"/>
-        <circle cx="86" cy="98" r="5" fill="var(--s1)" opacity=".45"/>
-        <circle cx="212" cy="98" r="15" fill="var(--card)" stroke="var(--s1)" stroke-width="2.6"/>
-        <circle cx="212" cy="98" r="5" fill="var(--s1)" opacity=".45"/>
-        <rect x="258" y="76" width="16" height="7" rx="3.5" fill="var(--s2)"/>
-        <rect x="30" y="78" width="11" height="6" rx="3" fill="var(--s2)" opacity=".6"/>
-        <path d="M120 98 h58" stroke="var(--s1)" stroke-width="1.6" opacity=".25"/>
+        <path d="M12 98 h276" stroke="var(--axis)" stroke-width="2" stroke-linecap="round"/>
+        <path d="M26 84 V72 c0-5 3-8 8-9 l64-11 24-20 c2-2 5-3 8-3 h60 c3 0 6 1 8 3 l22 20 46 11 c5 1 8 4 8 9 v12 h-35 a17 17 0 0 0 -34 0 h-108 a17 17 0 0 0 -34 0 Z" fill="var(--s1)" opacity=".10"/>
+        <path d="M26 84 V72 c0-5 3-8 8-9 l64-11 24-20 c2-2 5-3 8-3 h60 c3 0 6 1 8 3 l22 20 46 11 c5 1 8 4 8 9 v12 h-35 a17 17 0 0 0 -34 0 h-108 a17 17 0 0 0 -34 0 Z" fill="none" stroke="var(--s1)" stroke-width="2.4" stroke-linejoin="round"/>
+        <path d="M104 50 l22 -14 h28 v14 Z" fill="none" stroke="var(--s1)" stroke-width="1.7" opacity=".5"/>
+        <path d="M162 36 h26 l22 14 h-48 Z" fill="none" stroke="var(--s1)" stroke-width="1.7" opacity=".5"/>
+        <path d="M158 52 v28" stroke="var(--s1)" stroke-width="1.5" opacity=".3"/>
+        <path d="M136 60 h14" stroke="var(--s1)" stroke-width="2.2" opacity=".4" stroke-linecap="round"/>
+        <rect x="27" y="63" width="13" height="7" rx="3.5" fill="var(--s4)" opacity=".7"/>
+        <rect x="259" y="63" width="13" height="7" rx="3.5" fill="var(--s2)"/>
+        <circle cx="80" cy="83" r="15" fill="var(--card)" stroke="var(--s1)" stroke-width="2.4"/>
+        <circle cx="80" cy="83" r="4.8" fill="var(--s1)" opacity=".4"/>
+        <circle cx="222" cy="83" r="15" fill="var(--card)" stroke="var(--s1)" stroke-width="2.4"/>
+        <circle cx="222" cy="83" r="4.8" fill="var(--s1)" opacity=".4"/>
       </svg>
       <div class="autobtns">
         <a class="abtn" id="lnkPzp" href="#" target="_blank" rel="noopener">
@@ -1296,22 +1398,37 @@ figcaption{font-size:14px;font-weight:600;margin-bottom:2px}
   </div>
 </section>
 
-<!-- 5. ZHRNUTIE --><!-- 5. ZHRNUTIE -->
+<!-- 8. ZHRNUTIE -->
 <section id="sec-sum" class="obr">
   <div class="card">
     <h2><span class="num">8</span>Zhrnutie stretnutia</h2>
-    <p class="sub">Prehľad čísel, ktoré sme prešli, a dohodnutých ďalších krokov.</p>
+    <p class="sub">Do podkladu pre klienta ide len to, čo ste pri kalkulačkách uložili tlačidlom „Uložiť do zhrnutia“.</p>
     <div id="sumBox"></div>
-    <div style="margin-top:20px" class="noprint">
-      <button class="btn" id="btnPrint" type="button">Vytlačiť / uložiť ako PDF</button>
+    <div id="sumKroky"></div>
+    <div id="sumFoot"></div>
+    <div class="zedit noprint">
+      <label for="iKroky">Dohodnuté ďalšie kroky — jeden na riadok</label>
+      <textarea id="iKroky" spellcheck="false" placeholder="Napr. Hypotéka — porovnať ponuky dvoch bánk do stredy"></textarea>
+      <div class="zpod">
+        <button class="zbtn" id="btnKrokyAuto" type="button">Predvyplniť zo zaškrtnutých oblastí</button>
+        <span class="ftp" style="margin:0">Prepísaním textu si zoznam prispôsobíte; predvyplnenie ho nahradí.</span>
+      </div>
     </div>
+    <div id="sumKand" class="zkand noprint"></div>
+    <div style="margin-top:20px" class="noprint">
+      <button class="btn" id="btnPrintSum" type="button">Vytlačiť / uložiť ako PDF</button>
+    </div>
+    <div class="disc discp">Uvedené čísla sú orientačné a nepredstavujú záväznú ponuku ani prísľub úveru —
+      skutočné podmienky určuje banka či poisťovňa na základe kompletnej žiadosti. Prepočet vychádza z limitov
+      NBS a súm životného minima platných k augustu 2026.</div>
     <div class="disc">
       Všetky uvedené čísla sú orientačné a nepredstavujú záväznú ponuku ani prísľub úveru. Skutočnú výšku úveru, sadzbu a splátku
       určuje banka na základe kompletnej žiadosti, bonity, ocenenia nehnuteľnosti a svojich interných pravidiel.
       Prepočet vychádza z limitov NBS a súm životného minima platných k augustu 2026 (životné minimum od 1. 7. 2026:
       295,22 € prvá dospelá osoba, 205,96 € ďalšia dospelá osoba, 134,80 € nezaopatrené dieťa).
       Nové rozlíšené limity LTV (90 / 80 / 70 %) nadobúdajú účinnosť 1. 1. 2027.
-      Aplikácia neukladá ani neodosiela žiadne zadané údaje.
+      Aplikácia neodosiela žiadne zadané údaje. Rozpracované zhrnutie drží len dočasne v tomto okne prehliadača
+      a zatvorením karty zmizne — na disk sa neukladá nič.
     </div>
   </div>
 </section>

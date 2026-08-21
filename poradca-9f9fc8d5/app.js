@@ -126,6 +126,33 @@ const PORADCOVIA = [
     logo: "data:image/png;base64,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",
     kontakt: { web: "gabrielkundrat.sk", email: "", tel: "" },
     farby: { logoBg: "#1c3a2f", logoInk: "#fbf6ec" /*, akcent: "#1c3a2f" — zelená z gabrielkundrat.sk */ }
+  },
+  {
+    id: "hv",
+    meno: "Hypotéka Východ",
+    rola: "finančné sprostredkovanie",
+    monogram: "HV",
+    logo: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZ0AAACACAMAAADnPkRhAAAAwFBMVEUPWFkiYywRVlkPVl0qPTFVVVUANVwhYz4A//8KTmUiZD4AVaoNVIAAAAAHWjYHVU4WYTsBVVQmZ0IAPj4LTW0KUmcAf38GWDUAfwAFWDYFWDcIWDYFWDYFWjUHU1AHU1AGVE0gYz4GVEwGWjYGU08AAP8GU04A/wAKS2sIZDUVZUIKTW4BSzIAO3gDSk0ZYjwKTW0XYjwAfj4GVm0ZYTsJUGIXYTsZYTsmZkIZYTwAAH8mZkEmZ0IJUmMnZUIpZkJkVupAAAAAQHRSTlMeEGjXBAMHngGNWgP/APz8/Qb9BPn9AhMCUY8wdM7RsS39kLFOAXABFgv/twwEDrLL0QQUlbIyUJN0ArXRkS9MRnZxlgAAE8RJREFUeNrtnQt72jizgE3a7V7OEVgRls3NEEMhUEKapk2bpGn//7/6dL/YxshYaSBEz24KtizL886MRmPZBKC6JOD3z3Or/AjAW/lDZYeoIfh1nivvHlvJm9wOgg5Ifp4X8PwGrTfBHQCdBWidF8sP8NeW+hhiXx2Dfy38XWUC4cnTWVB5LrzwgeqPj4K9tnZAdAJ3OuTyf/3+BcB7H3CC378DTxJNWL8QgIsTpoNA65HsfPzVXKiQB4o/oA+JQvD+B2ns5+8jNB9nOo+Pjz+r6LwHv8T+s6CZGIiun/GWfEj0PQgeRbdbIEleJ51H8u1XBR2i7sq2mgmVGMwPc3LVTKJIKQ0ppF9/vU46i9ZC04Fb1V0JFSf7ilPqupIoauLW/jMb8+F2DzFmeyRznK10IGj9sIemvc2nBVq5GVYDieKc0lC32zomPPXpXJz/nbtAEQ/khNoSkWzdeKAYhZy930+iPB64yOlN64jMx43OhaBzUUYHUXUXMrgw/v0vqSsG7iAvrJbo1/0kikD8mO8X/f4j3tvtHhydC3JlF5QI8TnsY54Oc+0XojA5iENqC5U4yL9FS0IPVKt7SPQLUxrWFu+X6uPP/47FfHbl2Zbs4sLza0Lnjl1ieP7VuDbivO7Pz0N54dfX+kvIglj3GQuicMJQHBv+HeqWiES/14wOIPhu9usH+8JaJ/26Huzjdg+PThCywumIzwYdCOKv56Es5/eEVai/h+c37kJFYHCjDj0P78Dg+nylWlrVkyixs3t98Pl1DL7fmP0K74/CfHbRgUI418RTCDorTQeB5Y0WQvidkri7NraE4fWSycpF10N14OpmSfPg383GV1SiyNlHfjUOvWd+7mtotnZ9dwR8dtGJq+hQdTckekeFh/YSKnWQpuhicooEE8PcS6IkHri2lAay4+7sfn2FB5962znuSBMooUPV3ZIog0CEuvxqWo+DUEnsm9P1RORVLYmG4dfYQaIFpZHdRfcWbOp24WujE3I6ia3uVG5K1sR8TJmGw+rUG9V1o3ZPjy9Eve8t0g4StZXmJlaWi6nbDXOwDzr1tjcdGg/Ii2wzdceW37eEGlYKleo6bUNUHZiOkBw0KEi0Kri2lSa8tnIDVG9Id9uq2+H3RomiA6DT1nTaig5RdyXRNlV3mNNfpqZtFzVlut7mdduhoeuSnZZom/1bRZorTdtQGuukwu2K1ug/NBSEx0onpgIhVzElUrqjV0X+6wPI1Z3tIf/Z6q74DENehTUR3vRK1TTh9WRNw0GqGgmXeFs0VyVR5iPVKYnStEr6Rd2uPCGpNIwPFk9dOm1GZwl6UvJ0X1wq9gUbTdqqWqlQaeyrWwqHpeE3Oah3o1ui9ZalEtVK096iNNy87q1+jQ7WfPajQ9RdX11/ueXaikItBNdK19tC1+E2h7Xuh2ZTN2UShZbS3MRbhhQ6lk0tPv0DjQ7q0BlIOsm1cWnD7bPNBQTLftsUak5NSZuj0NyJto8nLDowJboGMCn4SENp1lWjE7i3YI96Bxkd7IwKZPep7UhPNtUSbfcqnQKNDkamGNrU0hZa19sGnLhSQHQga1dIlDisvpvSCLdrm8904JbTODDb0XQGWsYu6q5CrqJQYZmu77qLQ+rnJRpriSK601VphNu19WZ4eOazF50d8UAhSTOYhrmjFgkfSlx1vUKisKaPVG4XE2Oz9GZ6cNGBOx1YoLM9HiiYT1GoS1PX27t1XU5XyiVKfWTb1UeaY1nR7R7nuFOkM3T11HTG0reNblBb17dKNCYTZeI93eIBh7EseRV0ejX0rOiT+jUdpNEUKkjUjAfclUYF1+ZVEdiLY6PTJnQSk04NdVczFluohq7Xm6yzgczSk359H2m53XzQnxwLnbWigyzvUUvdtZq2S8qwtjMpSHR/pSm63XCEFsdCJ1Z0gOmL+mivRTK2l99L18sHsv2VpsTtHo7xONOxIqzhfmNniVDr63q5RNWgsefKt3ho0oHHRmcUNlN37d4a67rODTT2kaVuNz62+Y4PdRcZlKGp6+tGy+FJcN3UR9puV8yL4dHQGeXhNFB3un7Ag4NU8aRFp4nSyEQRMcbR8Ihmo+s8nT7c/5leZMPuNX3Op+dJabQxxoMYHDGdJuqOfOp6AmwfiTz4owSDw8q01fRsvUbjhEddJzHBtO3NR1rQj4cOBCNf8UBO15vdzPfrIw+2BH/ItZPRyqOu23czmsYDx0knsfIDjVy7X13HvuOBI6QDwXp6iPEAzvnI5St1a5V0bIk2UvfWMcQDR0XHn2vPxwPv3+KBhnQWBdcOD0PXTyUeqKKTjwfgocQDyanEAxV0UEHdD0PX80rTetVubQsdj/GAPwfpN4g8Xjr+1B17zYWdVDywjU5iSXS6bpIfeIsH/NLBOdcODjIe6Lz6eKCUDlX3jrf8gCHO5vmBvu/7BX+2wH1eTRoU4oHOM8QDnSYOUsQDnZOKB0roUHXveFF3GvtqcXaaTJjyStM5ynhgeTf4HjeiQ+OBjhfX7lfXIZgY/UqPMB5AoB+Go2UDOjCn7kmzeECLs9P4fsGso1sbw+ODw56YJM59fzokHhh3qCxJIX/nzRwRa4O21FjXidFlrDX+X0MfCUDuAVH5ZWFvlV+TBStlEke0WEctrJKotiAetMPpkohhUdaJxD63uU/S+QIGaUeXWaN4YGa0NG56v2A9Nlp7sXggKbyPofCpogxv+nvJM5Dqbko0nTTKD2RGU1njeMBWmsZebRnH2psnccyGahSLD6LIr7EqwFQLtrSqR8vAJBbnSmI3QUtLtb82TraM7WaWNh0M5qa6N8sPmLo+b5ofmJhK0zweYA9S6HFw2W5P6eUvp+QDbBl1RjEwn1gaTYdr056HI/E6EfU4VlJ8cDPOr0OimxLxMPOQPhNGvsEpW7mNVdtDmgOAmk5e3Ru89w/5c5Cs75aP9BAP0ODJoBPTx8bo5Q70Cl0uZlqH05FvmxnFQtEQ6I3kUykhS+0m/DBRUx4j6KjX8tBNS5tOAhBdG2s+9MAemFpq2ymo+z/JQeh6XmkePExzEE05FOhwjeWKTT5PqfYiYTuj3pCUKX8aVQRgLF3RGywHvSlP+XEf1meFkJvyT9J2Rn1VYtUCpZPwpLvxzANijRN0SNAhEq107RA459qwq65Dse6yRjyw3Udi0pLrK10LdNojfrKECpU/H8xAcU4D9mITWqQ9gRb7OJUDDhXmaGleC3OdRixdvD8m6Sg4WkwJZqnJkfRscEc8QC3ROVJ31nWadMK7pqBuPhLX6eA2OliKP0lilcJittNnkXPMhwMim2TJOAJEqtKf9Rnw1zqxxlmhdPgnCaKPYoTUJkVnyeBYGRnu83QXgx3xwD9gRjQ4c7p86BoPQEJxPCFtV5nhxC2ITMBkzFprRIebzChOmF+byt//GQgkRJt6fDNzPSN9F3HJsA6Ml1ow20GmmfRZAFCwHQ4ntt9XQjbF7FSswWBmxwOFd+jz/enGwa2NHeMByI1iUlElseBU+EhFEdaggzZClTUdMrscsRsmPf14lUFnAwSdhC5dHhrdQVSgekMpHRhAXixk9P7KyLpbzAKSKdvBeQepFQ8UpIRTuQ/tgjNxmzAhaa3jCt+GTCeZVb4tbywrIVc6epKCNR3u2wZfjNS8oMOLZBDnHo7jxqSyAGV0yscdBmede/E6s2zlRUGwQ91hZ7coRctzU9ehg41Vqntq+siq2aWomLrbznQoS1/T4b5tSndL2XI68ZrMFllwFtOMAbMhSxaU1xpU0Jn2ZDGivv6U3XiGlsOgtgyx1oBgh7rXoKN8ZFaZQHWiA7Wb3DFnkh2sQcd+zlK3tBzZj43m3p8xZFOgnjFZFEmwkQzGt9DRj8nKaENszI3y7FhioFAZapBVu3ZnOmo42ZUfcKQzc0wqxd7ocN9mxAzGbJTOe+hVIWsqr+kMatOZjpjtWGXDOaNFTwTVAQ+0tuYHatARA8+u/ICbZ8N84NmdH9jDdoYDVUw63O1PzZ8RoPuHfeoDB0hMVXtWFVbNtDdnzzZk0yaQH8HEMDfiWhIAMMuyyc6Ld6EDNvNsDneHD07jDoGdZbPdSaU96OjJ4pccHTGHB6AYFRhB9giDXJw12oC6UUGfWdXUegiXGiEZ5uJ4PeQ6EKgpXXM6uLqpmnQcc317eLZeskxoaSWxA50vLPaGZgxg5sUYjqnxyxAlEbWajZrn4YuM+jk/2rZeOULzbBBhP7ZDBjTowNDRdqBLa/vZTnE2WmE7COSDXvpSYSuW6FXPd8pno7GNh8UCKmHK9qDA8eLH3n6vxpmO4y2LP0tHZrDFQINZg6M1AJV0JMyFeR7E3wslTsAb7huxfnsJ3ujUo8ONhw5dmLu7ob2yzH02Sup8MfAgbpTmGDQ8eTqdHJ1Ojk4nTwdgtqKF3wtgL9fpmBF2qe3oe6Nr4zzs53D6HfpxKQc0tBYpJkjTfvj06Jjr4eAedIBYLjtl93I6NhxKhy5CMuh0rDel8PtGkg7vD3+b75D2RQuZvhivd3p0VitNZ91e2XRWK4MGodNZTUtmCK2hzn/xWapJZ7UamnRWRjp3Jemo85BYgGweIkzMeKWpso52RidGB4Nelum7+HE/G5o7B+PxTF8oBpN+1iu98Hg45csNerkV3bkTkCayfqZujfLWyHky2e4CoIzUIIog75waB/ZPjI6nQnsewwlb3fOcq4ZPjg5Gpqcyppk0dTCf0/SEtb/8shPx7tCSGVmSW4OIjPIFq42JVYH/k/PCCL3ZjnVPaZUOnOsn+Nnf7vpGx0qLp2twSKWazsdnpbP583SS3M/ssJVBCf1L75WvCBwMsFUnsdNsIL+aqLAaCObri/MmSf2f+HlJOgdlOxjM02ydvzOlf+HHrbNY/9oj3jLsJf7pRK+DTjyZWAYLJxNI/kBrK/kaq74COJtn2Xy2UUnzgNQ3W4AbK5YT9aHFk9TiJa4X5L0Inehl6PCFKRNtH/Ru7oT9HVOZYSbSjLSlejZTN9DFojHWxlj/WHFmry2aqPrmGq6lWiSRjueTGguhX5LOrUc6UepqtnO9qIOGAXRZI7vdLu6uTYzbuzCz19TtoPNgrbbsZEpky9TaHjvL8iXpXPqhEznTYc/BpHq5P2fFVxMJHtSQMi5uvKGGkM6JV5pRsadxNR24UPUn89QcqymdjJZx6rg40JlO9Ex0oj9Ph1vaRF4KFHEjVL6NrbVLY8zhZcZyrQmxHVxJR9QXhhnMOwozQKlyvBPGeYM90YnIxUeRdzqRTzqkj250mATFukRGIuML24U7w4Zf46uCZiTIwiCBiC44r/RsshFA62Nyhple7kpsJ93IQHtmYPNAh5Ru9M0jnW+kPVp80WHlnRudifBQtB+pFB83GYiZr5OLSg0fx6M3XEkH/zO2pM4UQeg0tR3hzXAgsGEfdG75tXumE3mkE9WgQ64oFcbBxCwNDtIFy3Om1ynEOjwwPBA24r6xWoiNJB1udsYkJ8Haiy5TY6xZmipwkHSk7Xz0QKdbhw6zEjHEZDp+4ywmUMdrwu+h0qh8rL9LOtpPglzQYduODE3AoXu2rkc63ehzjQicyXCTGjMuxmqcGX6Nyna2hU46z0SZp4rOOPcogMHXokPO7DzXc7OdbvTpgG2HteZIR0qdDfrmMCHWGW+wMTUqeYbFfq5IP+mCebswl1XlI1SODk5dBx4HOl3ftvOJN9n1SKfrTofLDOakz32bKd9yEW6jAwo0xZloC1c2HeCPDrl4UnzT6fqkU8uzsVgMMg+Xwo+mI2IxFgIOtjOeqCJrwYLtIE4HFel8YD148ETHt2d7SdvhwwEJz+aFYWJmbrGCBqeoICs0qIYxiw4fudzSBU62Ex227bAufnY+PRXOR8D0FxfoXNmab9jCgzg8INtxgFmBOFO2wyIxbJ5IBu82nW3R4D50Lp/Js3V90unW8Wx8hJjQ5BTM5eAiTecfFlkF9kAi6ETmbDSS/o/WP9NCv2KzTj6lu0ojReeKVZy4JQtc6Xw6VDofRAed6RAMUTSfR7kHjfhmRYfO9SPqwri4MQYbUEkHAtJkeikbuKIReyQy3wGh8wF/ILaGWCTvnBc7PToAXHailMjrqgSapgPwJo2ijDqtK7ow5yyaQVxlOxiS+uMNrX9Fj0opLKxsRzY7I3A6t04xgXvMdrB0rmrTYVZB9RpV0wEBCQbTGZNQQA6JqLFV0AETmrKYMRuDs3fkiwybKZ0Abi6D2TyNjO0ebKf7+uhMaFr70tbfAh1Wj8p7/PQ0ZsksKD3bN4tOoB6gpzijzrcsG7PUbCBlRuiI22SsncD55vXR07mt79kewLtIS1jROYuiM5MOqbCRCduI7lMWZdD5RiGo56MCo/43/VqAIDI2n3m8c337CscdDGZPT0HugojYn57O7I3kS/D0jsv0UsZy0KiGwdlTdmu8XI3VJ/Ovd0+BsbwD/vv09C/9/+zsVsXmJ0FnD9upYWX0ojfB7S1wW0rD6t/esvr44zbHCjzS6b5COvjqqng5D2UbIQ8dHpDuKgvJ1P6rq1zLopLVFLriBcF6Uny5cafrcTb6XLYD5GTnWeu/Yjofnp/Oy5WX82zdl4qoXxGdg7ed2zc6pz3uvNF582yv1LN13+i80Xmj80bnjc4bnT8XFXw+WTrg4eEzE+X/27n1RuIEZzKx+tC8NSizdv+C/zs5OhAEfMXLpcdzXn5mCzUCH+aIdQcfTo4OueQz4jo+eXFC2l1+6nY/B77EGZDWPgXgNZb/AUkl1nBJAmXaAAAAAElFTkSuQmCC",
+    logoPomer: 3.23,          /* široký lockup — šírka/výška obrázka */
+    kontakt: { web: "hypoteka-vychod.sk", email: "serus@hypotekavychod.sk", tel: "" },
+    farby: {
+      logoBg: "#F1F6F2", logoInk: "#0E5E35",
+      /* Farby zo značky: zelená zo strechy #0E5E35 je hlavná, modrá z nápisu #0C4C77
+         (na papieri zosvetlená na #2F5AAE, ako ju používa aj web) je druhá.
+         Terakota (--s2) zámerne zostáva — v appke znamená „čo vás to stojí"
+         (zaplatené úroky, pôvodný splátkový plán). Zelená tam nepatrí. */
+      schema: {
+        "--s1":"#0E5E35", "--s5":"#0A4527",
+        "--s3":"#2F5AAE", "--s6":"#24478A",
+        "--good":"#0E5E35", "--good-ink":"#0B4A2A", "--ok-bg":"#E8F1EA",
+        "--prim":"#2F5AAE", "--prim-tm":"#264990",
+        "--page":"#F3F6F2", "--card":"#FFFFFF", "--surface-1":"#E7EFE8",
+        "--grid":"#DEE7E0", "--axis":"#C8D5CB", "--border":"#DEE7E0",
+        "--ink":"#17251C", "--ink-2":"#4F5F54", "--muted":"#85938A", "--muted-2":"#A5B1A9",
+        "--nav":"#0B3325", "--nav-ink":"#DCE8DF", "--nav-muted":"#7E9686",
+        "--nav-line":"#164534", "--nav-hover":"#1B5340", "--nav-box":"#124030", "--nav-border":"#1E5A44"
+      }
+    }
   }
   // ,{ id:"xy", meno:"Meno Priezvisko", rola:"finančný sprostredkovateľ",
   //    monogram:"XY", logo:"", kontakt:{web:"",email:"",tel:""},
@@ -205,18 +232,18 @@ const svgIc = k => '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="curr
    ============================================================ */
 const OBLASTI = [
   {id:"invest",  nazov:"Investície",       vetvy:["rezerva a strednodobé ciele","dlhodobé budovanie majetku"],
-   sec:"sec-invest", rozbal:"d-invest", live:true,
+   sec:"sec-invest", rozbal:"d-invest", live:true, krok:"Investície — pripraviť konkrétny návrh a porovnanie riešení",
    popis:"Rozdelenie peňazí podľa toho, kedy ich budete potrebovať — kýbliková metóda."},
   {id:"hypo",    nazov:"Hypotéka",         vetvy:["predčasné splatenie","poistenie nehnuteľnosti"],
-   sec:"sec-hypo",   live:true,  popis:"Úverový rámec, splátka a splátkový plán."},
+   sec:"sec-hypo",   live:true, krok:"Hypotéka — porovnať ponuky bánk a pripraviť žiadosť",  popis:"Úverový rámec, splátka a splátkový plán."},
   {id:"zivot",   nazov:"Životné poistenie",vetvy:["krytie príjmu","krytie hypotéky"],
-   sec:"sec-zivot", rozbal:"d-zivot", live:true, popis:"Krytie príjmu a hypotéky pri chorobe, úraze alebo úmrtí. Tri úrovne — mini, optimal, maxi."},
+   sec:"sec-zivot", rozbal:"d-zivot", live:true, krok:"Životné poistenie — pripraviť ponuku na vybraný balíček", popis:"Krytie príjmu a hypotéky pri chorobe, úraze alebo úmrtí. Tri úrovne — mini, optimal, maxi."},
   {id:"doch",    nazov:"Dôchodok",         vetvy:["I., II. a III. pilier","doživotná renta"],
-   sec:"sec-doch",  live:true, popis:"Kde reálne skončíte pri dnešnom nastavení a čo sa s tým dá urobiť teraz."},
+   sec:"sec-doch",  live:true, krok:"Dôchodok — pripraviť návrh III. piliera a vlastnej renty", popis:"Kde reálne skončíte pri dnešnom nastavení a čo sa s tým dá urobiť teraz."},
   {id:"auto",    nazov:"Auto",             vetvy:["PZP a havarijné","GAP"],
-   sec:"sec-auto",  live:true, popis:"PZP, havarijné poistenie a GAP — porovnanie a načasovanie výpovede."},
+   sec:"sec-auto",  live:true, krok:"Auto — porovnať PZP a havarijné, skontrolovať termín výpovede", popis:"PZP, havarijné poistenie a GAP — porovnanie a načasovanie výpovede."},
   {id:"dom",     nazov:"Nehnuteľnosť",    vetvy:["poistenie stavby a domácnosti","podpoistenie"],
-   sec:"sec-dom",   live:true,
+   sec:"sec-dom",   live:true, krok:"Nehnuteľnosť — prepočítať poistnú sumu stavby a domácnosti",
    popis:"Poistenie stavby a domácnosti, zodpovednosť za škodu. Banka ho pri hypotéke vyžaduje."}
 ];
 const zaujem = {invest:false, hypo:false, zivot:false, doch:false, auto:false, dom:false, early:false};
@@ -670,57 +697,6 @@ function renderInvest(v){
   if ($("d-renta").open) renderRenta(v);
   if ($("d-deti").open)  renderDeti();
   if ($("d-sen").open)   renderSen();
-  return null;
-}
-
-/* plošný graf rastu investície — vklady vs. celková hodnota */
-function investChart(host, tipEl, data, maxRokov){
-  host.querySelectorAll("svg").forEach(e => e.remove());
-  const W = 900, H = 260, PADl = 68, PADr = 16, PADt = 14, PADb = 30;
-  const iw = W-PADl-PADr, ih = H-PADt-PADb;
-  const yMax = niceMax(Math.max(...data.map(d => d.hodnota), 1));
-  const X = r => PADl + (r/Math.max(maxRokov,1))*iw;
-  const Y = v => PADt + ih - (v/yMax)*ih;
-  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Rast dlhodobej investície v čase">`;
-  for (let i=0;i<=4;i++){ const val=yMax*i/4, y=Y(val);
-    s+=`<line x1="${PADl}" x2="${W-PADr}" y1="${y}" y2="${y}" stroke="var(--grid)"/>
-        <text x="${PADl-10}" y="${y+4}" text-anchor="end" font-size="11" fill="var(--muted)">${kFmt(val)}</text>`; }
-  const krok = maxRokov<=10?2:5;
-  for (let r=0;r<=maxRokov;r+=krok) s+=`<text x="${X(r)}" y="${H-PADb+18}" text-anchor="middle" font-size="11" fill="var(--muted)">${r}</text>`;
-  const ciara = (kluc) => data.map((d,i)=>(i?"L":"M")+X(d.r).toFixed(1)+" "+Y(d[kluc]).toFixed(1)).join(" ");
-  s += `<path d="${ciara("hodnota")} L ${X(maxRokov)} ${Y(0)} L ${PADl} ${Y(0)} Z" fill="var(--s3)" opacity=".16"/>`;
-  s += `<path d="${ciara("vklad")} L ${X(maxRokov)} ${Y(0)} L ${PADl} ${Y(0)} Z" fill="var(--s1)" opacity=".22"/>`;
-  s += `<path d="${ciara("hodnota")}" fill="none" stroke="var(--s3)" stroke-width="2.2"/>`;
-  s += `<path d="${ciara("vklad")}" fill="none" stroke="var(--s1)" stroke-width="2"/>`;
-  s += `<line x1="${PADl}" x2="${W-PADr}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--axis)" stroke-width="1.5"/>`;
-  s += `<line id="iv-hair" x1="0" x2="0" y1="${PADt}" y2="${Y(0)}" stroke="var(--axis)" opacity="0"/>
-        <circle id="iv-d1" r="4" fill="var(--s1)" stroke="#fff" stroke-width="2" opacity="0"/>
-        <circle id="iv-d2" r="4" fill="var(--s3)" stroke="#fff" stroke-width="2" opacity="0"/>
-        <rect id="iv-hit" x="${PADl}" y="${PADt}" width="${iw}" height="${ih}" fill="transparent" style="cursor:crosshair"/></svg>`;
-  host.insertAdjacentHTML("afterbegin", s);
-  const svg = host.querySelector("svg");
-  svg.querySelector("#iv-hit").addEventListener("mousemove", e => {
-    const box = svg.getBoundingClientRect();
-    const rok = clamp((e.clientX-box.left)/box.width*W - PADl, 0, iw)/iw*maxRokov;
-    const d = data.reduce((a,b)=>Math.abs(b.r-rok)<Math.abs(a.r-rok)?b:a);
-    svg.querySelector("#iv-hair").setAttribute("x1", X(d.r));
-    svg.querySelector("#iv-hair").setAttribute("x2", X(d.r));
-    svg.querySelector("#iv-hair").setAttribute("opacity","1");
-    svg.querySelector("#iv-d1").setAttribute("cx", X(d.r)); svg.querySelector("#iv-d1").setAttribute("cy", Y(d.vklad));   svg.querySelector("#iv-d1").setAttribute("opacity","1");
-    svg.querySelector("#iv-d2").setAttribute("cx", X(d.r)); svg.querySelector("#iv-d2").setAttribute("cy", Y(d.hodnota)); svg.querySelector("#iv-d2").setAttribute("opacity","1");
-    tipEl.innerHTML = `<div style="margin-bottom:4px;color:#aaa">po ${d.r} rokoch</div>
-      <div class="r"><span><i style="background:var(--s1)"></i>Vložené</span><b>${eur(d.vklad)}</b></div>
-      <div class="r"><span><i style="background:var(--s3)"></i>Hodnota</span><b>${eur(d.hodnota)}</b></div>`;
-    tipEl.style.opacity="1";
-    const hb = host.getBoundingClientRect();
-    let left = e.clientX-hb.left+14;
-    if (left+tipEl.offsetWidth>hb.width) left = e.clientX-hb.left-tipEl.offsetWidth-14;
-    tipEl.style.left=left+"px"; tipEl.style.top=clamp(e.clientY-hb.top-10,0,hb.height-tipEl.offsetHeight)+"px";
-  });
-  svg.querySelector("#iv-hit").addEventListener("mouseleave", () => {
-    tipEl.style.opacity="0";
-    ["#iv-hair","#iv-d1","#iv-d2"].forEach(q=>svg.querySelector(q).setAttribute("opacity","0"));
-  });
 }
 
 /* ============================================================
@@ -1458,8 +1434,7 @@ function renderAll(){
   }
 
   /* --- 3. investície --- */
-  let vybInvest = null;
-  if (obrazovka === "invest" || zaujem.invest) vybInvest = renderInvest(v);
+  if (obrazovka === "invest" || zaujem.invest) renderInvest(v);
 
   /* --- 5. dôchodok --- */
   let vybDoch = null;
@@ -1498,70 +1473,341 @@ function renderAll(){
     zaujem.doch && vybDoch && vybDoch.cisty1 > 0
       ? {k:"Na dôchodku bude chýbať", v: eur(vybDoch.chyba), f:"b"} : null
   ]);
-  renderMapa(v); renderKroky(); renderSum(v, L, splatka, zaklad, porovnanie, vybZivot, vybInvest, vybDoch);
+  poslZivot = vybZivot; poslDoch = vybDoch;
+  renderMapa(v); renderKroky();
+  renderZTlacidla(v); renderSum(v); renderDalsieKroky(); renderKand();
 }
 
-function renderSum(v, L, splatka, zaklad, porov, z, inv, dch){
-  const potreba = Math.max(0, v.hodn - v.vlast);
-  const kroky = OBLASTI.filter(o=>!o.live && zaujem[o.id]).map(o=>o.nazov);
-  let html = `
-    <p><b>Situácia:</b> ${v.dvaja?"dvaja žiadatelia":"jeden žiadateľ"}, ${v.deti} ${v.deti===1?"dieťa":v.deti>=2&&v.deti<=4?"deti":"detí"},
-       čistý príjem domácnosti ${eur(v.prijem)} mesačne.</p>
-    <p><b>Úverový rámec:</b> približne <b>${eur(Math.floor(L.max/1000)*1000)}</b>; rozhodujúci je limit ${L.bind}.
-       Nehnuteľnosť ${eur(v.hodn)}, vlastné zdroje ${eur(v.vlast)}, potreba financovania ${eur(potreba)}.</p>
-    <p><b>Modelovaná hypotéka:</b> ${eur(v.suma)} na ${v.roky} rokov pri ${num(v.sadz)} % p. a. →
-       splátka <b>${eur(splatka)}</b>, úroky spolu ${eur(zaklad.urokCelkom)}, zaplatíte ${eur(v.suma+zaklad.urokCelkom)}.</p>`;
-  if (earlyOn && porov){
-    const skor = zaklad.mesiacov - porov.mesiacov;
-    html += `<p><b>Predčasné splatenie:</b> ${v.extra>0?eur(v.extra)+" mesačne navyše":""}${v.extra>0&&v.jedn>0?", ":""}${v.jedn>0?"jednorazovo "+eur(v.jedn)+" v "+v.kedy+". roku":""} →
-      úspora na úrokoch <b>${eur(zaklad.urokCelkom-porov.urokCelkom)}</b>, splatené skôr o ${Math.floor(skor/12)} r. ${skor%12} mes.</p>`;
+/* ============================================================
+   ZHRNUTIE — čo sa dostane do podkladu pre klienta
+   Zaradenie je výhradne explicitné: kalkulačka odovzdá snímku
+   svojich vstupov, výsledok sa dopočíta až pri vykreslení zhrnutia.
+   Stav prežije obnovenie stránky (sessionStorage), nie však
+   zatvorenie karty — na disk sa nič neukladá.
+   ============================================================ */
+const TYPY = {
+  ramec:    {n:"Úverový rámec",              p:1},
+  hypo:     {n:"Modelovaná hypotéka",        p:2},
+  early:    {n:"Predčasné splatenie",        p:3},
+  uroky:    {n:"Úroky z hypotéky naspäť",    p:4},
+  vedierka: {n:"Rozdelenie peňazí",          p:5},
+  renta:    {n:"Renta k dôchodku",           p:6},
+  deti:     {n:"Sporenie pre deti",          p:7,  viac:true},
+  sen:      {n:"Vlastný cieľ",               p:8,  viac:true},
+  doch:     {n:"Dôchodok",                   p:9},
+  r4:       {n:"Vlastná renta (IV. pilier)", p:10},
+  zivot:    {n:"Zabezpečenie rodiny",        p:11}
+};
+/* kandidáti — kalkulačky, ktoré sme počas stretnutia otvorili, ale neuložili */
+const KANDIDATI = ["early","uroky","renta","deti","sen"];
+
+let zhrnutie = [];          // [{k, typ, nazov, vst:{…}}]
+const videne = new Set();
+let krokyText = null;       // null = odvodiť zo zaškrtnutých oblastí
+let zSeq = 1;
+let poslZivot = null, poslDoch = null;
+
+function zUloz(){
+  try { sessionStorage.setItem("zhr2", JSON.stringify({z:zhrnutie, v:[...videne], k:krokyText, s:zSeq})); } catch(e){}
+}
+function zNacitaj(){
+  try {
+    const d = JSON.parse(sessionStorage.getItem("zhr2") || "null");
+    if (!d) return;
+    if (Array.isArray(d.z)) zhrnutie = d.z.filter(x => x && TYPY[x.typ] && x.vst);
+    (d.v || []).forEach(x => videne.add(x));
+    if (typeof d.k === "string") krokyText = d.k;
+    zSeq = +d.s || zhrnutie.length + 1;
+  } catch(e){}
+}
+
+/* ---- dá sa daná vec práve teraz uložiť? ---- */
+function zMozne(typ, v){
+  switch(typ){
+    case "hypo":  return v.suma > 0;
+    case "early": return v.suma > 0 && (v.extra > 0 || v.jedn > 0);
+    case "uroky": return v.suma > 0;
+    case "doch":
+    case "r4":    return !!poslDoch;
+    case "zivot": return !!poslZivot;
+    default:      return true;
   }
-  if (inv){
-    html += `<p><b>Investície — rozdelenie ${eur(inv.odklad)} mesačne:</b>
-      krátkodobá rezerva ${eur(inv.doKratke)}, strednodobé ciele ${eur(inv.doStredne)},
-      dlhodobý majetok ${eur(inv.doDlhe)}.${inv.chyba > 0 ? ` Do minimálnej rezervy chýba ${eur(inv.chyba)}.` : " Rezerva je naplnená."}
-      ${inv.doDlhe > 0 ? `Dlhodobé vedierko by pri 8 % ročne za ${Math.floor(inv.mesiacov/12)} rokov narástlo na
-      ${eur(buducaHodnota(inv.doDlhe, CONFIG.vedierka.vynosProjekcia, inv.mesiacov))}.` : ""}</p>`;
+}
+function zDovod(typ){
+  return {
+    hypo:  "Najprv zadajte výšku hypotéky.",
+    early: "Najprv nastavte mimoriadnu splátku.",
+    uroky: "Najprv zadajte výšku hypotéky.",
+    doch:  "Najprv vyplňte údaje o dôchodku.",
+    r4:    "Najprv vyplňte údaje o dôchodku.",
+    zivot: "Najprv vyberte balíček poistenia."
+  }[typ] || "";
+}
+
+/* ---- snímka vstupov ---- */
+function zZbier(typ, v){
+  const c = (id, def, a, b) => clamp(+$(id).value || def, a, b);
+  switch(typ){
+    case "ramec": return {nazov:"Úverový rámec", vst:{
+      dvaja:v.dvaja, deti:v.deti, prijem:v.prijem, spl:v.spl, zost:v.zost,
+      hodn:v.hodn, vlast:v.vlast, ltv:v.ltv, sadz:v.sadz, roky:v.roky, vekVaz:v.vekVaz}};
+    case "hypo": return {nazov:"Hypotéka " + eur(v.suma), vst:{suma:v.suma, sadz:v.sadz, roky:v.roky}};
+    case "early": return {nazov:"Predčasné splatenie", vst:{
+      suma:v.suma, sadz:v.sadz, roky:v.roky, extra:v.extra, jedn:v.jedn, kedy:v.kedy}};
+    case "uroky": return {nazov:"Úroky z hypotéky naspäť", vst:{
+      suma:v.suma, sadz:v.sadz, roky:v.roky, vynos:c("iVynos",8,1,12), rezim:rezimUroky}};
+    case "vedierka": return {nazov:"Rozdelenie peňazí", vst:{
+      vyd:Math.max(0, +$("iVyd").value || 0), prijem:v.prijem}};
+    case "renta": return {nazov:"Renta k dôchodku", vst:{
+      mes:Math.max(0, +$("iRenta").value || 0), roky:c("iRentaRoky",20,5,35),
+      vyn:c("iRentaVynos",3,0,8), spor:c("iRentaSpor",8,0,12), vekVaz:v.vekVaz}};
+    case "deti": {
+      const meno = ($("iDetiMeno").value || "").trim();
+      return {nazov: meno ? "Sporenie pre deti — " + meno : "Sporenie pre dieťa", vst:{
+        vek:c("iDietaVek",0,0,25), ciel:c("iDietaCiel",20,15,30),
+        suma:Math.max(0, +$("iDietaSuma").value || 0), vynos:c("iDetiVynos",8,0,12)}};
+    }
+    case "sen": return {nazov: ($("iSenNazov").value || "").trim() || "Vlastný cieľ", vst:{
+      suma:Math.max(0, +$("iSenSuma").value || 0), roky:c("iSenRoky",10,1,40), vynos:c("iSenVynos",8,0,12)}};
+    case "doch": {
+      const d = poslDoch;
+      return {nazov:"Dôchodok zo štátu a pilierov", vst:{
+        p1:d.p1, p2:d.p2, p3:d.p3, spolu:d.spolu, cisty1:d.cisty1, chyba:d.chyba, rokovDo:d.rokovDo,
+        hruba:Math.max(0, +$("iHruba").value || 0), odprac:c("iOdprac",0,0,50), maII:$("iMaII").value === "a"}};
+    }
+    case "r4": return {nazov:"Vlastná renta k dôchodku", vst:{
+      mes:Math.max(0, +$("iR4").value || 0), roky:c("iR4Roky",20,5,35), vyn:c("iR4Vynos",3,0,8),
+      spor:c("iR4Spor",8,0,12), kap:poslDoch.r4kap, ul:poslDoch.r4ul, rokovDo:poslDoch.rokovDo}};
+    case "zivot": {
+      const z = poslZivot, d = z.bal.deti;
+      return {nazov:"Zabezpečenie rodiny — " + z.bal.nazov, vst:{
+        bal:z.bal.nazov, dolna:z.dolna, horna:z.horna, pnOd:z.bal.pnOd, dvaja:!!z.o2, pocetDeti:v.deti,
+        ps1:{smrt:z.ps1.smrt, tnu:z.ps1.tnu, kch:z.ps1.kch, pnDenne:z.ps1.pnDenne},
+        ps2:z.ps2 ? {smrt:z.ps2.smrt, tnu:z.ps2.tnu, kch:z.ps2.kch, pnDenne:z.ps2.pnDenne} : null,
+        det:d ? {tnu:d.tnu, kch:d.kch, denne:d.denne} : null}};
+    }
   }
-  if ($("d-uroky").open && zaklad.urokCelkom > 0){
-    const r = clamp(+$("iVynos").value || 8, 1, 12), i = r/100/12, n = zaklad.mesiacov;
-    const f = (Math.pow(1+i, n) - 1) / i;
-    const ul = zaklad.urokCelkom / (rezimUroky === "vynos" ? Math.max(f - n, 0.0001) : f);
-    html += `<p><b>Úroky naspäť:</b> pri odkladaní <b>${eur(ul)}</b> mesačne a predpokladanom zhodnotení
-      ${num(r)} % ročne by ${rezimUroky === "vynos"
-        ? `samotný výnos za ${Math.floor(n/12)} rokov dosiahol ${eur(zaklad.urokCelkom)} — teda zaplatené úroky —
-           a vaše vklady ${eur(ul*n)} by vám zostali navyše`
-        : `ste za ${Math.floor(n/12)} rokov nasporili ${eur(zaklad.urokCelkom)}, teda sumu zaplatených úrokov
-           (z toho vaše vklady ${eur(ul*n)})`}.</p>`;
+  return null;
+}
+
+function zPridaj(typ){
+  const v = citajVstupy();
+  if (!TYPY[typ] || !zMozne(typ, v)) return;
+  const z = zZbier(typ, v);
+  if (!z) return;
+  const ex = TYPY[typ].viac
+    ? zhrnutie.find(x => x.typ === typ && x.nazov === z.nazov)
+    : zhrnutie.find(x => x.typ === typ);
+  if (ex){ ex.nazov = z.nazov; ex.vst = z.vst; }
+  else zhrnutie.push({k:"z" + (zSeq++), typ, nazov:z.nazov, vst:z.vst});
+  videne.delete(typ);
+  zUloz(); renderAll();
+}
+function zOdober(k){
+  zhrnutie = zhrnutie.filter(x => x.k !== k);
+  zUloz(); renderAll();
+}
+
+/* ---- text položky v zhrnutí: vstupy (čo sme zadali) + výsledok ---- */
+const rokySlovo = r => r === 1 ? "rok" : (r >= 2 && r <= 4 ? "roky" : "rokov");
+
+function zText(pol){
+  const a = pol.vst;
+  switch(pol.typ){
+    case "ramec": {
+      const L = limity(a, a.roky);
+      const potreba = Math.max(0, a.hodn - a.vlast);
+      return {
+        in: `${a.dvaja ? "dvaja žiadatelia" : "jeden žiadateľ"}, ${a.deti} ${a.deti === 1 ? "dieťa" : (a.deti >= 2 && a.deti <= 4 ? "deti" : "detí")} · príjem ${eur(a.prijem)} mesačne` +
+            (a.spl > 0 ? ` · existujúce splátky ${eur(a.spl)}` : "") +
+            ` · nehnuteľnosť ${eur(a.hodn)}, vlastné zdroje ${eur(a.vlast)}`,
+        out: `Rámec približne <b>${eur(Math.floor(L.max/1000)*1000)}</b>, rozhoduje limit ${L.bind}. ` +
+             `Potreba financovania ${eur(potreba)}` +
+             (L.max >= potreba ? `, rámec ju pokrýva.` : `, chýba ${eur(potreba - L.max)}.`)
+      };
+    }
+    case "hypo": {
+      const spl = anuita(a.suma, a.sadz, a.roky*12);
+      const z = amortizacia(a.suma, a.sadz, a.roky*12, spl);
+      return {
+        in: `${eur(a.suma)} · ${a.roky} ${rokySlovo(a.roky)} · ${num(a.sadz)} % p. a.`,
+        out: `Splátka <b>${eur(spl)}</b> · úroky spolu ${eur(z.urokCelkom)} · banke zaplatíte ${eur(a.suma + z.urokCelkom)}.`
+      };
+    }
+    case "early": {
+      const spl = anuita(a.suma, a.sadz, a.roky*12);
+      const zak = amortizacia(a.suma, a.sadz, a.roky*12, spl);
+      const por = amortizacia(a.suma, a.sadz, a.roky*12, spl, a.extra, a.jedn, Math.round(a.kedy*12));
+      const skor = zak.mesiacov - por.mesiacov;
+      const cast = [];
+      if (a.extra > 0) cast.push(`${eur(a.extra)} mesačne navyše`);
+      if (a.jedn > 0)  cast.push(`jednorazovo ${eur(a.jedn)} v ${a.kedy}. roku`);
+      return {
+        in: cast.join(" · "),
+        out: `Úspora na úrokoch <b>${eur(Math.max(0, zak.urokCelkom - por.urokCelkom))}</b> · ` +
+             `splatené skôr o ${Math.floor(skor/12)} r. ${skor%12} mes. ` +
+             `(za ${Math.floor(por.mesiacov/12)} r. ${por.mesiacov%12} mes. namiesto ${a.roky} rokov).`
+      };
+    }
+    case "uroky": {
+      const spl = anuita(a.suma, a.sadz, a.roky*12);
+      const z = amortizacia(a.suma, a.sadz, a.roky*12, spl);
+      const i = a.vynos/100/12, n = z.mesiacov;
+      const f = i === 0 ? n : (Math.pow(1+i, n) - 1)/i;
+      const del = a.rezim === "vynos" ? Math.max(f - n, 0.0001) : f;
+      const ul = n === 0 ? 0 : z.urokCelkom/del;
+      return {
+        in: `zaplatené úroky ${eur(z.urokCelkom)} · zhodnotenie ${num(a.vynos)} % p. a. · ${Math.floor(n/12)} ${rokySlovo(Math.floor(n/12))} · ` +
+            (a.rezim === "vynos" ? "úroky pokryje samotný výnos" : "úroky pokryje nasporená suma"),
+        out: `Odkladať <b>${eur(ul)}</b> mesačne · vložíte ${eur(ul*n)} · nasporíte ${eur(ul*f)}` +
+             (a.rezim === "vynos" ? `, z toho výnos ${eur(Math.max(0, ul*f - ul*n))} pokryje zaplatené úroky.` : ".")
+      };
+    }
+    case "vedierka": {
+      const V = CONFIG.vedierka.podielPrijmu;
+      return {
+        in: `mesačné výdavky ${eur(a.vyd)} · čistý príjem ${eur(a.prijem)}`,
+        out: `Rezerva <b>${eur(a.vyd*3)} – ${eur(a.vyd*6)}</b> (3 až 6 mesačných výdavkov) · ` +
+             `na dlhodobý cieľ <b>${eur(a.prijem*V.min)} – ${eur(a.prijem*V.max)}</b> mesačne.`
+      };
+    }
+    case "renta": {
+      const kap = kapitalNaRentu(a.mes, a.vyn, a.roky*12);
+      const doD = Math.max(1, Math.round(65 - a.vekVaz));
+      const ul  = ulozkaNaCiel(kap, a.spor, doD*12);
+      return {
+        in: `${eur(a.mes)} mesačne počas ${a.roky} ${rokySlovo(a.roky)} · sporenie ${num(a.spor)} % · výplata ${num(a.vyn)} % p. a.`,
+        out: `Treba nasporiť <b>${eur(kap)}</b> · odkladať <b>${eur(ul)}</b> mesačne počas ${doD} ${rokySlovo(doD)}.`
+      };
+    }
+    case "deti": {
+      const roky = Math.max(1, a.ciel - a.vek);
+      const ul = ulozkaNaCiel(a.suma, a.vynos, roky*12);
+      const vklad = ul*roky*12;
+      return {
+        in: `${eur(a.suma)} vo veku ${a.ciel} (dnes ${a.vek} ${rokySlovo(a.vek)}) · ${num(a.vynos)} % p. a.`,
+        out: `Odkladať <b>${eur(ul)}</b> mesačne počas ${roky} ${rokySlovo(roky)} · vaše vklady ${eur(vklad)}, ` +
+             `výnos pridá ${eur(Math.max(0, a.suma - vklad))}.`
+      };
+    }
+    case "sen": {
+      const ul = ulozkaNaCiel(a.suma, a.vynos, a.roky*12);
+      const vklad = ul*a.roky*12;
+      return {
+        in: `${eur(a.suma)} o ${a.roky} ${rokySlovo(a.roky)} · ${num(a.vynos)} % p. a.`,
+        out: `Odkladať <b>${eur(ul)}</b> mesačne · vaše vklady ${eur(vklad)}, výnos pridá ${eur(Math.max(0, a.suma - vklad))}.`
+      };
+    }
+    case "doch": return {
+      in: `hrubá mzda ${eur(a.hruba)} · ${a.odprac} odpracovaných ${rokySlovo(a.odprac)} · II. pilier ${a.maII ? "áno" : "nie"} · do dôchodku ${Math.round(a.rokovDo)} ${rokySlovo(Math.round(a.rokovDo))}`,
+      out: `Odhad <b>${eur(a.spolu)}</b> mesačne (I. pilier ${eur(a.p1)}${a.p2 > 0 ? ", II. pilier " + eur(a.p2) : ""}, III. pilier ${eur(a.p3)}) — ` +
+           `${a.cisty1 > 0 ? Math.round(a.spolu/a.cisty1*100) : 0} % dnešného čistého príjmu ${eur(a.cisty1)}. ` +
+           `Chýbať bude približne <b>${eur(a.chyba)}</b> mesačne.`
+    };
+    case "r4": return {
+      in: `renta ${eur(a.mes)} mesačne počas ${a.roky} ${rokySlovo(a.roky)} · sporenie ${num(a.spor)} % · výplata ${num(a.vyn)} % p. a.`,
+      out: `Nasporiť <b>${eur(a.kap)}</b> · odkladať <b>${eur(a.ul)}</b> mesačne počas ${Math.round(a.rokovDo)} ${rokySlovo(Math.round(a.rokovDo))}. ` +
+           `Sumy sú v dnešných eurách.`
+    };
+    case "zivot": {
+      const dv = x => a.ps2 ? `${eur(a.ps1[x])} / ${eur(a.ps2[x])}` : eur(a.ps1[x]);
+      let t = `Odhad <b>${Math.round(a.dolna/5)*5} – ${Math.round(a.horna/5)*5} €</b> mesačne za celú rodinu. ` +
+              `Smrť a invalidita ${dv("smrt")} · trvalé následky úrazu ${dv("tnu")} · kritické choroby ${dv("kch")}`;
+      if (a.ps1.pnDenne) t += ` · PN od ${a.pnOd}. dňa ${a.ps2 ? eur(a.ps1.pnDenne) + " / " + eur(a.ps2.pnDenne) : eur(a.ps1.pnDenne)} denne`;
+      if (a.det && a.pocetDeti > 0) t += `. Deti — úraz ${eur(a.det.tnu)}, kritické choroby ${eur(a.det.kch)}, ${eur(a.det.denne)} denne`;
+      return {
+        in: `balíček ${a.bal} · ${a.dvaja ? "dvaja dospelí" : "jeden dospelý"}${a.pocetDeti > 0 ? ", " + a.pocetDeti + " " + (a.pocetDeti === 1 ? "dieťa" : (a.pocetDeti <= 4 ? "deti" : "detí")) : ""}`,
+        out: t + "."
+      };
+    }
   }
-  if (dch && dch.cisty1 > 0){
-    html += `<p><b>Dôchodok:</b> odhad <b>${eur(dch.spolu)}</b> mesačne
-      (I. pilier ${eur(dch.p1)}${dch.p2>0?", II. pilier "+eur(dch.p2):""}, III. pilier ${eur(dch.p3)}),
-      čo je ${Math.round(dch.spolu/dch.cisty1*100)} % dnešného čistého príjmu ${eur(dch.cisty1)}.
-      Chýbať bude približne <b>${eur(dch.chyba)}</b> mesačne — na jej pokrytie treba do 65 rokov nasporiť
-      <b>${eur(dch.r4kap)}</b>, teda odkladať ${eur(dch.r4ul)} mesačne.</p>`;
-  }
-  if (z){
-    const d = z.bal.deti;
-    html += `<p><b>Zabezpečenie rodiny — balíček ${z.bal.nazov}:</b> odhad
-      <b>${Math.round(z.dolna/5)*5} – ${Math.round(z.horna/5)*5} €</b> mesačne za celú rodinu.
-      Smrť a invalidita ${eur(z.ps1.smrt)}${z.o2 ? " / "+eur(z.ps2.smrt) : ""},
-      trvalé následky úrazu ${eur(z.ps1.tnu)}${z.o2 ? " / "+eur(z.ps2.tnu) : ""},
-      kritické choroby ${eur(z.ps1.kch)}${z.o2 ? " / "+eur(z.ps2.kch) : ""}${
-      z.ps1.pnDenne ? ", PN od "+z.bal.pnOd+". dňa "+eur(z.ps1.pnDenne)+" denne"+(z.o2?" / "+eur(z.ps2.pnDenne)+" denne":"") : ""}${
-      d && v.deti>0 ? `. Deti: úraz ${eur(d.tnu)}, kritické choroby ${eur(d.kch)}, ${eur(d.denne)} denne` : ""}.</p>`;
-  }
-  html += kroky.length
-    ? `<p><b>Ďalšie kroky — klient prejavil záujem o:</b></p><ul>${kroky.map(k=>`<li>${k}</li>`).join("")}</ul>`
-    : `<p style="color:var(--muted)">Zatiaľ nie sú vybrané žiadne ďalšie oblasti. Označte ich kliknutím v mape hore.</p>`;
-  const k = poradca.kontakt || {};
-  const kont = [k.tel, k.email, k.web].filter(Boolean).join(" · ");
+  return null;
+}
+
+/* ---- tlačidlá pri kalkulačkách ---- */
+const IKONA_PLUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
+const IKONA_OK   = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>';
+
+function renderZTlacidla(v){
+  document.querySelectorAll(".zrad").forEach(el => {
+    const typ = el.dataset.z, t = TYPY[typ];
+    if (!t) return;
+    const moje = zhrnutie.filter(x => x.typ === typ);
+    const ok = zMozne(typ, v);
+    const lbl = moje.length ? (t.viac ? "Uložiť ďalšiu variantu" : "Aktualizovať v zhrnutí") : "Uložiť do zhrnutia";
+    el.innerHTML =
+      `<button type="button" class="zbtn ${moje.length ? "on" : ""}" data-zadd="${typ}" ${ok ? "" : "disabled"}
+         title="${ok ? "" : zDovod(typ)}">${moje.length ? IKONA_OK : IKONA_PLUS}${lbl}</button>` +
+      `<span class="zchips">${moje.map(x =>
+        `<span class="zchip">${x.nazov}<button type="button" data-zdel="${x.k}" aria-label="Odobrať zo zhrnutia" title="Odobrať zo zhrnutia">✕</button></span>`).join("")}</span>`;
+  });
+}
+
+/* ---- dohodnuté ďalšie kroky ---- */
+function autoKroky(){
+  return OBLASTI.filter(o => zaujem[o.id]).map(o => o.krok).join("\n");
+}
+function renderDalsieKroky(){
+  const t = krokyText === null ? autoKroky() : krokyText;
+  if (document.activeElement !== $("iKroky")) $("iKroky").value = t;
+  const riadky = t.split("\n").map(x => x.trim()).filter(Boolean);
+  $("sumKroky").innerHTML = riadky.length
+    ? `<div class="zsek"><h3>Dohodnuté ďalšie kroky</h3><ul class="zkroky">${riadky.map(x => `<li>${markUp(x)}</li>`).join("")}</ul></div>`
+    : `<div class="zsek noprint"><h3>Dohodnuté ďalšie kroky</h3><p class="zprazdne">Zatiaľ žiadne — zaškrtnite oblasti v mape alebo si kroky napíšte nižšie.</p></div>`;
+}
+/* jednoduché escapovanie — do zoznamu ide text od poradcu, nie HTML */
+function markUp(x){
+  return x.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+/* kalkulačku sme otvorili — ak ju neuložíme, ponúkne sa na konci zhrnutia */
+function zVidene(typ){
+  const d = $({early:"d-early", uroky:"d-uroky", renta:"d-renta", deti:"d-deti", sen:"d-sen"}[typ]);
+  if (d && d.open){ videne.add(typ); zUloz(); }
+}
+
+/* ---- kandidáti: čo sme otvorili, ale neuložili ---- */
+function renderKand(){
+  const zoz = KANDIDATI.filter(t => videne.has(t) && !zhrnutie.some(x => x.typ === t));
+  $("sumKand").innerHTML = zoz.length
+    ? `<span>Prešli sme aj:</span>` + zoz.map(t =>
+        `<button type="button" class="zchip" data-zadd="${t}">${TYPY[t].n} +</button>`).join("")
+    : "";
+}
+
+function renderSum(v){
   const klient = ($("iKlient").value || "").trim();
   const datum  = ($("iDatum").value || "").trim();
-  if (klient || datum) html = `<p class="sumhd">${klient || "Klient"}${datum ? " · " + datum : ""}</p>` + html;
-  html += `<div class="sumfoot">${markHTML(poradca,"mk")}
+  const k = poradca.kontakt || {};
+  const kont = [k.tel, k.email, k.web].filter(Boolean).join(" · ");
+
+  let h = `<div class="pdfhd">${markHTML(poradca,"mk")}
+      ${poradca.logoPomer ? "" : `<div class="pdfme"><b>${poradca.meno}</b><span>${poradca.rola}</span></div>`}
+      <div class="pdfkl"><b>${klient || "Klient"}</b><span>${datum}</span></div>
+    </div>`;
+
+  h += `<div class="zsek"><h3>Východiská</h3><p>${v.dvaja ? "Dvaja žiadatelia" : "Jeden žiadateľ"},
+      ${v.deti} ${v.deti === 1 ? "dieťa" : (v.deti >= 2 && v.deti <= 4 ? "deti" : "detí")},
+      čistý príjem domácnosti <b>${eur(v.prijem)}</b> mesačne.</p></div>`;
+
+  const polozky = zhrnutie.slice().sort((a,b) => TYPY[a.typ].p - TYPY[b.typ].p);
+  h += `<div class="zsek"><h3>Čo sme prepočítali</h3>`;
+  if (polozky.length){
+    h += polozky.map(pol => {
+      const t = zText(pol);
+      if (!t) return "";
+      return `<div class="zpol"><h4>${markUp(pol.nazov)}</h4>
+        <div class="zin">${t.in}</div><div class="zout">${t.out}</div></div>`;
+    }).join("");
+  } else {
+    h += `<p class="zprazdne">Zatiaľ nič. Pri každej kalkulačke je tlačidlo „Uložiť do zhrnutia“ —
+      do podkladu pre klienta ide len to, čo ním označíte.</p>`;
+  }
+  h += `</div>`;
+  $("sumBox").innerHTML = h;
+
+  $("sumFoot").innerHTML = `<div class="sumfoot">${markHTML(poradca,"mk")}
     <span><b>${poradca.meno}</b>, ${poradca.rola}${kont ? " · " + kont : ""}</span></div>`;
-  $("sumBox").innerHTML = html;
 }
 
 const skupHodnota = {1:1, 2:1};
@@ -1570,24 +1816,44 @@ const skupHodnota = {1:1, 2:1};
    PREPÍNAČ PORADCU
    ============================================================ */
 function markHTML(p, cls){
-  return p.logo
-    ? `<span class="${cls} img"><img src="${p.logo}" alt="${p.meno}"></span>`
-    : `<span class="${cls}" style="background:${p.farby.logoBg};color:${p.farby.logoInk}">${p.monogram}</span>`;
+  if (!p.logo)
+    return `<span class="${cls}" style="background:${p.farby.logoBg};color:${p.farby.logoInk}">${p.monogram}</span>`;
+  /* logoPomer = šírka/výška loga. Ak je nastavený, ide o široký značkový lockup:
+     nevojde sa do kruhu, dostane preto podlhovastý svetlý štítok. */
+  const sir = p.logoPomer
+    ? ` sirok" style="aspect-ratio:${p.logoPomer + 0.45}` : "";
+  return `<span class="${cls} img${sir}"><img src="${p.logo}" alt="${p.meno}"></span>`;
 }
-function renderPoradca(){
-  document.documentElement.style.setProperty("--logo-bg", poradca.farby.logoBg);
-  document.documentElement.style.setProperty("--logo-ink", poradca.farby.logoInk);
-  if (poradca.farby.akcent) document.documentElement.style.setProperty("--s1", poradca.farby.akcent);
 
+/* Premenné, ktoré smie poradca/značka prefarbiť. Čo nie je v jeho zázname,
+   sa pri prepnutí vráti na predvolenú hodnotu z :root — inak by po prepnutí
+   ostali visieť farby predchádzajúcej značky. */
+const PREFARBITELNE = ["--s1","--s2","--s3","--s4","--s5","--s6","--prim","--prim-tm",
+  "--good","--good-ink","--ok-bg","--warn","--warn-bg",
+  "--page","--card","--surface-1","--grid","--axis","--border",
+  "--ink","--ink-2","--muted","--muted-2",
+  "--nav","--nav-ink","--nav-muted","--nav-line","--nav-hover","--nav-box","--nav-border"];
+function renderPoradca(){
+  const R = document.documentElement.style;
+  R.setProperty("--logo-bg", poradca.farby.logoBg);
+  R.setProperty("--logo-ink", poradca.farby.logoInk);
+  const schema = poradca.farby.schema || {};
+  if (poradca.farby.akcent && !schema["--s1"]) schema["--s1"] = poradca.farby.akcent;
+  PREFARBITELNE.forEach(v => schema[v] ? R.setProperty(v, schema[v]) : R.removeProperty(v));
+
+  /* pri značkovom logu je názov už v obrázku — netreba ho písať druhýkrát */
+  $("logoBox").className = "logo" + (poradca.logoPomer ? " zn" : "");
   $("logoBox").innerHTML = markHTML(poradca, "mark") +
     `<span class="nm"><b>${poradca.meno}</b><small>${poradca.rola}</small></span>`;
 
-  $("whoBtn").innerHTML = `<span>${PORADCOVIA.length > 1 ? "zmeniť poradcu" : "poradca"}</span>
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>`;
+  const popis = PORADCOVIA.length > 1 ? "Prepnúť poradcu alebo značku" : "Poradca";
+  $("whoBtn").title = popis; $("whoBtn").setAttribute("aria-label", popis);
+  $("whoBtn").innerHTML =
+    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>`;
 
   $("whoMenu").innerHTML = `<div class="hd">Prihlásený poradca</div>` +
     PORADCOVIA.map(p => `<button type="button" role="menuitem" data-id="${p.id}" class="${p.id===poradca.id?'sel':''}">
-        ${markHTML(p,"mk")}<span>${p.meno}</span></button>`).join("") +
+        ${markHTML(p, p.logoPomer ? "mk sirokmenu" : "mk")}<span>${p.meno}</span></button>`).join("") +
     (PORADCOVIA.length === 1
       ? `<div class="empty">Ďalších poradcov pridáte v súbore v zozname <b>PORADCOVIA</b> na začiatku skriptu.</div>` : "");
 
@@ -1626,9 +1892,10 @@ document.addEventListener("DOMContentLoaded", () => {
   ["iPohl1","iPohl2","iFajc1","iFajc2"].forEach(id => $(id).addEventListener("change", renderAll));
   $("iSkup1").addEventListener("change", e => { skupHodnota[1] = +e.target.value; renderAll(); });
   $("iSkup2").addEventListener("change", e => { skupHodnota[2] = +e.target.value; renderAll(); });
-  $("d-early").addEventListener("toggle", () => { earlyOn = $("d-early").open; renderAll(); });
-  $("d-uroky").addEventListener("toggle", renderAll);
-  ["d-renta","d-deti","d-sen"].forEach(id => $(id).addEventListener("toggle", renderAll));
+  $("d-early").addEventListener("toggle", () => { earlyOn = $("d-early").open; zVidene("early"); renderAll(); });
+  $("d-uroky").addEventListener("toggle", () => { zVidene("uroky"); renderAll(); });
+  [["d-renta","renta"],["d-deti","deti"],["d-sen","sen"]].forEach(([id,typ]) =>
+    $(id).addEventListener("toggle", () => { zVidene(typ); renderAll(); }));
   ["iRentaRoky","iRentaVynos","iDietaVek","iDietaCiel","iDetiVynos","iSenNazov","iSenRoky","iSenVynos"]
     .forEach(id => $(id).addEventListener("input", renderAll));
   $("iVyd").addEventListener("input", renderAll);
@@ -1648,9 +1915,22 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll("[data-rezim]").forEach(x => x.classList.toggle("on", x === b));
     renderAll();
   });
-  $("btnPrint").addEventListener("click", () => window.print());
+  ["btnPrintNav","btnPrintSum"].forEach(id => $(id).addEventListener("click", () => {
+    if (obrazovka !== "sum") prepniObrazovku("sum");
+    window.print();
+  }));
   $("btnSum").addEventListener("click", () => prepniObrazovku("sum"));
   ["iKlient","iDatum"].forEach(id => $(id).addEventListener("input", renderAll));
+  /* uloženie do zhrnutia — delegovane, aby v HTML nezostal žiadny inline handler */
+  document.addEventListener("click", e => {
+    const a = e.target.closest && e.target.closest("[data-zadd]");
+    if (a){ e.preventDefault(); zPridaj(a.dataset.zadd); return; }
+    const d = e.target.closest && e.target.closest("[data-zdel]");
+    if (d){ e.preventDefault(); zOdober(d.dataset.zdel); }
+  });
+  $("iKroky").addEventListener("input", e => { krokyText = e.target.value; zUloz(); renderDalsieKroky(); });
+  $("btnKrokyAuto").addEventListener("click", () => { krokyText = null; zUloz(); renderDalsieKroky(); });
+  zNacitaj();
   $("iDatum").value = new Date().toLocaleDateString("sk-SK", {day:"numeric", month:"numeric", year:"numeric"});
   window.addEventListener("hashchange", () => prepniObrazovku(location.hash.slice(1), true));
   prepniObrazovku(location.hash.slice(1) || "mapa", true);
