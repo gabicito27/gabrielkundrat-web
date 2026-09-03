@@ -667,6 +667,9 @@ ul.zkroky li{margin:3px 0}
 .zedit textarea{width:100%;min-height:88px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--r);
   font:14px/1.6 var(--font);background:var(--card);color:var(--ink);resize:vertical}
 .zedit .zpod{display:flex;gap:10px;align-items:center;margin-top:8px;flex-wrap:wrap}
+.zpodpis{display:flex;gap:40px;margin-top:30px;break-inside:avoid;page-break-inside:avoid}
+.zpodpis>div{flex:1 1 0;font-size:11.5px;color:var(--muted)}
+.zpodpis .lin{display:block;border-bottom:1px solid var(--axis);height:36px;margin-bottom:5px}
 .zkand{margin-top:16px;font-size:13px;color:var(--ink-2);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .zkand button.zchip{background:var(--surface-1);color:var(--ink-2);cursor:pointer;padding:5px 11px;border:1px solid var(--border);font:600 12.5px/1.3 var(--font)}
 .zkand button.zchip:hover{background:var(--s1);color:#fff;border-color:var(--s1)}
@@ -675,8 +678,12 @@ ul.zkroky li{margin:3px 0}
    TLAČ — na papier ide výhradne obrazovka Zhrnutie.
    ============================================================ */
 @media print{
-  @page{size:A4;margin:14mm}
+  /* Bez `size` — hárok určí tlačová dialógová voľba. Keď sa tu vynúti A4
+     a tlačiareň má nastavený iný formát, Chrome celý výstup zmenší. */
+  @page{margin:14mm}
   html,body{background:#fff}
+  /* farby a logo nech idú na papier tak, ako sú vidieť na obrazovke */
+  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
   body{font-size:10.5pt;line-height:1.42}
   .app{display:block;height:auto;overflow:visible}
   .main{display:block;overflow:visible}
@@ -688,19 +695,22 @@ ul.zkroky li{margin:3px 0}
   #sec-sum>.card>h2,#sec-sum>.card>.sub{display:none}
   .pdfhd{margin-bottom:12pt;padding-bottom:8pt}
   .pdfhd .mk.img.sirok,.sumfoot .mk.img.sirok{background:transparent !important;padding:0}
-  .zsek{margin-top:10pt}
+  .zsek{margin-top:9pt}
   .zsek h3{font-size:8pt;letter-spacing:.13em;margin-bottom:6pt}
-  .zpol{margin-bottom:5pt}
+  .zpol{margin-bottom:4pt}
   .zpol h4{font-size:10.5pt}
   .zpol .zin{font-size:8.5pt}
   .zpol .zout{font-size:10pt}
   ul.zkroky li{margin:2pt 0}
+  .zpodpis{margin-top:10pt;gap:30pt}
+  .zpodpis>div{font-size:8pt}
+  .zpodpis .lin{height:20pt}
   .sumfoot{margin-top:8pt;padding-top:5pt;border-top:1px solid #C9C4B8}
   .disc{display:none}
   .discp{display:block;font-size:7.5pt;margin-top:5pt;padding-top:4pt;line-height:1.4;max-width:none;
     color:#6B706C;border-top:1px solid #C9C4B8}
   .zpol,.pdfhd{break-inside:avoid;page-break-inside:avoid}
-  #sumFoot{break-inside:avoid;page-break-inside:avoid}
+  #sumFoot,.zpodpis{break-inside:avoid;page-break-inside:avoid}
   .zsek h3{break-after:avoid;page-break-after:avoid}
 }
 </style>
@@ -1405,7 +1415,21 @@ ul.zkroky li{margin:3px 0}
     <p class="sub">Do podkladu pre klienta ide len to, čo ste pri kalkulačkách uložili tlačidlom „Uložiť do zhrnutia“.</p>
     <div id="sumBox"></div>
     <div id="sumKroky"></div>
+    <div id="sumServis"></div>
+    <div class="zpodpis">
+      <div><span class="lin"></span>Podpis klienta</div>
+      <div><span class="lin"></span>Podpis poradcu</div>
+    </div>
     <div id="sumFoot"></div>
+    <div class="zedit noprint">
+      <label>Rozsah spolupráce — čo si klient zvolil</label>
+      <div class="switchrow" id="servisVolba">
+        <button class="sw" type="button" data-servis="plny">Kompletný servis a starostlivosť</button>
+        <button class="sw" type="button" data-servis="jedno">Jednorazové riešenie bez servisu</button>
+      </div>
+      <span class="ftp" style="display:block;margin:8px 0 0">Vybraná veta sa objaví v podklade pre klienta.
+        Opätovným kliknutím voľbu zrušíte — potom sa v PDF nezobrazí nič.</span>
+    </div>
     <div class="zedit noprint">
       <label for="iKroky">Dohodnuté ďalšie kroky — jeden na riadok</label>
       <textarea id="iKroky" spellcheck="false" placeholder="Napr. Hypotéka — porovnať ponuky dvoch bánk do stredy"></textarea>
